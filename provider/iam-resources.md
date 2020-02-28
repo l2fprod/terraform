@@ -1083,9 +1083,9 @@ Review the input parameters that you can specify for your resource.
 |`iam_policy.resources.attributes`|Map|Optional| A set of resource attributes in the format `name=value,name=value`. If you set this option, do not specify `account_management` at the same time.|
 |`iam_policy.account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not set `resources` at the same time. |
 |`cloud_foundry_roles`|List|Optional|A nested block describing the cloud foundry roles of inviting user. |
-|`cloud_foundry_rolesorganization_guid`|String|Required|The ID of the Cloud Foundry organization.|
-|`cloud_foundry_roles.org_roles`|List|Required|The orgnization roles that are assigned to invited user. The supported roles are `Manager`, `Auditor`, `BillingManager`.|
-|`cloud_foundry_roles.spaces`|List|Optional|A nested block describing the Cloud Foundry space roles and space details.
+|`cloud_foundry_roles.organization_guid`|String|Required|The ID of the Cloud Foundry organization.|
+|`cloud_foundry_roles.org_roles`|List|Required|The organization roles that are assigned to invited user. The supported roles are `Manager`, `Auditor`, `BillingManager`.|
+|`cloud_foundry_roles.spaces`|List|Optional|A nested block describing the Cloud Foundry space roles and space details.|
 |`cloud_foundry_roles.spaces.space_guid`|String|Required|The ID of the Cloud Foundry space.|
 |`cloud_foundry_roles.spaces.space_roles`|List|Required|The space roles that you want to assign to the invited user. The supported space roles are `Manager`, `Developer`, `Auditor`.|
 
