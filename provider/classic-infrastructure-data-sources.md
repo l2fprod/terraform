@@ -144,7 +144,7 @@ Review the output parameters that you can access after you retrieved your data s
 
 |Name|Data type|Description|
 |----|-----------|---------|
-|`id`|The unique identifier of the image template.|
+|`id`||The unique identifier of the image template.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 
