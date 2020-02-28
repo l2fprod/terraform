@@ -683,7 +683,7 @@ Review the input parameters that you can specify for your resource.
 |----|-----------|-----------|---------------------|
 |`iam_service_id`|String|Required|The UUID of the service ID.|
 |`roles`|List|Required|A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
-|`resources`|List of objects|Optional| A nested block describing the resource of this policy.
+|`resources`|List of objects|Optional| A nested block describing the resource of this policy.|
 |`resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|
 |`resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.|
 |`resources.region` |String|Optional|The region of the policy definition.|
@@ -842,7 +842,7 @@ Review the input parameters that you can specify for your resource.
 |----|-----------|-----------|---------------------|
 |`ibm_id`|String|Required| The IBMid or email address of the user.|
 |`roles`|List|Required| A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
-|`resources`|List of objects|Optional| A nested block describing the resource of this policy.
+|`resources`|List of objects|Optional| A nested block describing the resource of this policy.|
 |`resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|
 |`resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.|
 |`resources.region` |String|Optional|The region of the policy definition.|
@@ -1073,7 +1073,7 @@ Review the input parameters that you can specify for your resource.
 |`classic_infra_roles.permission_set`|String|Optional|The permission set to be applied. The valid permission sets are `noacess`, `viewonly`, `basicuser`, and `superuser`.|
 |`iam_policy`|List|Optional|A nested block describing the IAM Polocies for invited users. |
 |`iam_policy_roles`|List|Required|A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
-|`iam_policy.resources`|List of objects|Optional| A nested block describing the resource of this policy.
+|`iam_policy.resources`|List of objects|Optional| A nested block describing the resource of this policy.|
 |`iam_policy.resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|
 |`iam_policy.resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.|
 |`iam_policy.resources.region` |String|Optional|The region of the policy definition.|
