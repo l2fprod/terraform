@@ -72,7 +72,7 @@ Review the output parameters that you can access after you retrieved your data s
 
 |Name|Data type|Description|
 |----|-----------|----------|
-| `keys` | List of objects | A list of all keys in your Key Protect service instance.
+| `keys` | List of objects | A list of all keys in your Key Protect service instance. |
 | `keys.name`|String| The name of the key.|
 | `keys.id`|String| The unique identifier of the key.|
 | `keys.crn`|String| The CRN of the key.|
