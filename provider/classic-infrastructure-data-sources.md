@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-02"
 
 keywords: terraform provider plugin, terraform classic infrastructure, terraform classic, terraform softlayer, terraform sl, terraform vsi, terraform bare metal server
 
@@ -91,7 +91,7 @@ Review the output parameters that you can access after you retrieved your data s
 |`redundant_power_supply`| Boolean|When the value is `true`, it indicates additional power supply is provided.|
 |`redundant_network`|Boolean|When the value is `true`, two physical network interfaces are provided with a bonding configuration.|
 |`unbonded_network`|Boolean|When the value is `true`, two physical network interfaces are provided without a bonding configuration.|
-|`os_reference_code`|String|An operating system reference code that provisioned the computing server.|  
+|`os_reference_code`|String|An operating system reference code that provisioned the computing server.| 
 |`tags`|List of Strings|Tags associated with this bare metal server.|
 |`block_storage_ids`|List of Strings|Block storage to which this computing server have access.|
 |`file_storage_ids`|List of Strings|File storage to which this computing server have access.|
@@ -144,7 +144,7 @@ Review the output parameters that you can access after you retrieved your data s
 
 |Name|Data type|Description|
 |----|-----------|---------|
-|`id`||The unique identifier of the image template.|
+|`id`|String|The unique identifier of the image template.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 

@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-25"
+lastupdated: "2020-03-02"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
