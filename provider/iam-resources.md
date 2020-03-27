@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-02"
+lastupdated: "2020-03-26"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
@@ -39,9 +39,9 @@ Create, modify, or delete an IAM access group. Access groups can be used to defi
 ### Sample Terraform code
 {: #iam-access-group-sample}
 
-The following example creates an access gorup that is named `mygroup`. 
+The following example creates an access group that is named `mygroup`. 
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name        = "mygroup"
   description = "New access group"
@@ -74,7 +74,10 @@ Review the output parameters that you can access after your resource is created.
 | `id` | String | The unique identifier of the access group. |
 | `version` | String | The version of the access group. |
 
-{[white-space.md]}
+
+
+
+
 
 ## `ibm_iam_access_group_members`
 {: #iam-access-group-members}
@@ -90,7 +93,7 @@ Multiple `ibm_iam_access_group_members` resources with the same group name produ
 
 The following example creates an IAM access group and a service ID. Then, the service ID and a user with the ID `user@ibm.com` is added to the access group. 
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgroup" {
   name = "testgroup"
 }
@@ -100,9 +103,9 @@ resource "ibm_iam_service_id" "serviceID" {
 }
 
 resource "ibm_iam_access_group_members" "accgroupmem" {
-  access_group_id = "${ibm_iam_access_group.accgroup.id}"
+  access_group_id = ibm_iam_access_group.accgroup.id
   ibm_ids         = ["user@iibm.com"]
-  iam_service_ids = ["${ibm_iam_service_id.serviceID.id}"]
+  iam_service_ids = [ibm_iam_service_id.serviceID.id]
 }
 
 ```
@@ -141,7 +144,10 @@ Review the output parameters that you can access after your resource is created.
 $ terraform import ibm_iam_access_group_members.example AccessGroupId-5391772e-1207-45e8-b032-2a21941c11ab/2018-10-04 06:27:40.041599641 +0000 UTC
 ```
 
-{[white-space.md]}
+
+
+
+
 
 ## `ibm_access_group_policy`
 {: #iam-access-group-policy}
@@ -150,7 +156,7 @@ Create, update, or delete an IAM policy for an IAM access group.
 {: shortdesc}
 
 ### Sample Terraform code
-{: #iam-access-group-policy}
+{: #iam-access-group-policy-sample}
 
 #### Create a policy for all IAM-enabled resources
 {: #all-iam-services}
@@ -158,13 +164,13 @@ Create, update, or delete an IAM policy for an IAM access group.
 The following example creates an IAM policy that grants members of the access group the IAM `Viewer` platform role to all IAM-enabled services. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Viewer"]
 }
 ```
@@ -175,7 +181,7 @@ resource "ibm_iam_access_group_policy" "policy" {
 The following example creates an IAM policy that grants members of the access group the IAM `Operator` platform role and the `Writer` service access role to all IAM-enabled services within a resource group. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
@@ -185,12 +191,13 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Operator", "Writer"]
 
   resources = [{
-    resource_group_id = "${data.ibm_resource_group.group.id}"
-  }]
+    resource_group_id = data.ibm_resource_group.group.id
+  }
+  ]
 }
 ```
 
@@ -200,18 +207,19 @@ resource "ibm_iam_access_group_policy" "policy" {
 The following example creates an IAM policy that grants members of the access group the IAM `Viewer` platform role to all service instances of {{site.data.keyword.cos_full_notm}}. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Viewer"]
 
   resources = [{
     service = "cloud-object-storage"
-  }]
+  }
+  ]
 }
 
 ```
@@ -221,7 +229,7 @@ resource "ibm_iam_access_group_policy" "policy" {
 The following example creates an IAM policy that grants members of the access group the IAM `Viewer` and `Administrator` platform role, and the `Manager` service access role to a single service instance. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
@@ -234,13 +242,14 @@ resource "ibm_resource_instance" "instance" {
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Manager", "Viewer", "Administrator"]
 
   resources = [{
     service              = "kms"
-    resource_instance_id = "${element(split(":",ibm_resource_instance.instance.id),7)}"
-  }]
+    resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
+  }
+  ]
 }
 
 ```
@@ -251,7 +260,7 @@ resource "ibm_iam_access_group_policy" "policy" {
 The following example creates an IAM policy that grants members of the access group the IAM `Viewer` platform role to all instances of {{site.data.keyword.containerlong_notm}} that are created within a specific resource group. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
@@ -261,20 +270,21 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Viewer"]
 
   resources = [{
     service           = "containers-kubernetes"
-    resource_group_id = "${data.ibm_resource_group.group.id}"
-  }]
+    resource_group_id = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
 
 #### Access Group Policy using resource and resource type 
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
@@ -284,20 +294,21 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Administrator"]
 
   resources = [{
     resource_type = "resource-group"
-    resource      = "${data.ibm_resource_group.group.id}"
-  }]
+    resource      = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
 
 #### Access Group Policy using attributes
 
-```hcl
+```
 resource "ibm_iam_access_group" "accgrp" {
   name = "test"
 }
@@ -307,18 +318,19 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_access_group_policy" "policy" {
-  access_group_id = "${ibm_iam_access_group.accgrp.id}"
+  access_group_id = ibm_iam_access_group.accgrp.id
   roles           = ["Viewer"]
 
   resources = [{
     service = "is"
 
-    attributes = {
+    attributes {
       "vpcId" = "*"
     }
 
-    resource_group_id = "${data.ibm_resource_group.group.id}"
-  }]
+    resource_group_id = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
@@ -356,7 +368,7 @@ Review the output parameters that you can access after your resource is created.
 |`version`|String|The version of the access group policy.|
 
 ### Import
-{: #iam-access-group-policy-input}
+{: #iam-access-group-policy-import}
 
 The access group policy can be imported by using the access group ID and the access group policy ID.
 
@@ -364,7 +376,10 @@ The access group policy can be imported by using the access group ID and the acc
 $ terraform import ibm_iam_access_group_policy.example <access_group_ID>/<access_group_policy_ID>
 ```
 
-{[white-space.md]}
+
+
+
+
 
 ## `ibm_authorization_policy`
 {: #iam-auth-policy}
@@ -377,7 +392,7 @@ Create or delete an IAM service authorization policy.
 
 #### Authorization policy between two services
 
-```hcl
+```
 resource "ibm_iam_authorization_policy" "policy" {
   source_service_name = "cloud-object-storage"
   target_service_name = "kms"
@@ -387,7 +402,7 @@ resource "ibm_iam_authorization_policy" "policy" {
 
 #### Authorization policy between two services with specific resource type
 
-```hcl
+```
 resource "ibm_iam_authorization_policy" "policy" {
   source_service_name  = "is"
   source_resource_type = "image"
@@ -398,7 +413,7 @@ resource "ibm_iam_authorization_policy" "policy" {
 
 #### Authorization policy between two specific instances
 
-```hcl
+```
 resource "ibm_resource_instance" "instance1" {
   name     = "mycos"
   service  = "cloud-object-storage"
@@ -437,9 +452,9 @@ Review the input parameters that you can specify for your resource.
 |`target_resource_instance_id`|String|Optional| The target resource instance ID.|
 |`source_resource_type`|String|Optional| The resource type of the source service.|
 |`target_resource_type`|String|Optional|The resource type of the target service.|
-|`source_service_account`|String|Optional|The GUID of the account where the source servie is provisioned.|
+|`source_service_account`|String|Optional|The GUID of the account where the source service is provisioned.|
 
-### Output parametesr
+### Output parameters
 {: #iam-auth-policy-output}
 
 Review the output parameters that you can access after your resource is created. 
@@ -468,7 +483,7 @@ Provides a resource for IAM Service Authorizations policy to be detached. This a
 ### Sample Terraform code
 {: #iam-auth-policy-detach-sample}
 
-```hcl
+```
 resource "ibm_iam_authorization_policy_detach" "policy" {
   authorization_policy_id = "11aa1a11-11a1-11aa-1111-11111a11a11a"
 }
@@ -482,7 +497,7 @@ Review the input parameters that you can specify for your resource.
 
 |Name|Data type|Required/ optional|Description|
 |----|-----------|-----------|---------------------|
-|`authorization_policy_id`|String|Requried|The authorization policy ID.|
+|`authorization_policy_id`|String|Required|The authorization policy ID.|
 
 ### Output parameters
 {: #iam-auth-policy-detach-output}
@@ -490,7 +505,10 @@ Review the input parameters that you can specify for your resource.
 This resource does not provide output parameters. 
 {: shortdesc}
 
-{[white-space.md]}
+
+
+
+
 
 ## `ibm_iam_service_id`
 {: #iam-service-id}
@@ -501,7 +519,7 @@ Create, update, or delete an IAM service ID.
 ### Sample Terraform code
 {: #iam-service-id-sample}
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name        = "test"
   description = "New ServiceID"
@@ -532,7 +550,10 @@ Review the output parameters that you can access after your resource is created.
 |`version` |String| The version of the service ID.|
 |`crn` |String| The CRN of the service ID.|
 
-{[white-space.md]}
+
+
+
+
 
 ## `ibm_iam_service_policy`
 {: #iam-service-policy}
@@ -545,13 +566,13 @@ Create, update, or delete an IAM service policy.
 
 #### Service Policy for All Identity and Access enabled services 
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name = "test"
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = "${ibm_iam_service_id.serviceID.id}"
+  iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Viewer"]
 }
 
@@ -559,24 +580,25 @@ resource "ibm_iam_service_policy" "policy" {
 
 #### Service Policy using service with region
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name = "test"
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = "${ibm_iam_service_id.serviceID.id}"
+  iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Viewer"]
 
   resources = [{
     service = "cloud-object-storage"
-  }]
+  }
+  ]
 }
 
 ```
 #### Service Policy using resource instance 
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name = "test"
 }
@@ -589,20 +611,21 @@ resource "ibm_resource_instance" "instance" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = "${ibm_iam_service_id.serviceID.id}"
+  iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Manager", "Viewer", "Administrator"]
 
   resources = [{
     service              = "kms"
-    resource_instance_id = "${element(split(":",ibm_resource_instance.instance.id),7)}"
-  }]
+    resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
+  }
+  ]
 }
 
 ```
 
 #### Service Policy using resource group 
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name = "test"
 }
@@ -612,20 +635,21 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = "${ibm_iam_service_id.serviceID.id}"
+  iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Viewer"]
 
   resources = [{
     service           = "containers-kubernetes"
-    resource_group_id = "${data.ibm_resource_group.group.id}"
-  }]
+    resource_group_id = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
 
 #### Service Policy using resource and resource type 
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name = "test"
 }
@@ -635,20 +659,21 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = "${ibm_iam_service_id.serviceID.id}"
+  iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Administrator"]
 
   resources = [{
     resource_type = "resource-group"
-    resource      = "${data.ibm_resource_group.group.id}"
-  }]
+    resource      = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
 
 #### Service Policy using attributes 
 
-```hcl
+```
 resource "ibm_iam_service_id" "serviceID" {
   name = "test"
 }
@@ -658,17 +683,18 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = "${ibm_iam_service_id.serviceID.id}"
+  iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Administrator"]
 
   resources = [{
     service = "is"
 
-    attributes = {
+    attributes {
       "vpcId" = "*"
     }
     
-  }]
+  }
+  ]
 }
 
 ```
@@ -714,7 +740,10 @@ The service policy can be imported using the service ID and service policy ID.
 $ terraform import ibm_iam_service_policy.example <service_ID>/<service_policy_ID>
 ```
 
-{[white-space.md]}
+
+
+
+
 
 
 ## `ibm_iam_user_policy`
@@ -727,7 +756,7 @@ Create, update, or delete an IAM user policy. To assign a policy to one user, th
 
 #### User Policy for All Identity and Access enabled services 
 
-```hcl
+```
 resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Viewer"]
@@ -737,20 +766,21 @@ resource "ibm_iam_user_policy" "policy" {
 
 #### User Policy using service with region
 
-```hcl
+```
 resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Viewer"]
 
   resources = [{
     service = "kms"
-  }]
+  }
+  ]
 }
 
 ```
 #### User Policy using resource instance 
 
-```hcl
+```
 resource "ibm_resource_instance" "instance" {
   name     = "test"
   service  = "kms"
@@ -764,15 +794,16 @@ resource "ibm_iam_user_policy" "policy" {
 
   resources = [{
     service              = "kms"
-    resource_instance_id = "${element(split(":",ibm_resource_instance.instance.id),7)}"
-  }]
+    resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
+  }
+  ]
 }
 
 ```
 
 #### User Policy using resource group 
 
-```hcl
+```
 data "ibm_resource_group" "group" {
   name = "default"
 }
@@ -783,15 +814,16 @@ resource "ibm_iam_user_policy" "policy" {
 
   resources = [{
     service           = "containers-kubernetes"
-    resource_group_id = "${data.ibm_resource_group.group.id}"
-  }]
+    resource_group_id = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
 
 #### User Policy using resource and resource type 
 
-```hcl
+```
 data "ibm_resource_group" "group" {
   name = "default"
 }
@@ -802,15 +834,16 @@ resource "ibm_iam_user_policy" "policy" {
 
   resources = [{
     resource_type = "resource-group"
-    resource      = "${data.ibm_resource_group.group.id}"
-  }]
+    resource      = data.ibm_resource_group.group.id
+  }
+  ]
 }
 
 ```
 
 #### User Policy using attributes 
 
-```hcl
+```
 data "ibm_resource_group" "group" {
   name = "default"
 }
@@ -822,11 +855,12 @@ resource "ibm_iam_user_policy" "policy" {
   resources = [{
     service = "is"
 
-    attributes = {
+    attributes {
       "vpcId" = "*"
     }
     
-  }]
+  }
+  ]
 }
 
 ```
@@ -875,7 +909,10 @@ The user policy can be imported by using the IBMid and user policy ID.
 $ terraform import ibm_iam_user_policy.example <ibm_id>/<user_policy_ID>
 ```
 
-{[white-space.md]}
+
+
+
+
 
 ## `ibm_iam_user_invite`
 {: #iam-user-invite}
@@ -888,7 +925,7 @@ Invite, update, or delete users to your IBM Cloud account.
 
 #### Inviting batch of users
 
-```hcl
+```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
 }
@@ -896,7 +933,7 @@ resource "ibm_iam_user_invite" "invite_user" {
 
 #### Inviting batch of users with access groups
 
-```hcl
+```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
     access_groups = ["accessgroup-id-9876543210"]
@@ -905,10 +942,10 @@ resource "ibm_iam_user_invite" "invite_user" {
 
 #### Inviting batch of Users with Classic Infrastructure permissions
 
-```hcl
+```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    classic_infra_roles = {
+    classic_infra_roles {
       permissions = ["PORT_CONTROL", "DATACENTER_ACCESS"]
     }
 }
@@ -916,10 +953,10 @@ resource "ibm_iam_user_invite" "invite_user" {
 
 #### Inviting batch of users with Classic Infrastructure permission set
 
-```hcl
+```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    classic_infra_roles = {
+    classic_infra_roles {
       permission_set = "superuser"
     }
 }
@@ -927,32 +964,35 @@ resource "ibm_iam_user_invite" "invite_user" {
 
 #### Inviting batch of users with user policy for All Identity and Access enabled services
 
-```hcl
+```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy =[{
+    iam_policy = [{
       roles  = ["Viewer"]
-    }]
+    }
+    ]
 }
 ```
 
 #### Inviting batch of users with user policy using service with region
 
-```hcl
+```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy =[{
+    iam_policy = [{
       roles  = ["Viewer"]
       resources = [{
         service = "kms"
-      }]
-    }]
+      }
+      ]
+    }
+    ]
 }
 ```
 
 #### Inviting batch of users with user policy using resource instance
 
-```hcl
+```
 resource "ibm_resource_instance" "instance" {
   name     = "test"
   service  = "kms"
@@ -962,99 +1002,109 @@ resource "ibm_resource_instance" "instance" {
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy =[{
+    iam_policy = [{
       roles  = ["Manager", "Viewer", "Administrator"]
       resources = [{
         service              = "kms"
-        resource_instance_id = "${element(split(":",ibm_resource_instance.instance.id),7)}"
-      }]
-    }]
+        resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
+      }
+      ]
+      }
+      ]
 }
 ```
 
 #### Inviting batch of users with user policy using resource group
 
-```hcl
+```
 data "ibm_resource_group" "group" {
   name = "default"
 }
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy =[{
+    iam_policy = [{
       roles  = ["Manager", "Viewer", "Administrator"]
       resources = [{
         service           = "containers-kubernetes"
-        resource_group_id = "${data.ibm_resource_group.group.id}"
-      }]
-    }]
+        resource_group_id = data.ibm_resource_group.group.id
+      }
+      ]
+    }
+    ]
 }
 ```
 
 #### Inviting batch of users with user policy using resource and resource type
 
-```hcl
+```
 data "ibm_resource_group" "group" {
   name = "default"
 }
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy =[{
+    iam_policy = [{
       roles  = ["Manager", "Viewer", "Administrator"]
       resources = [{
         resource_type = "resource-group"
-        resource      = "${data.ibm_resource_group.group.id}"
-      }]
-    }]
+        resource      = data.ibm_resource_group.group.id
+      }
+      ]
+    }
+    ]
 }
 ```
 
 #### Inviting batch of users with user policy using attributes
 
-```hcl
+```
 data "ibm_resource_group" "group" {
   name = "default"
 }
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy =[{
+    iam_policy = [{
       roles  = ["Manager", "Viewer", "Administrator"]
       resources = [{
         service = "is"
-        attributes = {
+        attributes {
           "vpcId" = "*"
         }
-      }]
-    }]
+        ]
+      }
+      ]
+    }
 }
 ```
 
 #### User invite with access cloud foundry roles
 
-```hcl
+```
 provider "ibm" {}
 
 data "ibm_org" "org" {
-  org = "${var.org}"
+  org = var.org
 }
 
 data "ibm_space" "space" {
-  org   = "${var.org}"
-  space = "${var.space}"
+  org   = var.org
+  space = var.space
 }
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
     cloud_foundry_roles = [{
-      organization_guid = "${data.ibm_org.org.id}"
+      organization_guid = data.ibm_org.org.id
       org_roles = ["Manager", "Auditor"]
       spaces = [{
-          space_guid = "${data.ibm_space.space.id}"
+          space_guid = data.ibm_space.space.id
           space_roles = ["Manager", "Developer"]
-      }]
-    }]
+      }
+      ]
+    }
+    ]
 }
 ```
 
@@ -1067,11 +1117,11 @@ Review the input parameters that you can specify for your resource.
 |Name|Data type|Required/ optional|Description|
 |----|-----------|-----------|---------------------|
 |`users`|List|Required|A comma separated list of user email IDs.|
-|`access_groups`|List|Optional|A comma seperated list of access group IDs.|
-|`classic_infra_roles`|Map|Optional|A nested block describing the classic infrastrucre roles for the inviting users. </br></br>**Note**: If you have an IBM Cloud Lite account, you cannot set classic infrastructure roles. For more information about Lite accounts, see [What's available?](/docs/account?topic=account-accounts#lite-account-features).|
-|`classic_infra_roles.permissions`|List|Optional|A comma seperated list of classic infrastructure permissions.|
+|`access_groups`|List|Optional|A comma separated list of access group IDs.|
+|`classic_infra_roles`|Map|Optional|A nested block describing the classic infrastructure roles for the inviting users. </br></br>**Note**: If you have an IBM Cloud Lite account, you cannot set classic infrastructure roles. For more information about Lite accounts, see [What's available?](/docs/account?topic=account-accounts#lite-account-features).|
+|`classic_infra_roles.permissions`|List|Optional|A comma separated list of classic infrastructure permissions.|
 |`classic_infra_roles.permission_set`|String|Optional|The permission set to be applied. The valid permission sets are `noacess`, `viewonly`, `basicuser`, and `superuser`.|
-|`iam_policy`|List|Optional|A nested block describing the IAM Polocies for invited users. |
+|`iam_policy`|List|Optional|A nested block describing the IAM policies for invited users. |
 |`iam_policy_roles`|List|Required|A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
 |`iam_policy.resources`|List of objects|Optional| A nested block describing the resource of this policy.|
 |`iam_policy.resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|

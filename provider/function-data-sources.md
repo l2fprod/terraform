@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-19"
 
 keywords: terraform provider plugin, terraform functions, terraform openwhisk, terraform function action
 
@@ -42,7 +42,7 @@ Retrieve information about an action.
 The following example retrieves information about the `myaction` action. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_function_action" "nodehello" {
     name = "myaction"		  
 }
@@ -73,11 +73,11 @@ Review the output parameters that you can access after you retrieved your data s
 |`parameters`|List| Parameters passed to the action when the action is invoked, including those set by you or by IBM Cloud Functions.|
 |`limits`|A list of objects| A nested block to describe assigned limits. |
 |`limits.timeout`|Integer|The timeout limit to terminate the action, specified in milliseconds. Default value: `60000`.    |
-|`limits.memory`|Integer|The maximum memory for the action, specified in MBs. Default value: `256`.    |
-|`limits.log_size`|Integer|The maximum log size for the action, specified in MBs. Default value: `10`.|
+|`limits.memory`|Integer|The maximum memory for the action, specified in megabytes. Default value: `256`.    |
+|`limits.log_size`|Integer|The maximum log size for the action, specified in megabytes. Default value: `10`.|
 |`exec`|List of objects|A nested block to describe executable binaries.     |
 |`exec.image`|String|When using the `blackbox` executable, the name of the container image name.    |
-|`exec.init`|String|When using `nodejs`, the optional zipfile reference.    |
+|`exec.init`|String|When using `nodejs`, the optional reference to the compressed file.    |
 |`exec.code`|String|When not using the `blackbox` executable, the code to execute.     |
 |`exec.kind`|String|The type of action. Accepted values: `nodejs`, `blackbox`, `swift`, `sequence`.    |
 |`exec.main`|String|The name of the action entry point (function or fully-qualified method name, when applicable).    |
@@ -97,7 +97,7 @@ Retrieve information about an existing IBM Cloud Functions OpenWhisk package.
 The following example retrieves information about the `mypackage` package. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_function_package" "package" {
   name = "mypackage"
 }
@@ -141,7 +141,7 @@ Retrieve information about an IBM Cloud Functions rule.
 
 The following example retrieves information about the `myrule` rule. 
 
-```hcl
+```
 data "ibm_function_rule" "rule" {
 	name = "myrule"
 }
@@ -186,7 +186,7 @@ Retrieve information about an IBM Cloud Functions trigger.
 
 The following example retrieves information about the `mytrigger` trigger. 
 
-```hcl
+```
 data "ibm_function_trigger" "trigger" {
   name = "mytrigger"		  
 }

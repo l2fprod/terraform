@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-27"
 
 keywords: terraform provider plugin, terraform vpc gen 2, terraform vpc, gen 2 compute terraform, terraform vpc subnet
 
@@ -40,7 +40,7 @@ Retrieve information about a virtual server image for Gen 2 compute.
 The following example retrieves information about the `centos-7.x-amd64` image. 
 {: shortdesc}
 
-```hcl
+```
 
 data "ibm_is_image" "ds_image" {
     name = "centos-7.x-amd64"
@@ -84,7 +84,7 @@ Retrieve information about Gen 2 virtual server images.
 ### Sample Terraform code
 {: #vpc-images-sample}
 
-```hcl
+```
 
 data "ibm_is_images" "ds_images" {
 }
@@ -128,7 +128,7 @@ Retrieve information about a virtual server instance profile.
 The following example retrieves information about the `b-2x8` instance profile. 
 {: shortdesc}
 
-```hcl
+```
 
 data "ibm_is_instance_profile" "profile" {
 	name = "b-2x8"
@@ -168,7 +168,7 @@ Retrieve information about supported virtual server instance profiles.
 ### Sample Terraform code
 {: #vpc-instance-profiles-sample}
 
-```hcl
+```
 
 data "ibm_is_instance_profiles" "ds_instance_profiles" {
 }
@@ -205,7 +205,7 @@ Retrieve information about a VPC Gen 2 Compute region.
 ### Sample Terraform code
 {: #vpc-region-sample}
 
-```hcl
+```
 
 data "ibm_is_region" "ds_region" {
     name = "us-south"
@@ -214,7 +214,7 @@ data "ibm_is_region" "ds_region" {
 ```
 
 ### Input parameters
-{: #vpc-instance-profiles-input}
+{: #vpc-region-input}
 
 Review the input parameters that you can specify for your data source. 
 {: shortdesc}
@@ -225,7 +225,7 @@ Review the input parameters that you can specify for your data source.
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
-{: #vpc-instance-profiles-output}
+{: #vpc-region-output}
 
 Review the output parameters that you can access after you retrieved your data source. 
 {: shortdesc}
@@ -247,7 +247,7 @@ Retrieve information about a VPC Gen 2 SSH key.
 ### Sample Terraform code
 {: #vpc-ssh-key-sample}
 
-```hcl
+```
 
 data "ibm_is_ssh_key" "ds_key" {
     name = "test"
@@ -291,19 +291,19 @@ Retrieve information about a VPC Gen 2 compute subnet.
 ### Sample Terraform code
 {: #vpc-subnet-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_subnet" "testacc_subnet" {
 	name = "test_subnet"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 	zone = "us-south-1"
 	ipv4_cidr_block = "192.168.0.0/1"
 }
 data "ibm_is_subnet" "ds_subnet" {
-	identifier = "${ibm_is_subnet.testacc_subnet.id}"
+	identifier = ibm_is_subnet.testacc_subnet.id
 }
 
 ```
@@ -350,7 +350,7 @@ Retrieve information about a Gen 2 compute VPC.
 ### Sample Terraform code
 {: #vpc-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
     name = "test"
 }
@@ -380,12 +380,15 @@ Review the output parameters that you can access after you retrieved your data s
 
 |Name|Data type|Description|
 |----|-----------|-------------|
-|`status`|String|The status of the VPC.|
-|`default_network_acl`|String| The ID of the default network ACL.|
 |`classic_access`|Boolean|Indicates whether this VPC is connected to Classic Infrastructure.|
-|`resource_group`|String|The resource group ID where the VPC created.|
-|`tags`|Array|Tags associated with the instance.|
+| `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
+|`cse_source_address.address`|String|The IP address of the cloud service endpoint.|
+|`cse_source_address.zone_name`|String|The zone where the cloud service endpoint is located.|
+|`default_network_acl`|String| The ID of the default network ACL.|
 |`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
+|`resource_group`|String|The resource group ID where the VPC created.|
+|`status`|String|The status of the VPC.|
+|`tags`|Array|Tags associated with the instance.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 
@@ -398,7 +401,7 @@ Retrieve information about a Gen 2 compute zone.
 ### Sample Terraform code
 {: #vpc-zone-sample}
 
-```hcl
+```
 
 data "ibm_is_zone" "ds_zone" {
     name = "us-south-1"
@@ -441,7 +444,7 @@ Retrieves information about Gen 2 compute zones.
 ### Sample Terraform code
 {: #vpc-zones-sample}
 
-```hcl
+```
 
 data "ibm_is_zones" "ds_zones" {
     region = "us-south"

@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-02" 
+lastupdated: "2020-03-27" 
 
 keywords: terraform provider plugin, terraform vpc gen 2 resources, terraform vpc generation 2, terraform vpc subnet, terraform vpc generation 2 compute
 
@@ -46,7 +46,7 @@ resource "ibm_is_instance" "testacc_instance" {
   image   = "7eb4e35b-4257-56f8-d7da-326d85452591"
   profile = "b-2x8"
 
-  primary_network_interface = {
+  primary_network_interface {
     port_speed = "1000"
     subnet     = "70be8eae-134c-436e-a86e-04849f84cb34"
   }
@@ -58,7 +58,7 @@ resource "ibm_is_instance" "testacc_instance" {
 
 resource "ibm_is_floating_ip" "testacc_floatingip" {
   name   = "testfip1"
-  target = "${ibm_is_instance.testacc_instance.primary_network_interface.0.id}"
+  target = ibm_is_instance.testacc_instance.primary_network_interface.0.id
 }
 ```
 {: codeblock}
@@ -105,7 +105,7 @@ The following timeouts are defined for this resource.
 Create, update, or cancel an Internet Key Exchange (IKE) policy. 
 {: shortdesc}
 
-IKE is an IPsec (Internet Protocol Security) standard protocol that is used to ensure secure communication over the VPC VPN service. For more information, see [Using VPC with your VPC](/docs/vpc-on-classic-network?topic=vpc-on-classic-network---using-vpn-with-your-vpc). 
+IKE is an IPSec (Internet Protocol Security) standard protocol that is used to ensure secure communication over the VPC VPN service. For more information, see [Using VPC with your VPC](/docs/vpc-on-classic-network?topic=vpc-on-classic-network---using-vpn-with-your-vpc). 
 
 ### Sample Terraform code
 {: #ike-sample}
@@ -129,11 +129,11 @@ Review the input parameters that you can specify for your resource.
 
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
-| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPsec peers. Available options are `md5`, `sha1`, or `sha256`. |
+| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPSec peers. Available options are `md5`, `sha1`, or `sha256`. |
 | `dh_group` | Integer | Required | Enter the Diffie-Hellman group that you want to use for the encryption key. Available options are `2`, `5`, or `14`. |
 | `encryption_algorithm` | String | Required | Enter the algorithm that you want to use to encrypt data. Available options are: `3des`, `aes128`, or `aes256`. | 
 | `ike_version` | Integer | Optional | Enter the IKE protocol version that you want to use. Available options are `1`, or `2`. |
-| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encyrption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 28800 seconds is used. | 
+| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encryption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 28800 seconds is used. | 
 | `name` | String | Required | Enter a name for your IKE policy. | 
 | `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the IKE policy. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the IKE policy is created in the `default` resource group. | 
 
@@ -160,7 +160,7 @@ Create, update, or delete a {{site.data.keyword.vsi_is_short}} instance.
 ### Sample Terraform code
 {: #instance-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
 }
@@ -230,7 +230,7 @@ Review the input parameters that you can specify for your resource.
 |`network_interfaces.security_groups`|List of strings|Optional|A comma separated list of security groups to add to the primary network interface.|
 |`volumes`|List|Optional|A comma separated list of volume IDs to attach to the instance.|
 |`user_data`|String|Optional|User data to transfer to the instance.|
-|`resource_group`|String|Optional|The ID of the resource gorup where you want to create the instance.|
+|`resource_group`|String|Optional|The ID of the resource group where you want to create the instance.|
 |`tags`|Array of strings|Optional|A list of tags that you want to add to your instance. Tags can help you find your instance more easily later.|
 
 ### Output parameters
@@ -242,9 +242,9 @@ Review the output parameters that you can access after your resource is created.
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
 |`id`|String|The ID of the instance.|
-|`memory`|Interger|The amount of memory that is allocated to the instance in gigabytes.|
+|`memory`|Integer|The amount of memory that is allocated to the instance in gigabytes.|
 |`status`|String|The status of the instance.|
-|`vcpu`|List of VCPUs|A list of virtual CPUs that are allocated to the instance.|
+|`vcpu`|List of virtual CPUs|A list of virtual CPUs that are allocated to the instance.|
 |`vcpu.architecture`|String|The architecture of the CPU.|
 |`vcpu.count`|Integer|The number of virtual CPUS that are assigned to the instance.|
 |`gpu`|List of GPUs|A list of GPUs that are assigned to the instance.|
@@ -324,9 +324,9 @@ Review the input parameters that you can specify for your resource.
 
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
-| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPsec peers. Available options are `md5`, `sha1`, or `sha256`. |
+| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPSec peers. Available options are `md5`, `sha1`, or `sha256`. |
 | `encryption_algorithm` | String | Required | Enter the algorithm that you want to use to encrypt data. Available options are: `3des`, `aes128`, or `aes256`. | 
-| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encyrption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 3600 seconds is used. | 
+| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encryption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 3600 seconds is used. | 
 | `name` | String | Required | Enter the name for your IPSec policy. |
 | `pfs` | String | Required | Enter the Perfect Forward Secrecy (PFS) protocol that you want to use during a session. Available options are `disabled`, `group_2`, `group_5`, and `group_14`. | 
 | `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the IPSec policy. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the IPSec policy is created in the `default` resource group. | 
@@ -354,7 +354,7 @@ Create, update, or delete a network access control list (ACL).
 ### Sample Terraform code
 {: #network-acl-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "vpctest"
 }
@@ -462,7 +462,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
 
 resource "ibm_is_public_gateway" "testacc_gateway" {
     name = "test_gateway"
-    vpc = "${ibm_is_vpc.testacc_vpc.id}"
+    vpc = ibm_is_vpc.testacc_vpc.id
     zone = "us-south-1"
 
     //User can configure timeouts
@@ -484,7 +484,7 @@ Review the input parameters that you can specify for your resource.
 | `name` | String| Required | Enter a name for your public gateway. |
 | `vpc` | String | Required | Enter the ID of the VPC, for which you want to create a public gateway. To list available VPCs, run `ibmcloud is vpcs`.  | 
 | `zone` | String | Required | Enter the zone where you want to create the public gateway. To list available zones, run `ibmcloud is zones`. |
-| `resource_group`|String|Optional|Enter the ID of the resource group where you want to create the public gatewat. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the public gateway is created in the `default` resource group. |
+| `resource_group`|String|Optional|Enter the ID of the resource group where you want to create the public gateway. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the public gateway is created in the `default` resource group. |
 | `tags`|Array of strings|Optional|Enter any tags that you want to associate with your VPC. Tags might help you find your VPC more easily after it is created. Separate multiple tags with a comma (`,`). |
 
 ### Output parameters
@@ -506,8 +506,8 @@ Review the output parameters that you can access after your resource is created.
 The following timeouts are defined for this resource. 
 {: shortdesc}
 
-- **create**: The creation of the public gatway is considered `failed` when no response is received for 60 minutes. 
-- **delete**: The deletion of the public gatway is considered `failed` when no response is received for 60 minutes.
+- **create**: The creation of the public gateway is considered `failed` when no response is received for 60 minutes. 
+- **delete**: The deletion of the public gateway is considered `failed` when no response is received for 60 minutes.
 
 ## `ibm_is_route`
 {: #provider-route}
@@ -518,7 +518,7 @@ Create, update, or delete a route for your VPC.
 ### Sample Terraform code
 {: #route-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
 }
@@ -543,10 +543,10 @@ Review the input parameters that you can specify for your resource.
 |`name`|String|Required|The name of the route.|
 |`vpc`|String|Required|The ID of the VPC.|
 |`zone`|String|Required|The name of the VPC zone where you want to create the route.| 
-|`destination`|String|Required|The destionation IP address of the route.|
+|`destination`|String|Required|The destination IP address of the route.|
 |`next_hop`|String|Required|The next hop of the route.|
 
-### Output parametesr
+### Output parameters
 {: #route-output}
 
 Review the output parameters that you can access after your resource is created. 
@@ -611,6 +611,9 @@ Review the output parameters that you can access after your resource is created.
 | `id` | String | The unique identifier of the VPC that you created. |
 | `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the VPC. |
 | `status` | String | The provisioning status of your VPC. | 
+| `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
+|`cse_source_address.address`|String|The IP address of the cloud service endpoint.|
+|`cse_source_address.zone_name`|String|The zone where the cloud service endpoint is located.|
 
 ## `ibm_is_vpc_address_prefix`
 {: #address-prefix}
@@ -621,7 +624,7 @@ Create, update, or delete an IP address prefix.
 ### Sample Terraform code
 {: #address-prefix-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
 }
@@ -629,7 +632,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
 resource "ibm_is_vpc_address_prefix" "testacc_vpc_address_prefix" {
   name = "test"
   zone   = "us-south-1"
-  vpc         = "${ibm_is_vpc.testacc_vpc.id}"
+  vpc         = ibm_is_vpc.testacc_vpc.id
   cidr        = "10.240.0.0/24"
 }
 
@@ -682,14 +685,14 @@ Create, update, or delete a security group for your VPC.
 ### Sample Terraform code
 {: #sec-group-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_security_group" "testacc_security_group" {
 	name = "test"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 }
 ```
 
@@ -750,27 +753,27 @@ Create, update, or delete a security group rule.
 
 In the following example, you create a different type of protocol rules `ALL`, `ICMP`, `UDP` and `TCP`.
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_security_group" "testacc_security_group" {
 	name = "test"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 }
 
 resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "inbound"
 	remote = "127.0.0.1"
  }
  
  resource "ibm_is_security_group_rule" "testacc_security_group_rule_icmp" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "inbound"
 	remote = "127.0.0.1"
-	icmp = {
+	icmp {
 		code = 20
 		type = 30
 	}
@@ -778,20 +781,20 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
  }
 
  resource "ibm_is_security_group_rule" "testacc_security_group_rule_udp" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "inbound"
 	remote = "127.0.0.1"
-	udp = {
+	udp {
 		port_min = 805
 		port_max = 807
 	}
  }
 
  resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "egress"
 	remote = "127.0.0.1"
-	tcp = {
+	tcp {
 		port_min = 8080
 		port_max = 8080
 	}
@@ -807,7 +810,7 @@ Review the input parameters that you can specify for your resource.
 |Name|Data type|Required/ optional|Description|
 |----|-----------|-----------|---------------------|
 |`group`|String|Required|The security group ID.|
-|`direction`|String|Requried|The direction of the traffic either `inbound` or `outbound`.|
+|`direction`|String|Required|The direction of the traffic either `inbound` or `outbound`.|
 |`remote`|String|Optional|Security group id, an IP address, a CIDR block, or a single security group identifier.|
 |`ip_version`|String|Optional|The IP version either `IPv4` or `IPv6`. Default `IPv4`.|
 |`icmp`|List of objects|Optional|A nested block describing the `icmp` protocol of this security group rule.  |
@@ -854,7 +857,7 @@ Create, update, or delete a security group network interface attachment.
 ### Sample Terraform code
 {: #sec-group-netint-sample}
 
-```hcl
+```
 resource "ibm_is_security_group_network_interface_attachment" "sgnic" {
   security_group    = "2d364f0a-a870-42c3-a554-000001352417"
   network_interface = "6d6128aa-badc-45c4-bb0e-7c2c1c47be55"
@@ -884,10 +887,10 @@ Review the output parameters that you can access after your resource is created.
 |`id`|String|The ID of the security group network interface. The ID is composed of `<security_group_id>/<network_interface_id>`.|
 |`instance_network_interface`|String|The instance network interface ID.|
 |`name`|String|The user-defined name for this network interface.|
-|`port_speed`|Integer|The network interface port speed in Mbp.|
-|`primary_ipv4_address`|String|The primvary IPv4 address.|
+|`port_speed`|Integer|The network interface port speed in Mbps.|
+|`primary_ipv4_address`|String|The primary IPv4 address.|
 |`primary_ipv6_address`|String|The primary IPv6 address in compressed notation as specified by RFC 5952.|
-|`secondary_address`|Array|Collection seconary IP addresses.|
+|`secondary_address`|Array|Collection secondary IP addresses.|
 |`status`|String|The status of the volume.|
 |`subnet`|String|The Subnet ID.|
 |`type`|String|The type of this network interface as it relates to a instance.|
@@ -921,14 +924,14 @@ Create, update, or delete a subnet.
 ### Sample Terraform code
 {: #subnet-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_subnet" "testacc_subnet" {
 	name = "test_subnet"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 	zone = "us-south-1"
 	ipv4_cidr_block = "192.168.0.0/1"
 
@@ -1007,7 +1010,7 @@ Create, update, or delete an SSH key. The SSH key is used to access a Gen 2 virt
 ### Sample Terraform code
 {: #ssh-key-sample}
 
-```hcl
+```
 resource "ibm_is_ssh_key" "isExampleKey" {
 	name = "test_key"
 	public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCKVmnMOlHKcZK8tpt3MP1lqOLAcqcJzhsvJcjscgVERRN7/9484SOBJ3HSKxxNG5JN8owAjy5f9yYwcUg+JaUVuytn5Pv3aeYROHGGg+5G346xaq3DAwX6Y5ykr2fvjObgncQBnuU5KHWCECO/4h8uWuwh/kfniXPVjFToc+gnkqA+3RKpAecZhFXwfalQ9mMuYGFxn+fwn8cYEApsJbsEmb0iJwPiZ5hjFC8wREuiTlhPHDgkBLOiycd20op2nXzDbHfCHInquEe/gYxEitALONxm0swBOwJZwlTDOB7C6y2dzlrtxr1L59m7pCkWI4EtTRLvleehBoj3u7jB4usR"
@@ -1029,7 +1032,7 @@ Review the input parameters that you can specify for your resource.
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
-{: #subnet-output}
+{: #ssh-key-output}
 
 Review the output parameters that you can access after your resource is created. 
 {: shortdesc}
@@ -1039,7 +1042,7 @@ Review the output parameters that you can access after your resource is created.
 |`id`|String|The ID of the SSH key.|
 |`fingerprint`| String|The SHA256 fingerprint of the public key.|
 |`length`|String|The length of this key.|
-|`type`|String|The cryptosystem used by this key.|
+|`type`|String|The crypto system used by this key.|
 |`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
@@ -1061,7 +1064,7 @@ Upload, update, or delete a custom virtual server instance image. For more infor
 ### Sample Terraform code
 {: #image-sample}
 
-```hcl
+```
 resource "ibm_is_image" "test_is_images" {
  name                   = "test_image"
  href                   = "test_image_path"
@@ -1109,7 +1112,7 @@ Create, update, or delete a VPC gateway.
 ### Sample Terraform code
 {: #vpn-gateway-sample}
 
-```hcl
+```
 resource "ibm_is_vpn_gateway" "testacc_vpn_gateway" {
   name   = "test"
   subnet = "a1aa111a-a11a-1111-11aa-111a1aa1aaa1"
@@ -1127,7 +1130,7 @@ Review the input parameters that you can specify for your resource.
 |`name`|String|Required|The name of the VPN gateway.|
 |`subnet`|String|Required|The unique identifier for this subnet.|
 |`resource_group`|String|Optional| The resource group where the VPN gateway to be created.|
-|`tags`|List of strings|Optional|A list of tags that you want to add to your VPN gatway. Tags can help you find your VPN gateway more easily later.|
+|`tags`|List of strings|Optional|A list of tags that you want to add to your VPN gateway. Tags can help you find your VPN gateway more easily later.|
 
 ### Output parameters
 {: #vpn-gateway-output}
@@ -1161,7 +1164,7 @@ Create, update, or delete a VPN gateway connection.
 ### Sample Terraform code
 {: #vpn-gateway-connection-sample}
 
-```hcl
+```
 resource "ibm_is_vpn_gateway_connection" "VPNGatewayConnection" {
   name          = "test2"
   vpn_gateway   = ibm_is_vpn_gateway.testacc_VPNGateway2.id
@@ -1230,7 +1233,7 @@ Create, update, or delete a VPC load balancer.
 ### Sample Terraform code
 {: #lb-sample}
 
-```hcl
+```
 resource "ibm_is_lb" "lb" {
   name    = "loadbalancer1"
   subnets = ["04813493-15d6-4150-9948-6cc646cb67f2"]
@@ -1249,7 +1252,7 @@ Review the input parameters that you can specify for your resource.
 |`subnets`|Array|Required|List of the subnets IDs to connect to the load balancer.
 |`type`|String|Optional|The type of the load balancer. Default value `public`. Supported values `public` and `private`.|
 |`resource_group`|String|Optional| The resource group where the load balancer to be created.|
-|`tags`|List of strings|Optional|A list of tags that you want to add to your load balancer. Tags can help you find the load balanacer more easily later. |
+|`tags`|List of strings|Optional|A list of tags that you want to add to your load balancer. Tags can help you find the load balancer more easily later. |
 
 ### Output parameters
 {: #lb-output}
@@ -1296,7 +1299,7 @@ When provisioning the load balancer listener along with load balancer pool or po
 ### Sample Terraform code
 {: #lb-listener-sample}
 
-```hcl
+```
 resource "ibm_is_lb_listener" "testacc_lb_listener" {
   lb       = "8898e627-f61f-4ac8-be85-9db9d8bfd345"
   port     = "9080"
@@ -1380,7 +1383,7 @@ Create, update, or delete a VPC load balancer pool.
 ### Sample Terraform code
 {: #lb-pool-sample}
 
-```hcl
+```
 resource "ibm_is_lb_pool" "testacc_pool" {
   name           = "test_pool"
   lb             = "addfd-gg4r4-12345"
@@ -1428,7 +1431,7 @@ Review the output parameters that you can access after your resource is created.
 ### Import
 {: #lb-pool-import}
 
-`ibm_is_lb_pool` can be imported byh using the load balancer ID and pool ID. 
+`ibm_is_lb_pool` can be imported by using the load balancer ID and pool ID. 
 
 ```
 terraform import ibm_is_lb_pool.example <loadbalancer_ID>/<pool_ID>
@@ -1453,7 +1456,7 @@ Create, update, or delete a pool member for a VPC load balancer.
 ### Sample Terraform code
 {: #lb-pool-member-sample}
 
-```hcl
+```
 resource "ibm_is_lb_pool_member" "testacc_lb_mem" {
   lb             = "daac2b08-fe8a-443b-9b06-1cef79922dce"
   pool           = "f087d3bd-3da8-452d-9ce4-c1010c9fec04"
@@ -1520,7 +1523,7 @@ Create, update, or delete a VPC block storage volume.
 
 The following example creates a volume with 10 IOPS. 
 
-```hcl
+```
 resource "ibm_is_volume" "testacc_volume" {
   name     = "test_volume"
   profile  = "10iops-tier"
@@ -1533,7 +1536,7 @@ resource "ibm_is_volume" "testacc_volume" {
 
 The following example creates a custom volume. 
 
-```hcl
+```
 resource "ibm_is_volume" "testacc_volume" {
   name     = "test_volume"
   profile  = "custom"

@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-27"
 
 keywords: terraform provider plugin, terraform data source cos, terraform data source object storage, terraform get cos bucket, terraform get object storage resources
 
@@ -44,14 +44,14 @@ To create a bucket, you must provision an {{site.data.keyword.cos_full_notm}} in
 The following example creates an instance of {{site.data.keyword.cos_full_notm}}. Then, one bucket with a `flex` profile and one bucket with the `cold` profile are created for the service instance. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_resource_group" "cos_group" {
   name = "cos-resource-group"
 }
 
 resource "ibm_resource_instance" "cos_instance" {
   name              = "cos-instance"
-  resource_group_id = "${data.ibm_resource_group.cos_group.id}"
+  resource_group_id = data.ibm_resource_group.cos_group.id
   service           = "cloud-object-storage"
   plan              = "standard"
   location          = "global"
@@ -59,21 +59,21 @@ resource "ibm_resource_instance" "cos_instance" {
 
 resource "ibm_cos_bucket" "standard-ams03" {
   bucket_name = "a-standard-bucket-at-ams"
-  resource_instance_id = "${ibm_resource_instance.cos_instance.id}"
+  resource_instance_id = ibm_resource_instance.cos_instance.id
   single_site_location = "ams03"
   storage_class = "standard"
 }
 
 resource "ibm_cos_bucket" "flex-us-south" {
   bucket_name = "a-flex-bucket-at-us-south"
-  resource_instance_id = "${ibm_resource_instance.cos_instance.id}"
+  resource_instance_id = ibm_resource_instance.cos_instance.id
   region_location = "us-south"
   storage_class = "flex"
 }
 
 resource "ibm_cos_bucket" "cold-ap" {
   bucket_name = "a-cold-bucket-at-ap"
-  resource_instance_id = "${ibm_resource_instance.cos_instance.id}"
+  resource_instance_id = ibm_resource_instance.cos_instance.id
   cross_region_location = "ap"
   storage_class = "cold"
 }
@@ -93,7 +93,7 @@ Review the input parameters that you can specify for your resource.
 | `resource_instance_id` | String | Required | The ID of the {{site.data.keyword.cos_full_notm}} service instance for which you want to create a bucket. |
 | `region_location` | String | Optional | The location of a regional bucket. Supported values are `au-syd`, `eu-de`, `eu-gb`, `jp-tok`, `us-east`, `us-south`. If you set this parameter, do not set `single_site_location` or `cross_region_location` at the same time. 
 | `single_site_location` | String | Optional | The location for a single site bucket. Supported values are: `ams03`, `che01`, `hkg02`, `mel01`, `mex01`, `mil01`, `mon01`, `osl01`, `sjc04`, `sao01`, `seo01`, and `tor01`. If you set this parameter, do not set `region_location` or `cross_region_location` at the same time. 
-| `storage_class` | String | Required | The storage class that you want to use for the bucket. Supported values are `standard`, `vault`, `cold`, and `flex`. For more information about storage classes, see [Use storage classes](/docs/services/cloud-object-storage?topic=cloud-object-storage-classes). 
+| `storage_class` | String | Required | The storage class that you want to use for the bucket. Supported values are `standard`, `vault`, `cold`, `flex`, and `smart`. For more information about storage classes, see [Use storage classes](/docs/services/cloud-object-storage?topic=cloud-object-storage-classes). 
 
 Make sure that you set `cross_region_location`, `region_location`, or `single_site_location` to specify that location where you want to create the bucket. 
 {: note}

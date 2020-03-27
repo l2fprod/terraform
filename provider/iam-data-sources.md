@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-26"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
@@ -38,7 +38,7 @@ Retrieve information about your IAM access token. You can use this token to auth
 ### Sample Terraform code
 {: #iam-token-sample}
 
-```hcl
+```
 data "ibm_iam_auth_token" "tokendata" {}
 ```
 
@@ -50,6 +50,7 @@ No input parameters are required for this resource.
 {: shortdesc}
 
 ### Output parameters
+{: #iam-token-output}
 
 Review the output parameters that you can access after you retrieved your data source.
 
@@ -72,7 +73,7 @@ Retrieve information about an IAM service ID.
 
 The following example retrieves information about the `myservice` service. 
 
-```hcl
+```
 data "ibm_iam_service_id" "ds_serviceID" {
   name = "myservice"
 }
@@ -114,7 +115,7 @@ Retrieve information about an IAM service policy.
 ### Sample Terraform code
 {: #iam-service-policy-sample}
 
-```hcl
+```
 resource "ibm_iam_service_policy" "policy" {
   iam_service_id = "ServiceId-a1aaa111-1111-111a-1a11-a11a1a11a11a"
   roles        = ["Manager", "Viewer", "Administrator"]
@@ -122,12 +123,13 @@ resource "ibm_iam_service_policy" "policy" {
   resources = [{
     service              = "kms"
     region               = "us-south"
-    resource_instance_id = "${element(split(":",ibm_resource_instance.instance.id),7)}"
-  }]
+    resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
+  }
+  ]
 }
 
 data "ibm_iam_service_policy" "testacc_ds_service_policy" {
-  iam_service_id = "${ibm_iam_service_policy.policy.iam_service_id}"
+  iam_service_id = ibm_iam_service_policy.policy.iam_service_id
 }
 
 ```
@@ -171,7 +173,7 @@ Retrieve information about an IAM user policy.
 ### Sample Terraform code
 {: #iam-user-policy-sample}
 
-```hcl
+```
 resource "ibm_iam_user_policy" "policy" {
   ibm_id = "user@us.ibm.com"
   roles  = ["Viewer"]
@@ -179,16 +181,18 @@ resource "ibm_iam_user_policy" "policy" {
   resources = [{
     service = "kms"
     region  = "us-south"
-  }]
+  }
+  ]
 }
 
 data "ibm_iam_user_policy" "testacc_ds_user_policy" {
-  ibm_id = "${ibm_iam_user_policy.policy.ibm_id}"
+  ibm_id = ibm_iam_user_policy.policy.ibm_id
 }
 
 ```
 
 ### Input parameters
+{: #iam-user-policy-input}
 
 Review the input parameters that you can specify for your data source.
 
@@ -197,7 +201,9 @@ Review the input parameters that you can specify for your data source.
 |`ibm_id`|String|Required| The IBMid or email address of the user.|
 {: caption="Table. Available input parameters" caption-side="top"}
 
+
 ### Output parameters
+{: #iam-user-policy-output}
 
 The following attributes are exported:
 

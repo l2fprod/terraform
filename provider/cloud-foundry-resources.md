@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-26"
 
 keywords: terraform provider plugin, terraform cloud foundry, terraform cf resources, terraform cf org, terraform cf space
 
@@ -42,7 +42,7 @@ Create, update, or delete a Cloud Foundry app.
 The following example creates the `my-app` Node.js Cloud Foundry app. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_space" "space" {
   org   = "example.com"
   space = "dev"
@@ -50,7 +50,7 @@ data "ibm_space" "space" {
 
 resource "ibm_app" "app" {
   name                 = "my-app"
-  space_guid           = "${data.ibm_space.space.id}"
+  space_guid           = data.ibm_space.space.id
   app_path             = "hello.zip"
   wait_timeout_minutes = 90
   buildpack            = "sdk-for-nodejs"
@@ -110,14 +110,14 @@ Create, update, or delete a private domain for your Cloud Foundry app.
 The following example creates the `example.com` private domain. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_org" "orgdata" {
   org = "myorg"
 }
 
 resource "ibm_app_domain_private" "domain" {
   name     = "example.com"
-  org_guid = "${data.ibm_org.orgdata.id}"
+  org_guid = data.ibm_org.orgdata.id
   tags     = ["tag1", "tag2"]
 }
 ```
@@ -161,7 +161,7 @@ Create, update, or delete a shared domain for your Cloud Foundry app.
 The following example creates the `example.com` shared domain. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_app_domain_shared" "domain" {
   name              = "example.com"
   router_group_guid = "3hG5jkjk4k34JH5666"
@@ -206,7 +206,7 @@ Create, update, or delete a route for your Cloud Foundry app.
 The following example creates a route for the `example.com` shared domain. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_space" "spacedata" {
   space = "space"
   org   = "myorg"
@@ -217,8 +217,8 @@ data "ibm_app_domain_shared" "domain" {
 }
 
 resource "ibm_app_route" "route" {
-  domain_guid = "${data.ibm_app_domain_shared.domain.id}"
-  space_guid  = "${data.ibm_space.spacedata.id}"
+  domain_guid = data.ibm_app_domain_shared.domain.id
+  space_guid  = data.ibm_space.spacedata.id
   host        = "myhost"
   path        = "/app"
 }
@@ -264,7 +264,7 @@ Create, update, or delete a Cloud Foundry organization.
 The following example create the `myorg` Cloud Foundry organization and assigns users access to the organization. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_org" "testacc_org" {
     name = "myorg"
     org_quota_definition_guid = "myorgquotaguid"
@@ -330,7 +330,7 @@ Create, update, or delete a Cloud Foundry service instance.
 The following example creates the `speech_to_text` Cloud Foundry service instance. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_space" "spacedata" {
   space = "prod"
   org   = "myorg"
@@ -338,7 +338,7 @@ data "ibm_space" "spacedata" {
 
 resource "ibm_service_instance" "service_instance" {
   name       = "myspeech"
-  space_guid = "${data.ibm_space.spacedata.id}"
+  space_guid = data.ibm_space.spacedata.id
   service    = "speech_to_text"
   plan       = "lite"
   tags       = ["cluster-service", "cluster-bind"]
@@ -389,14 +389,14 @@ Create, update, or delete a service key for your Cloud Foundry service instance.
 The following example creates the `mycloudantkey` service key. 
 {: shortdesc}
 
-```hcl
+```
 data "ibm_service_instance" "service_instance" {
   name = "mycloudant"
 }
 
 resource "ibm_service_key" "serviceKey" {
   name                  = "mycloudantkey"
-  service_instance_guid = "${data.ibm_service_instance.service_instance.id}"
+  service_instance_guid = data.ibm_service_instance.service_instance.id
 }
 ```
 
@@ -433,12 +433,12 @@ Create, update, or delete a Cloud Foundry space.
 {: shortdesc}
 
 ### Sample Terraform code
-{: #cf-space}
+{: #cf-space-sample}
 
 The following example creates the `myspace` Cloud Foundry space. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_space" "space" {
   name        = "myspace"
   org         = "myorg"

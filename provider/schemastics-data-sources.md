@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-26"
 
 keywords: terraform provider plugin, terraform schematics data source, terraform schematics workspace 
 
@@ -39,7 +39,7 @@ Retrieve information about a Schematics workspace.
 The following example retrieves information about the `my-workspace-id` workspace.  
 {: shortdesc}
 
-```hcl
+```
 data "ibm_schematics_workspace" "test" {
   workspace_id = "my-workspace-id"
 }
@@ -79,7 +79,7 @@ Review the output parameters that you can access after you retrieved your data s
 ## `ibm_schematics_output`
 {: #schematics-output}
 
-Retrieve information about the Terraform output values for a Schematics workspace.
+Retrieve state information for a Schematics workspace. For detailed information about how to use this data source, see [Accessing Terraform state information across workspaces](/docs/schematics?topic=schematics-remote-state). 
 {: shortdesc}
 
 ### Sample Terraform code
@@ -88,10 +88,10 @@ Retrieve information about the Terraform output values for a Schematics workspac
 The following example retrieves information about the `my-workspace-id` workspace.  
 {: shortdesc}
 
-```hcl
+```
 data "ibm_schematics_output" "test" {
-  workspace_id = "my-worspace-id"
-  template_id= "my-template-id"
+  workspace_id = "<schematics_workspace_id>"
+  template_id= data.ibm_schematics_workspace.vpc.template_id.0
 }
 ```
 
@@ -104,7 +104,7 @@ Review the input parameters that you can specify for your data source.
 |Name|Data type| Required/ optional|Description|
 |----|-----------|--------|----------------------|
 |`workspace_id`|String|Required|The ID of the Schematics workspace. You can retrieve this information by running `ibmcloud terraform workspace list`. |
-|`template_id`|String|Required|The of the template that the workspace uses. |
+|`template_id`|String|Required|The ID of the template that the workspace uses. This value must be set to `data.ibm_schematics_workspace.vpc.template_id.0`. |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 
@@ -132,7 +132,7 @@ Retrieve information about the Terraform state file for a Schematics workspace.
 The following example retrieves information about the `my-workspace-id` workspace.  
 {: shortdesc}
 
-```hcl
+```
 data "ibm_schematics_state" "test" {
   workspace_id = "my-worspace-id"
   template_id= "my-template-id"
@@ -140,7 +140,7 @@ data "ibm_schematics_state" "test" {
 ```
 
 ### Input parameters
-{: #schematics-output-input}
+{: #schematics-state-input}
 
 Review the input parameters that you can specify for your data source. 
 {: shortdesc}
@@ -153,7 +153,7 @@ Review the input parameters that you can specify for your data source.
 
 
 ### Output parameters
-{: #schematics-output-output}
+{: #schematics-state-output}
 
 Review the output parameters that you can access after you retrieved your data source. 
 {: shortdesc}

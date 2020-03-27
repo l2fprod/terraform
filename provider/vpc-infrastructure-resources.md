@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-02"
+lastupdated: "2020-03-27"
 
 keywords: terraform provider plugin, terraform vpc gen 1, terraform vpc, terraform generation 1 compute, terraform vpc resources
 
@@ -46,7 +46,7 @@ resource "ibm_is_instance" "testacc_instance" {
   image   = "7eb4e35b-4257-56f8-d7da-326d85452591"
   profile = "b-2x8"
 
-  primary_network_interface = {
+  primary_network_interface {
     port_speed = "1000"
     subnet     = "70be8eae-134c-436e-a86e-04849f84cb34"
   }
@@ -58,7 +58,7 @@ resource "ibm_is_instance" "testacc_instance" {
 
 resource "ibm_is_floating_ip" "testacc_floatingip" {
   name   = "testfip1"
-  target = "${ibm_is_instance.testacc_instance.primary_network_interface.0.id}"
+  target = ibm_is_instance.testacc_instance.primary_network_interface.0.id
 }
 ```
 {: codeblock}
@@ -160,7 +160,7 @@ Create, update, or delete a {{site.data.keyword.vsi_is_short}} instance.
 ### Sample Terraform code
 {: #instance-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
 }
@@ -359,7 +359,7 @@ Create, update, or delete a network access control list (ACL).
 
 The following example creates a network ACL resource that uses the TCP/ UDP protocol. 
 
-```hcl
+```
 resource "ibm_is_network_acl" "isExampleACL" {
   name = "is-example-acl"
   rules {
@@ -395,7 +395,7 @@ resource "ibm_is_network_acl" "isExampleACL" {
 
 The following example creates a network ACL that uses the ICMP protocol. 
 
-```hcl
+```
 resource "ibm_is_network_acl" "isExampleACL" {
   name = "is-example-acl"
   rules {
@@ -498,7 +498,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
 
 resource "ibm_is_public_gateway" "testacc_gateway" {
     name = "test_gateway"
-    vpc = "${ibm_is_vpc.testacc_vpc.id}"
+    vpc = ibm_is_vpc.testacc_vpc.id
     zone = "us-south-1"
 
     //User can configure timeouts
@@ -554,7 +554,7 @@ Create, update, or delete a route for your VPC.
 ### Sample Terraform code
 {: #route-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
 }
@@ -647,6 +647,9 @@ Review the output parameters that you can access after your resource is created.
 | `id` | String | The unique identifier of the VPC that you created. |
 | `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the VPC. |
 | `status` | String | The provisioning status of your VPC. | 
+| `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
+|`cse_source_address.address`|String|The IP address of the cloud service endpoint.|
+|`cse_source_address.zone_name`|String|The zone where the cloud service endpoint is located.|
 
 ## `ibm_is_vpc_address_prefix`
 {: #address-prefix}
@@ -657,7 +660,7 @@ Create, update, or delete an IP address prefix.
 ### Sample Terraform code
 {: #address-prefix-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
 }
@@ -665,7 +668,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
 resource "ibm_is_vpc_address_prefix" "testacc_vpc_address_prefix" {
   name = "test"
   zone   = "us-south-1"
-  vpc         = "${ibm_is_vpc.testacc_vpc.id}"
+  vpc         = ibm_is_vpc.testacc_vpc.id
   cidr        = "10.240.0.0/24"
 }
 
@@ -718,14 +721,14 @@ Create, update, or delete a security group for your VPC.
 ### Sample Terraform code
 {: #sec-group-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_security_group" "testacc_security_group" {
 	name = "test"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 }
 ```
 
@@ -786,27 +789,27 @@ Create, update, or delete a security group rule.
 
 In the following example, you create a different type of protocol rules `ALL`, `ICMP`, `UDP` and `TCP`.
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_security_group" "testacc_security_group" {
 	name = "test"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 }
 
 resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "inbound"
 	remote = "127.0.0.1"
  }
  
  resource "ibm_is_security_group_rule" "testacc_security_group_rule_icmp" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "inbound"
 	remote = "127.0.0.1"
-	icmp = {
+	icmp {
 		code = 20
 		type = 30
 	}
@@ -814,20 +817,21 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
  }
 
  resource "ibm_is_security_group_rule" "testacc_security_group_rule_udp" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
+	group = ibm_is_security_group.testacc_security_group.id
 	direction = "inbound"
 	remote = "127.0.0.1"
-	udp = {
+	udp {
 		port_min = 805
 		port_max = 807
 	}
  }
 
  resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
-	group = "${ibm_is_security_group.testacc_security_group.id}"
-	direction = "egress"
+	group = ibm_is_security_group.testacc_security_group.id
+	direction = "outbound"
+
 	remote = "127.0.0.1"
-	tcp = {
+	tcp {
 		port_min = 8080
 		port_max = 8080
 	}
@@ -890,7 +894,7 @@ Create, update, or delete a security group network interface attachment.
 ### Sample Terraform code
 {: #sec-group-netint-sample}
 
-```hcl
+```
 resource "ibm_is_security_group_network_interface_attachment" "sgnic" {
   security_group    = "2d364f0a-a870-42c3-a554-000001352417"
   network_interface = "6d6128aa-badc-45c4-bb0e-7c2c1c47be55"
@@ -957,14 +961,14 @@ Create, update, or delete a subnet.
 ### Sample Terraform code
 {: #subnet-sample}
 
-```hcl
+```
 resource "ibm_is_vpc" "testacc_vpc" {
 	name = "test"
 }
 
 resource "ibm_is_subnet" "testacc_subnet" {
 	name = "test_subnet"
-	vpc = "${ibm_is_vpc.testacc_vpc.id}"
+	vpc = ibm_is_vpc.testacc_vpc.id
 	zone = "us-south-1"
 	ipv4_cidr_block = "192.168.0.0/1"
 
@@ -1043,7 +1047,7 @@ Create, update, or delete an SSH key. The SSH key is used to access a Gen 2 virt
 ### Sample Terraform code
 {: #ssh-key-sample}
 
-```hcl
+```
 resource "ibm_is_ssh_key" "isExampleKey" {
 	name = "test_key"
 	public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCKVmnMOlHKcZK8tpt3MP1lqOLAcqcJzhsvJcjscgVERRN7/9484SOBJ3HSKxxNG5JN8owAjy5f9yYwcUg+JaUVuytn5Pv3aeYROHGGg+5G346xaq3DAwX6Y5ykr2fvjObgncQBnuU5KHWCECO/4h8uWuwh/kfniXPVjFToc+gnkqA+3RKpAecZhFXwfalQ9mMuYGFxn+fwn8cYEApsJbsEmb0iJwPiZ5hjFC8wREuiTlhPHDgkBLOiycd20op2nXzDbHfCHInquEe/gYxEitALONxm0swBOwJZwlTDOB7C6y2dzlrtxr1L59m7pCkWI4EtTRLvleehBoj3u7jB4usR"
@@ -1065,7 +1069,7 @@ Review the input parameters that you can specify for your resource.
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
-{: #subnet-output}
+{: #ssh-key-output}
 
 Review the output parameters that you can access after your resource is created. 
 {: shortdesc}
@@ -1097,7 +1101,7 @@ Upload, update, or delete a custom virtual server instance image. For more infor
 ### Sample Terraform code
 {: #image-sample}
 
-```hcl
+```
 resource "ibm_is_image" "test_is_images" {
  name                   = "test_image"
  href                   = "test_image_path"
@@ -1145,7 +1149,7 @@ Create, update, or delete a VPC gateway.
 ### Sample Terraform code
 {: #vpn-gateway-sample}
 
-```hcl
+```
 resource "ibm_is_vpn_gateway" "testacc_vpn_gateway" {
   name   = "test"
   subnet = "a1aa111a-a11a-1111-11aa-111a1aa1aaa1"
@@ -1197,7 +1201,7 @@ Create, update, or delete a VPN gateway connection.
 ### Sample Terraform code
 {: #vpn-gateway-connection-sample}
 
-```hcl
+```
 resource "ibm_is_vpn_gateway_connection" "VPNGatewayConnection" {
   name          = "test2"
   vpn_gateway   = ibm_is_vpn_gateway.testacc_VPNGateway2.id
@@ -1266,7 +1270,7 @@ Create, update, or delete a VPC load balancer.
 ### Sample Terraform code
 {: #lb-sample}
 
-```hcl
+```
 resource "ibm_is_lb" "lb" {
   name    = "loadbalancer1"
   subnets = ["04813493-15d6-4150-9948-6cc646cb67f2"]
@@ -1332,7 +1336,7 @@ When provisioning the load balancer listener along with load balancer pool or po
 ### Sample Terraform code
 {: #lb-listener-sample}
 
-```hcl
+```
 resource "ibm_is_lb_listener" "testacc_lb_listener" {
   lb       = "8898e627-f61f-4ac8-be85-9db9d8bfd345"
   port     = "9080"
@@ -1416,7 +1420,7 @@ Create, update, or delete a VPC load balancer pool.
 ### Sample Terraform code
 {: #lb-pool-sample}
 
-```hcl
+```
 resource "ibm_is_lb_pool" "testacc_pool" {
   name           = "test_pool"
   lb             = "addfd-gg4r4-12345"
@@ -1489,7 +1493,7 @@ Create, update, or delete a pool member for a VPC load balancer.
 ### Sample Terraform code
 {: #lb-pool-member-sample}
 
-```hcl
+```
 resource "ibm_is_lb_pool_member" "testacc_lb_mem" {
   lb             = "daac2b08-fe8a-443b-9b06-1cef79922dce"
   pool           = "f087d3bd-3da8-452d-9ce4-c1010c9fec04"
@@ -1556,7 +1560,7 @@ Create, update, or delete a VPC block storage volume.
 
 The following example creates a volume with 10 IOPS. 
 
-```hcl
+```
 resource "ibm_is_volume" "testacc_volume" {
   name     = "test_volume"
   profile  = "10iops-tier"
@@ -1569,7 +1573,7 @@ resource "ibm_is_volume" "testacc_volume" {
 
 The following example creates a custom volume. 
 
-```hcl
+```
 resource "ibm_is_volume" "testacc_volume" {
   name     = "test_volume"
   profile  = "custom"

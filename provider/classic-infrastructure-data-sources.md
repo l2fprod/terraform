@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-02"
+lastupdated: "2020-03-26"
 
 keywords: terraform provider plugin, terraform classic infrastructure, terraform classic, terraform softlayer, terraform sl, terraform vsi, terraform bare metal server
 
@@ -38,7 +38,7 @@ Retrieve information about a classic {{site.data.keyword.cloud_notm}} bare metal
 ### Sample Terraform code
 {: #classic-bare-metal-sample}
 
-```hcl
+```
 data "ibm_compute_bare_metal" "bare_metal" {
   hostname    = "jumpbox"
   domain      = "mydomain.com"
@@ -114,14 +114,14 @@ Retrieve information about an image template that you can use for a classic bare
 The following example shows how you can retrieve the ID of an image template and reference this ID in your `ibm_compute_vm_instance` resource.  
 {: shortdesc}
 
-```hcl
+```
 data "ibm_compute_image_template" "img_tpl" {
     name = "myimage"
 }
 
 resource "ibm_compute_vm_instance" "vm1" {
     ...
-    image_id = "${data.ibm_compute_image_template.img_tpl.id}"
+    image_id = data.ibm_compute_image_template.img_tpl.id
     ...
 }
 ```
@@ -157,7 +157,7 @@ Retrieve information about a placement group.
 ### Sample Terraform code
 {: #classic-placement-group-sample}
 
-```hcl
+```
 data "ibm_compute_placement_group" "group" {
     name = "mygroup"
 }
@@ -200,7 +200,7 @@ Retrieve information about an SSH key.
 ### Sample Terraform code
 {: #classic-ssh-key-sample}
 
-```hcl
+```
 data "ibm_compute_ssh_key" "public_key" {
     label = "mykey"
 }
@@ -240,7 +240,7 @@ Retrieve information about an existing virtual machine.
 ### Sample Terraform code
 {: #classic-vm-sample}
 
-```hcl
+```
 data "ibm_compute_vm_instance" "vm_instance" {
   hostname    = "myhost"
   domain      = "mydomain.com"
@@ -300,7 +300,7 @@ Retrieve information about a domain.
 ### Sample Terraform code
 {: #classic-domain-sample}
 
-```hcl
+```
 data "ibm_dns_domain" "domain_id" {
     name = "mydomain.com"
 }
@@ -335,7 +335,7 @@ Retrieve information about a domain registration from the IBM DNS Domain Registr
 ### Sample Terraform code
 {: classic-domain-reg-sample}
 
-```hcl
+```
 data "ibm_dns_domain_registration" "dnstestdomain" {
     name = "mytestdomain.com"
 }
@@ -371,7 +371,7 @@ Retrieve information about a DNS secondary zone.
 ### Sample Terraform code
 {: #classic-dns-secondary-sample}
 
-```hcl
+```
 data "ibm_dns_secondary" "secondary_id" {
     name = "test-secondary.com"
 }
@@ -411,26 +411,25 @@ Retrieve information about a classic {{site.data.keyword.cloud_notm}} load balan
 ### Sample Terraform code
 {: #classic-lbaas-sample}
 
-```hcl
+```
 resource "ibm_lbaas" "lbaas" {
   name        = "test"
   description = "updated desc-used for terraform uat"
   subnets     = [1878778]
   datacenter  = "dal09"
 
-  protocols = [{
+  protocols {
     "frontend_protocol" = "HTTP"
     "frontend_port" = 80
     "backend_protocol" = "HTTP"
     "backend_port" = 80
     "load_balancing_method" = "round_robin"
-  }]
+  }
 
-  server_instances = [{
-    "private_ip_address" = "10.1.11.11",
+  server_instances {
+    "private_ip_address" = "10.1.11.11"
   },
-  ]
-}
+
     data "ibm_lbaas" "tfacc_lbaas" {
     name = "test"
 }
@@ -499,7 +498,7 @@ Retrieve information about a VLAN.
 ### Sample Terraform code
 {: #classic-vlan-sample}
 
-```hcl
+```
 data "ibm_network_vlan" "vlan_foo" {
     name = "myvlan"
 }
@@ -552,7 +551,7 @@ Retrieve information about a security group.
 The following example retrieves information about the `allow_ssh` security group.
 {: shortdesc}
 
-```hcl
+```
 data "ibm_security_group" "allow_ssh" {
     name = "allow_ssh"
 }

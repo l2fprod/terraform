@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-02-18"
+lastupdated: "2020-03-26"
 
 keywords: terraform provider plugin, terraform functions, terraform openwhisk, terraform function action, terraform serverless
 
@@ -46,13 +46,13 @@ Create, update, or delete a {{site.data.keyword.openwhisk_short}} action. Action
 The following example creates a JavaScript action. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_function_action" "nodehello" {
   name = "myaction"
 
-  exec = {
+  exec {
     kind = "nodejs:6"
-    code = "${file("hellonode.js")}"
+    code = file("hellonode.js")
   }
 }
 
@@ -63,13 +63,13 @@ resource "ibm_function_action" "nodehello" {
 The following example shows how to pass parameters to an action. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_function_action" "nodehellowithparameter" {
   name = "hellonodeparam"
 
-  exec = {
+  exec {
     kind = "nodejs:6"
-    code = "${file("hellonodewithparameter.js")}"
+    code = file("hellonodewithparameter.js")
   }
 
   user_defined_parameters = <<EOF
@@ -80,8 +80,6 @@ resource "ibm_function_action" "nodehellowithparameter" {
     }
         ]
         EOF
-}
-
 ```
 
 #### Packaging an action as a Node.js module
@@ -90,13 +88,13 @@ resource "ibm_function_action" "nodehellowithparameter" {
 The following example packages a JavaScript action to a module. 
 {: shortdesc}
 
-``` hcl
+``` 
 resource "ibm_function_action" "nodezip" {
   name = "nodezip"
 
-  exec = {
+  exec {
     kind = "nodejs:6"
-    code = "${base64encode("${file("nodeaction.zip")}")}"
+    code = base64encode(file("nodeaction.zip"))
   }
 }
 
@@ -108,11 +106,11 @@ resource "ibm_function_action" "nodezip" {
 The following example creates an action sequence. 
 {: shortdesc}
 
-``` hcl
+``` 
 resource "ibm_function_action" "swifthello" {
   name = "actionsequence"
 
-  exec = {
+  exec {
     kind = "sequence"
     components = ["/whisk.system/utils/split","/whisk.system/utils/sort"]
   }
@@ -126,13 +124,13 @@ resource "ibm_function_action" "swifthello" {
 The following example creates a Docker action. 
 {: shortdesc}
 
-``` hcl
+``` 
 resource "ibm_function_action" "swifthello" {
   name = "dockeraction"
 
-  exec = {
+  exec {
     kind = "janesmith/blackboxdemo"
-    image = "${file("helloSwift.swift")}"
+    image = file("helloSwift.swift")
   }
 }
 
@@ -155,9 +153,9 @@ Review the input parameters that you can specify for your resource.
 |`exec.image`|String|Optional| When using the `blackbox` executable, the name of the container image name.        **NOTE**: Conflicts with `exec.components`, `exec.code`.    |
 |`exec.init`|String|Optional| When using `nodejs`, the optional zipfile reference.        **NOTE**: Conflicts with `exec.components`, `exec.image`.    |
 |`exec.code`|String|Optional| When not using the `blackbox` executable, the code to execute.       **NOTE**: Conflicts with `exec.components`, `exec.image`.    |
-|`kind`|String|Required|The type of action. You can find supported kinds in the [IBM Cloud Functions docs](/docs/openwhisk?topic=cloud-functions-runtimes).    |
-|`main`|String|Optional|The name of the action entry point (function or fully-qualified method name, when applicable).       **NOTE**: Conflicts with `exec.components`, `exec.image`.    |
-|`components`|String|Optional|The list of fully qualified actions. **NOTE**: Conflicts with `exec.code`, `exec.image`.|
+|`exec.kind`|String|Required|The type of action. You can find supported kinds in the [IBM Cloud Functions docs](/docs/openwhisk?topic=cloud-functions-runtimes).    |
+|`exec.main`|String|Optional|The name of the action entry point (function or fully-qualified method name, when applicable).       **NOTE**: Conflicts with `exec.components`, `exec.image`.    |
+|`exec.components`|String|Optional|The list of fully qualified actions. **NOTE**: Conflicts with `exec.code`, `exec.image`.|
 |`publish`|Boolean|Optional|Action visibility.|
 |`user_defined_annotations`|String|Optional|Annotations defined in key value format.|
 |`user_defined_parameters`|String|Optional|Parameters defined in key value format. Parameter bindings included in the context passed to the action. Cloud Function backend/API.|
@@ -178,6 +176,7 @@ Review the output parameters that you can access after your resource is created.
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ### Import
+{: #fn-action-import}
 
 `ibm_function_action` can be imported using the ID.
 
@@ -201,7 +200,7 @@ Create, update, or delete an IBM Cloud Functions package. You can the packages t
 
 The following example creates the `mypackage` package. 
 
-```hcl
+```
 resource "ibm_function_package" "package" {
   name = "mypackage"
 
@@ -238,7 +237,7 @@ EOF
 The following example shows how to bind a package. 
 {: shortdesc}
 
-``` hcl
+``` 
 resource "ibm_function_package" "bindpackage" {
   name              = "bindalaram"
   bind_package_name = "/whisk.system/alarms/alarm"
@@ -311,13 +310,13 @@ Create, update, or delete an IBM Cloud Functions rule. Events from external and 
 The following example creates a rule for an action. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_function_action" "action" {
   name = "hello"
 
-  exec = {
+  exec {
     kind = "nodejs:6"
-    code = "${file("test-fixtures/hellonode.js")}"
+    code = file("test-fixtures/hellonode.js")
   }
 }
 
@@ -329,12 +328,12 @@ resource "ibm_function_trigger" "trigger" {
       name = "/whisk.system/alarms/alarm"
 
       parameters = <<EOF
-					[
-						{
-							"key":"cron",
-							"value":"0 */2 * * *"
-						}
-					]
+                    [
+                        {
+                            "key":"cron",
+                            "value":"0 */2 * * *"
+                        }
+                    ]
                 EOF
     },
   ]
@@ -342,8 +341,8 @@ resource "ibm_function_trigger" "trigger" {
 
 resource "ibm_function_rule" "rule" {
   name         = "alarmrule"
-  trigger_name = "${ibm_function_trigger.trigger.name}"
-  action_name  = "${ibm_function_action.action.name}"
+  trigger_name = ibm_function_trigger.trigger.name
+  action_name  = ibm_function_action.action.name
 }
 
 ```
@@ -356,7 +355,7 @@ Review the input parameters that you can specify for your resource.
 
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
-|`name`|String|Reuired|The name of the rule.|
+|`name`|String|Required|The name of the rule.|
 |`trigger_name`|String|Required|The name of the trigger.|
 |`action_name`|String|Required|The name of the action.|
 {: caption="Table. Available input parameters" caption-side="top"}
@@ -376,6 +375,7 @@ Review the output parameters that you can access after your resource is created.
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ### Import
+{: #fn_rule-import}
 
 `ibm_function_rule` can be imported using the ID.
 
@@ -401,7 +401,7 @@ Create, update, or delete an IBM Cloud Functions trigger. Events from external a
 The following example creates the `mytrigger` trigger. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_function_trigger" "trigger" {
   name = "mytrigger"
 
@@ -431,7 +431,7 @@ resource "ibm_function_trigger" "trigger" {
 The following example creates a feed for the `alarmFeed` trigger. 
 {: shortdesc}
 
-```hcl
+```
 resource "ibm_function_trigger" "feedtrigger" {
   name = "alarmFeed"
 
@@ -494,6 +494,7 @@ Review the output parameters that you can access after your resource is created.
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ### Import
+{: #fn-trigger-import}
 
 `ibm_function_trigger` can be imported using the ID.
 
