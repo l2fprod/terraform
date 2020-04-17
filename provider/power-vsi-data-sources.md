@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-23"
+lastupdated: "2020-04-03"
 
 keywords: terraform provider plugin, terraform power resources, terraform power systems resources, terraform power
 
@@ -32,6 +32,10 @@ Review the data sources that you can use to retrieve information about your [Pow
 
 To find supported input parameter values, you can use the Power Systems CLI plug-in in {{site.data.keyword.cloud_notm}}. To install the plug-in, run `ibmcloud plugin install pi`. 
 {: tip}
+
+Before you start working with your data source, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
+{: important}
+
 
 ## `ibm_pi_image`
 {: #power-image}
@@ -178,6 +182,10 @@ Review the output parameters that you can access after you retrieved your data s
 | `id` | String | The unique identifier of the instance. |
 | `state` | String | The state of the instance.|
 | `memory`|String|The amount of memory that is allocated to the instance.|
+| `min_processors`|Integer|The minimum number of processors that must be allocated to the instance.| 
+| `max_processors`|Integer|The maximum number of processors that can be allocated to the instance without shutting down or rebooting the LPAR.|
+| `min_memory`|Integer|The minimum amount of memory that must be allocated to the instance.|
+| `max_memory`|Integer|The maximum amount of memory that can be allocated to the instance without shutting down or rebooting the LPAR.|
 |`processors`|String|The number of processors that are allocated to the instance.|
 |`status`|String|The status of the instance.|
 |`proctype`|String|The procurement type of the instance. Supported values are `shared` and `dedicated`. |

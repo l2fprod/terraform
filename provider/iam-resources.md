@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-26"
+lastupdated: "2020-04-03"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
@@ -29,6 +29,10 @@ subcollection: terraform
 
 Create, modify, or delete [{{site.data.keyword.cloud_notm}} Identity and Access Management (IAM)](/docs/iam?topic=iam-iamoverview) resources. 
 {: shortdesc}
+
+Before you start working with your resource, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
+{: important}
+
 
 ## `ibm_iam_access_group`
 {: #iam-access-group}
@@ -375,6 +379,75 @@ The access group policy can be imported by using the access group ID and the acc
 ```
 $ terraform import ibm_iam_access_group_policy.example <access_group_ID>/<access_group_policy_ID>
 ```
+
+
+
+
+
+
+## `ibm_iam_access_group_dynamic_rule`
+{: #iam-group-dynamic-rule}
+
+Create, update, or delete a dynamic rule for an IAM access group. With dynamic rules, you can automatically add federated users to access groups based on specific identity attributes. When your users log in with a federated ID, the data from the identity provider dynamically maps your users to an access group based on the rules that you set.
+{: shortdesc}
+
+For more information, see [Creating dynamic rules for access groups](/docs/iam?topic=iam-rules). 
+
+### Sample Terraform code
+{: #iam-group-dynamic-rule-sample}
+
+```
+resource "ibm_iam_access_group_dynamic_rule" "rule1" {
+  name              = "newrule"
+  access_group_id   = "AccessGroupId-dsnd4bvsaf"
+  expiration        = 4
+  identity_provider = "test-idp.com"
+  conditions {
+    claim    = "blueGroups"
+    operator = "CONTAINS"
+    value    = "\"test-bluegroup-saml\""
+  }
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #iam-group-dynamic-rule-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|-----------|---------------------|
+|`name`|String|Required|The name of the dynamic rule for the IAM access group.|
+|`access_group_id`|String|Required|The ID of the access group.|
+|`expiration`|Integer|Required|The number of hours that authenticated users can work in IBM Cloud before they must refresh their access. This value must be between 1 and 24. |
+|`identity_provider`|String|Required|Enter the URI for your identity provider. This is the SAML "entityId" field, which is sometimes referred to as the issuer ID, for the identity provider as part of the federation configuration for onboarding with IBMid. Example: `https://idp.example.org/SAML2`.|
+|`conditions`|List of rule conditions|Required|A list of conditions that the rule must satisfy.|
+|`conditions.claim`|String|Required|The key value to evaluate the condition against. The key that you enter depends on what key-value pairs your identity provider provides. For example, your identity provider might include a key that is named `blueGroups` and that holds all the user groups that have access. To apply a condition for a specific user group within the `blueGroups` key, you specify `blueGroups` as your claim and add the value that you are looking for in `conditions.value`. |
+|`conditions.operator`|String|Required|The operation to perform on the claim. Supported values are `EQUALS`, `EQUALS_IGNORE_CASE`, `IN`, `NOT_EQUALS_IGNORE_CASE`, `NOT_EQUALS`, and `CONTAINS`.|
+|`conditions.value`|String|Required|The value that the claim is compared to using the `conditions.operator`.|
+
+### Output parameters
+{: #iam-group-dynamic-rule-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+|`id`|String|The unique identifier of the dynamic rule. The ID is composed of `<access_group_ID>/<rule_ID>`. |
+|`rule_id`|String|The ID of the rule.|
+
+### Import 
+{: #iam-group-dynamic-rule-import}
+
+The dynamic rule can be imported using the access group ID and rule ID. 
+
+```
+terraform import iam_access_group_dynamic_rule.example <access_group_ID>/<rule_ID>
+```
+{: pre}
 
 
 
