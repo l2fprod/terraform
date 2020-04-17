@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-26" 
+lastupdated: "2020-04-17" 
 
 keywords: terraform provider plugin, terraform resource group, terraform iam service, terraform resource management
 
@@ -26,6 +26,9 @@ subcollection: terraform
 
 # Resource management resources
 {: #resource-mgmt-resources}
+
+Before you start working with your resource, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
+{: important}
 
 
 ## `ibm_resource_group`
@@ -105,7 +108,7 @@ resource "ibm_resource_instance" "resource_instance" {
   tags              = ["tag1", "tag2"]
 
   parameters {
-    "HMAC" = true
+    HMAC = true
   }
   //User can increase timeouts 
   timeouts {
@@ -168,6 +171,9 @@ Review the output parameters that you can access after your resource is created.
 Create, update, or delete service credentials for an IAM-enabled service. 
 {: shortdesc}
 
+By default, the `ibm_resource_key` resource creates service credentials that use the public service endpoint of a service. To create service credentials that use the private service endpoint instead, you must explicitly define that by using the `parameter` input paramter. Note that your service might not support private service endpoints yet. 
+{: note}
+
 ### Sample Terraform code
 {: #resource-key-sample}
 
@@ -175,7 +181,7 @@ Create, update, or delete service credentials for an IAM-enabled service.
 
 ```
 data "ibm_resource_instance" "resource_instance" {
-  name = "myobjectsotrage"
+  name = "myobjectstorage"
 }
 
 resource "ibm_resource_key" "resourceKey" {
@@ -197,7 +203,7 @@ The `ibm_resource_instance` resource does not support creating service credentia
 
 ```
 data "ibm_resource_instance" "resource_instance" {
-  name = "myobjectsotrage"
+  name = "myobjectstorage"
 }
 
 resource "ibm_iam_service_id" "serviceID" {
@@ -210,7 +216,7 @@ resource "ibm_resource_key" "resourceKey" {
   role                 = "Viewer"
   resource_instance_id = data.ibm_resource_instance.resource_instance.id
   parameters {
-    "serviceid_crn" = ibm_iam_service_id.serviceID.crn
+    serviceid_crn = ibm_iam_service_id.serviceID.crn
   }
 
   //User can increase timeouts
@@ -220,6 +226,48 @@ resource "ibm_resource_key" "resourceKey" {
   }
 }
 ```
+
+#### Creating credentials that use the private service endpoint
+{: #resource-key-sample-private}
+
+The following example shows how you can create a Databases for etcd service instance with service credentials that use the private service endpoint. 
+{: shortdesc}
+
+```
+data "ibm_resource_group" "group" {
+  name = "default"
+}
+
+resource "ibm_database" "database" {
+  name              = "tfdb"
+  plan              = "standard"
+  location          = "us-south"
+  resource_group_id = data.ibm_resource_group.group.id
+
+  service = "databases-for-postgresql"
+  version = 11
+
+  service_endpoints            = "private"
+  adminpassword                = "adminpassword"
+  members_memory_allocation_mb = 3072
+  members_disk_allocation_mb   = 61440
+
+}
+
+resource "ibm_resource_key" "resourceKey" {
+  name                 = "tfkey"
+  role                 = "Viewer"
+  resource_instance_id = ibm_database.database.id
+  
+  parameters {
+
+     service-endpoints =  "private"
+  
+  }
+}
+
+```
+
 
 ### Input parameters
 {: #resource-key-input}
@@ -231,7 +279,7 @@ Review the input parameters that you can specify for your resource.
 |----|-----------|-----------|---------------------|
 |`name`|String|Required| A descriptive name used to identify a resource key.|
 |`role`|String|Required|The name of the user role. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
-|`parameters`|Map|Optional|Arbitrary parameters to pass. Must be a JSON object.|
+|`parameters`|Map|Optional|Arbitrary parameters to pass to the resource in JSON format. If you want to create service credentials by using the private service endpoint, include the `service-endpoints =  "private"` parameter. |
 |`resource_instance_id`|String|Optional|The ID of the resource instance associated with the resource key. **NOTE**: Conflicts with `resource_alias_id`.|
 |`resource_alias_id`|String|Optional|The ID of the resource alias associated with the resource key. **NOTE**: Conflicts with `resource_instance_id`.|
 |`tags`|Array of strings|Optional|Tags associated with the resource key instance. Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.|

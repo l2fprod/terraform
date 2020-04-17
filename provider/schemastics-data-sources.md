@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-26"
+lastupdated: "2020-04-07"
 
 keywords: terraform provider plugin, terraform schematics data source, terraform schematics workspace 
 
@@ -26,6 +26,10 @@ subcollection: terraform
 
 # Schematics data sources
 {: #schematics-data-sources}
+
+Before you start working with your data source, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
+{: important}
+
 
 ## `ibm_schematics_workspace`
 {: #schematics-workspace}
@@ -89,6 +93,10 @@ The following example retrieves information about the `my-workspace-id` workspac
 {: shortdesc}
 
 ```
+data "ibm_schematics_workspace" "vpc" {
+  workspace_id = "<schematics_workspace_id>"
+}
+
 data "ibm_schematics_output" "test" {
   workspace_id = "<schematics_workspace_id>"
   template_id= data.ibm_schematics_workspace.vpc.template_id.0
@@ -104,7 +112,7 @@ Review the input parameters that you can specify for your data source.
 |Name|Data type| Required/ optional|Description|
 |----|-----------|--------|----------------------|
 |`workspace_id`|String|Required|The ID of the Schematics workspace. You can retrieve this information by running `ibmcloud terraform workspace list`. |
-|`template_id`|String|Required|The ID of the template that the workspace uses. This value must be set to `data.ibm_schematics_workspace.vpc.template_id.0`. |
+|`template_id`|String|Required|The ID of the template that the workspace uses. This value must be retrieved from the `ibm_schematics_workspace` data source and set to `data.ibm_schematics_workspace.vpc.template_id.0`. |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 

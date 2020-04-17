@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-27"
+lastupdated: "2020-04-17"
 
 keywords: terraform provider plugin, terraform vpc gen 1 compute, terraform vpc, terraform gen 1 resources, terraform vpc subnet, generation 1 compute terraform
 
@@ -29,6 +29,10 @@ subcollection: terraform
 
 Review the data sources that you can use to retrieve information about your [{{site.data.keyword.vpc_full}} (Gen 1 compute) infrastructure](/docs/vpc?topic=vpc-about-vpc). All data sources are imported as read-only information. You can reference the output parameters for each data source by using [Terraform interpolation syntax](https://www.terraform.io/docs/configuration-0-11/interpolation.html){: external}. 
 {: shortdesc}
+
+Before you start working with your data source, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
+{: important}
+
 
 ## `ibm_is_image`
 {: #image}
@@ -128,12 +132,12 @@ Retrieve the details for a profile that you can use in your {{site.data.keyword.
 ### Sample Terraform code
 {: #instance-profile-sample}
 
-The following example shows how you can retrieve information about the `b-2x8` profile. 
+The following example shows how you can retrieve information about the `bc1-2x8` profile. 
 {: shortdesc}
 
 ```
 data "ibm_is_instance_profile" "profile" {
-	name = "b-2x8"
+	name = "bc1-2x8"
 }
 ```
 
@@ -360,6 +364,54 @@ Review the output parameters that you can access after you retrieved your data s
 
 
 
+## `ibm_is_subnets`
+{: #vpc-subnets}
+
+Retrieve information about all existing VPC subnets in an IBM Cloud account. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #vpc-subnets-sample}
+
+```
+data "ibm_is_subnets" "ds_subnets" {
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #vpc-subnets-input}
+
+This resource does not support any input parameters.
+
+### Output parameters
+{: #vpc-subnets-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|-------------|
+|`subnets`|List|A list of subnets in the IBM Cloud account.|
+|`subnets.name`|String|The name of the subnet.|
+|`subnets.id`|String|The ID of the subnet.|
+|`subnets.ipv4_cidr_block`|String|The IPv4 CIDR block of this subnet.|
+|`subnets.ipv6_cidr_block`|String|The IPv6 CIDR block of this subnet.|
+|`subnets.status`|String|The status of the subnet.|
+|`subnets.crn`|String|The CRN of the subnet.|
+|`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses that are available in the subnet.|
+|`subnets.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
+|`subnets.network_acl`|String|The access control list (ACL) that is attached to the subnet.|
+|`subnets.public_gateway`|Boolean|If set to **true**, a public gateway is attached to the subnet. If set to **false**, no public gateway for this subnet exists.|
+|`subnets.resource_group`|String|The resource group that the subnet belongs to.|
+|`subnets.vpc`|String|The ID of the VPC that this subnet belongs to.|
+|`subnets.zone`|String|The zone where the subnet was created.|
+
+
+
+
+
+
 ## `ibm_is_vpc`
 {: #vpc}
 
@@ -402,12 +454,19 @@ Review the output parameters that you can access after you retrieved your data s
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
 | `classic_access` | String | Indicates whether this VPC is set up with a connection to classic {{site.data.keyword.cloud_notm}} infrastructure. | 
+|`crn`|String|The CRN of the VPC.|
 | `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
 |`cse_source_addresses.address`|String|The IP address of the cloud service endpoint.|
 |`cse_source_addresses.zone_name`|String|The zone where the cloud service endpoint is located.|
 | `default_network_acl` | String | The ID of the default network access control list (ACL) that was set up for the VPC. | 
 | `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to view details about the VPC. |
 | `resource_group` | String | The resource group ID where the VPC was created. |
+|`subnets`|List of subnets|A list of subnets that are attached to a VPC.|
+|`subnets.name`|String|The name of the subnet.|
+|`subnets.id`|String|The ID of the subnet.|
+|`subnets.status`|String|The status of the subnet.|
+|`subents.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
+|`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses in the subnet that are available for you to be used.|
 | `status` | String | The status of the VPC. |
 | `tags` | Array | A list of tags that are associated with the VPC. |
 
