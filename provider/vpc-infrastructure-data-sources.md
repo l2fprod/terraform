@@ -465,7 +465,7 @@ Review the output parameters that you can access after you retrieved your data s
 |`subnets.name`|String|The name of the subnet.|
 |`subnets.id`|String|The ID of the subnet.|
 |`subnets.status`|String|The status of the subnet.|
-|`subents.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
+|`subnets.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
 |`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses in the subnet that are available for you to be used.|
 | `status` | String | The status of the VPC. |
 | `tags` | Array | A list of tags that are associated with the VPC. |

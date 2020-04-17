@@ -1499,7 +1499,7 @@ Review the output parameters that you can access after your resource is created.
 |`subnets.name`|String|The name of the subnet.|
 |`subnets.id`|String|The ID of the subnet.|
 |`subnets.status`|String|The status of the subnet.|
-|`subents.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
+|`subnets.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
 |`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses in the subnet that are available for you to be used.|
 | `status` | String | The provisioning status of your VPC. | 
 | `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
