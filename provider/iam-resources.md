@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-03"
+lastupdated: "2020-08-08"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip} 
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Identity & Access (IAM) resources 
 {: #iam-resources}
@@ -135,7 +145,7 @@ Review the output parameters that you can access after your resource is created.
 
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
-| `id` | String | The unique identifier of the access group members. The ID is returned in the format `<iam_access_group_ID\/<random_ID>`. | 
+| `id` | String | The unique identifier of the access group members. The ID is returned in the format `<iam_access_group_ID>/<random_ID>`. | 
 | `members` | Array of objects | A list of members that are included in the access group. |
 | `members.iam_id` | String | The IBMid or service ID of the member. |
 | `members.type` | String | The type of member. Supported values are `user` or `service`. 
@@ -153,7 +163,7 @@ $ terraform import ibm_iam_access_group_members.example AccessGroupId-5391772e-1
 
 
 
-## `ibm_access_group_policy`
+## `ibm_iam_access_group_policy`
 {: #iam-access-group-policy}
 
 Create, update, or delete an IAM policy for an IAM access group. 
@@ -198,10 +208,9 @@ resource "ibm_iam_access_group_policy" "policy" {
   access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Operator", "Writer"]
 
-  resources = [{
+  resources {
     resource_group_id = data.ibm_resource_group.group.id
   }
-  ]
 }
 ```
 
@@ -220,10 +229,9 @@ resource "ibm_iam_access_group_policy" "policy" {
   access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Viewer"]
 
-  resources = [{
+  resources {
     service = "cloud-object-storage"
   }
-  ]
 }
 
 ```
@@ -249,11 +257,10 @@ resource "ibm_iam_access_group_policy" "policy" {
   access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Manager", "Viewer", "Administrator"]
 
-  resources = [{
+  resources {
     service              = "kms"
     resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
   }
-  ]
 }
 
 ```
@@ -277,11 +284,10 @@ resource "ibm_iam_access_group_policy" "policy" {
   access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Viewer"]
 
-  resources = [{
+  resources {
     service           = "containers-kubernetes"
     resource_group_id = data.ibm_resource_group.group.id
   }
-  ]
 }
 
 ```
@@ -301,11 +307,10 @@ resource "ibm_iam_access_group_policy" "policy" {
   access_group_id = ibm_iam_access_group.accgrp.id
   roles        = ["Administrator"]
 
-  resources = [{
+  resources {
     resource_type = "resource-group"
     resource      = data.ibm_resource_group.group.id
   }
-  ]
 }
 
 ```
@@ -325,7 +330,7 @@ resource "ibm_iam_access_group_policy" "policy" {
   access_group_id = ibm_iam_access_group.accgrp.id
   roles           = ["Viewer"]
 
-  resources = [{
+  resources {
     service = "is"
 
     attributes {
@@ -334,9 +339,21 @@ resource "ibm_iam_access_group_policy" "policy" {
 
     resource_group_id = data.ibm_resource_group.group.id
   }
-  ]
 }
 
+resource "ibm_iam_access_group_policy" "policy_kube" {
+  access_group_id = ibm_iam_access_group.accgrp.id
+  roles           = ["Viewer", "Manager"]
+  
+  resources {
+    service              = "containers-kubernetes"
+    resource_instance_id = "myinstance"
+    
+    attributes = {
+      "namespace" = "default"
+    }
+  }
+}
 ```
 
 ### Input parameters
@@ -345,20 +362,20 @@ resource "ibm_iam_access_group_policy" "policy" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`access_group_id`|String|Required|The ID of the access group.|
-| `roles`|List|Required| A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.
-|`resources` |List|Optional|A nested block describing the resource of this policy.|
-|`resources.service`|String|Optional|The service name of the policy definition.  You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|
-|`resources.resource_instance_id`|String|Optional|The ID of resource instance of the policy definition.|
-|`resources.region` |String|Optional|The region of the policy definition.|
-|`resources.resource_type` |String|Optional|The resource type of the policy definition.|
-|`resources.resource` |String|Optional|The resource of the policy definition.|
-|`resources.resource_group_id`|String|Optional|The ID of the resource group. To retrieve the ID, run `ibmcloud resource groups` or use the `ibm_resource_group` data source. 
-|`resources.attributes`|Map|Optional|Set resource attributes in the form of `name=value,name=value`.  If you set this option, do not specify `account_management` at the same time. |
-|`account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not specify `resources` at the same time. |
-|`tags` |Array of Strings|Optional|A list of tags that you want to add to the access group policy. Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| -------- |
+|`access_group_id`|String|Required|The ID of the access group.| Yes |
+| `roles`|List|Required| A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`. | No |
+|`resources` |List|Optional|A nested block describing the resource of this policy.|  No |
+|`resources.service`|String|Optional|The service name that you want to include in your policy definition. For account management services, you can find supported values in the [documentation](/docs/iam?topic=iam-account-services#api-acct-mgmt). For other services, run the `ibmcloud catalog service-marketplace` command and retrieve the value from the **Name** column of your CLI output. | No |
+|`resources.resource_instance_id`|String|Optional|The ID of resource instance of the policy definition.| No |
+|`resources.region` |String|Optional|The region of the policy definition.| No |
+|`resources.resource_type` |String|Optional|The resource type of the policy definition.| No |
+|`resources.resource` |String|Optional|The resource of the policy definition.| No |
+|`resources.resource_group_id`|String|Optional|The ID of the resource group. To retrieve the ID, run `ibmcloud resource groups` or use the `ibm_resource_group` data source. | No |
+|`resources.attributes`|Map|Optional|Set resource attributes in the form of `name=value,name=value`.  If you set this option, do not specify `account_management` at the same time. | No |
+|`account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not specify `resources` at the same time. | No |
+|`tags` |Array of Strings|Optional|A list of tags that you want to add to the access group policy. Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.| No |
 
 ### Output parameters
 {: #iam-access-group-policy-output}
@@ -445,7 +462,7 @@ Review the output parameters that you can access after your resource is created.
 The dynamic rule can be imported using the access group ID and rule ID. 
 
 ```
-terraform import iam_access_group_dynamic_rule.example <access_group_ID>/<rule_ID>
+terraform import ibm_iam_access_group_dynamic_rule.example <access_group_ID>/<rule_ID>
 ```
 {: pre}
 
@@ -454,7 +471,7 @@ terraform import iam_access_group_dynamic_rule.example <access_group_ID>/<rule_I
 
 
 
-## `ibm_authorization_policy`
+## `ibm_iam_authorization_policy`
 {: #iam-auth-policy}
 
 Create or delete an IAM service authorization policy. 
@@ -510,22 +527,45 @@ resource "ibm_iam_authorization_policy" "policy" {
 }
 ```
 
+#### Authorization policy between two resource groups
+
+```
+resource "ibm_resource_group" "source_resource_group" {
+  name     = "rg1"
+}
+	  
+resource "ibm_resource_group" "target_resource_group" {
+  name     = "rg2"
+}
+
+resource "ibm_iam_authorization_policy" "policy" {
+  source_service_name         = "cloud-object-storage"
+  source_resource_group_id    = ibm_resource_group.source_resource_group.id
+  target_service_name         = "kms"
+  target_resource_group_id    = ibm_resource_group.target_resource_group.id
+  roles                       = ["Reader"]
+}
+```
+{:  codeblock}
+
 ### Input parameters
 {: #iam-auth-policy-input}
 
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`source_service_name`|String|Required|The source service name.|
-|`target_service_name`|String|Required|The target service name.|
-|`roles`|List|Required|A comma separated list of roles. |
-|`source_resource_instance_id`|String|Optional|The source resource instance ID.|
-|`target_resource_instance_id`|String|Optional| The target resource instance ID.|
-|`source_resource_type`|String|Optional| The resource type of the source service.|
-|`target_resource_type`|String|Optional|The resource type of the target service.|
-|`source_service_account`|String|Optional|The GUID of the account where the source service is provisioned.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------ |
+|`source_service_name`|String|Required|The source service name.| Yes |
+|`target_service_name`|String|Required|The target service name.| Yes |
+|`roles`|List|Required|A comma separated list of roles. | No |
+|`source_resource_instance_id`|String|Optional|The source resource instance ID.| Yes |
+|`target_resource_instance_id`|String|Optional| The target resource instance ID.| Yes |
+|`source_resource_type`|String|Optional| The resource type of the source service.| Yes |
+|`target_resource_type`|String|Optional|The resource type of the target service.| Yes |
+|`source_resource_group_id`|String|Optional|The ID of the resource group from which you want to allow access to IBM Cloud services in another resource group.| Yes |
+|`target_resource_group_id`|String|Optional|The ID of the resource group that holds the IBM Cloud services that you want to allow access to.|  Yes |
+|`source_service_account`|String|Optional|The GUID of the account where the source service is provisioned.| Yes |
 
 ### Output parameters
 {: #iam-auth-policy-output}
@@ -547,7 +587,7 @@ The IAM authorization policy can be imported by using the ID.
 terraform import ibm_iam_authorization_policy.example 11aa1a11-11a1-11aa-1111-11111a11a11a
 ```
 
-## `ibm_authorization_policy_detach`
+## `ibm_iam_authorization_policy_detach`
 {: #iam-auth-policy-detach}
 
 Provides a resource for IAM Service Authorizations policy to be detached. This allows authorization policy to deleted.
@@ -568,15 +608,68 @@ resource "ibm_iam_authorization_policy_detach" "policy" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`authorization_policy_id`|String|Required|The authorization policy ID.|
+| Name | Data type | Required/ optional|Description | Forces new resource |
+|----|-----------|-----------|---------------------| ---------|
+|`authorization_policy_id`|String|Required|The authorization policy ID.| Yes |
 
 ### Output parameters
 {: #iam-auth-policy-detach-output}
 
 This resource does not provide output parameters. 
 {: shortdesc}
+
+
+
+
+
+
+## `ibm_iam_custom_role`
+{: #iam-custom-role}
+
+Create, update, or delete a custom IAM role. 
+{: shortdesc}
+
+For more information about IAM custom roles, see [Creating custom roles](/docs/iam?topic=iam-custom-roles).
+
+### Sample Terraform code
+{: #iam-custom-role-sample}
+
+```
+resource "ibm_iam_custom_role" "customrole" {
+  name         = "Role1"
+  display_name = "Role1"
+  description  = "This is a custom role"
+  service = "kms"
+  actions      = ["kms.secrets.rotate"]
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #iam-custom-role-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|-----------|---------------------|
+|`name`|String|Required|The name of the custom role.|
+|`display_name`|String|Required|The display name of the custom role.|
+|`description`|String|Optional|The description of the custom role. Make sure to include information about the level of access this role assignment gives a user. |
+|`service`|String|Required|The name of the service for which you want to create the custom role. To retrieve the name, run `ibmcloud catalog service-marketplace`.
+|`actions`|Array of strings|Required|A list of action IDs that you want to add to your custom role. The action IDs vary by service. To retrieve supported action IDs, follow the [documentation](/docs/iam?topic=iam-custom-roles) to create the custom role from the UI. |
+
+### Output parameters
+{: #iam-custom-role-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+|`id`|String|The ID of the custom role.|
+|`crn`|String|The CRN of the custom role.|
+
 
 
 
@@ -662,10 +755,10 @@ resource "ibm_iam_service_policy" "policy" {
   iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Viewer"]
 
-  resources = [{
+  resources {
     service = "cloud-object-storage"
+    region = "us-south"
   }
-  ]
 }
 
 ```
@@ -687,16 +780,15 @@ resource "ibm_iam_service_policy" "policy" {
   iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Manager", "Viewer", "Administrator"]
 
-  resources = [{
+  resources {
     service              = "kms"
     resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
   }
-  ]
 }
 
 ```
 
-#### Service Policy using resource group 
+#### Service Policy using resource group
 
 ```
 resource "ibm_iam_service_id" "serviceID" {
@@ -711,11 +803,10 @@ resource "ibm_iam_service_policy" "policy" {
   iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Viewer"]
 
-  resources = [{
+  resources {
     service           = "containers-kubernetes"
     resource_group_id = data.ibm_resource_group.group.id
   }
-  ]
 }
 
 ```
@@ -735,11 +826,10 @@ resource "ibm_iam_service_policy" "policy" {
   iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Administrator"]
 
-  resources = [{
+  resources {
     resource_type = "resource-group"
     resource      = data.ibm_resource_group.group.id
   }
-  ]
 }
 
 ```
@@ -759,7 +849,7 @@ resource "ibm_iam_service_policy" "policy" {
   iam_service_id = ibm_iam_service_id.serviceID.id
   roles        = ["Administrator"]
 
-  resources = [{
+  resources {
     service = "is"
 
     attributes {
@@ -767,7 +857,6 @@ resource "ibm_iam_service_policy" "policy" {
     }
     
   }
-  ]
 }
 
 ```
@@ -778,20 +867,20 @@ resource "ibm_iam_service_policy" "policy" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`iam_service_id`|String|Required|The UUID of the service ID.|
-|`roles`|List|Required|A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
-|`resources`|List of objects|Optional| A nested block describing the resource of this policy.|
-|`resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|
-|`resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.|
-|`resources.region` |String|Optional|The region of the policy definition.|
-|`resources.resource_type`|String|Optional| The resource type of the policy definition.|
-|`resources.resource`|String|Optional|The resource of the policy definition.|
-|`resources.resource_group_id`|String|Optional| The ID of the resource group. To retrieve the value, run `ibmcloud resource groups` or use the `ibm_resource_group` data source. |
-|`resources.attributes`|Map|Optional| A set of resource attributes in the format `name=value,name=value`. If you set this option, do not specify `account_management` at the same time.|
-|`account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not set `resources` at the same time. |
-|`tags` |Array of strings|Optional| A list of tags that are associated with the service policy instance.  Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------- |
+|`iam_service_id`|String|Required|The UUID of the service ID.| Yes |
+|`roles`|List|Required|A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.| No |
+|`resources`|List of objects|Optional| A nested block describing the resource of this policy.| No |
+|`resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.| No |
+|`resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.| No |
+|`resources.region` |String|Optional|The region of the policy definition.| No |
+|`resources.resource_type`|String|Optional| The resource type of the policy definition.| No |
+|`resources.resource`|String|Optional|The resource of the policy definition.| No |
+|`resources.resource_group_id`|String|Optional| The ID of the resource group. To retrieve the value, run `ibmcloud resource groups` or use the `ibm_resource_group` data source. | No |
+|`resources.attributes`|Map|Optional| A set of resource attributes in the format `name=value,name=value`. If you set this option, do not specify `account_management` at the same time.| No |
+|`account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not set `resources` at the same time. | No |
+|`tags` |Array of strings|Optional| A list of tags that are associated with the service policy instance.  Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.| No |
 
 ### Output parameters
 {: #iam-service-policy-output}
@@ -844,10 +933,9 @@ resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Viewer"]
 
-  resources = [{
+  resources {
     service = "kms"
   }
-  ]
 }
 
 ```
@@ -865,11 +953,10 @@ resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Manager", "Viewer", "Administrator"]
 
-  resources = [{
+  resources {
     service              = "kms"
     resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
   }
-  ]
 }
 
 ```
@@ -885,11 +972,10 @@ resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Viewer"]
 
-  resources = [{
+  resources {
     service           = "containers-kubernetes"
     resource_group_id = data.ibm_resource_group.group.id
   }
-  ]
 }
 
 ```
@@ -905,11 +991,10 @@ resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Administrator"]
 
-  resources = [{
+  resources {
     resource_type = "resource-group"
     resource      = data.ibm_resource_group.group.id
   }
-  ]
 }
 
 ```
@@ -925,7 +1010,7 @@ resource "ibm_iam_user_policy" "policy" {
   ibm_id = "test@in.ibm.com"
   roles  = ["Administrator"]
 
-  resources = [{
+  resources {
     service = "is"
 
     attributes {
@@ -933,7 +1018,6 @@ resource "ibm_iam_user_policy" "policy" {
     }
     
   }
-  ]
 }
 
 ```
@@ -945,20 +1029,20 @@ resource "ibm_iam_user_policy" "policy" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`ibm_id`|String|Required| The IBMid or email address of the user.|
-|`roles`|List|Required| A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.|
-|`resources`|List of objects|Optional| A nested block describing the resource of this policy.|
-|`resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.|
-|`resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.|
-|`resources.region` |String|Optional|The region of the policy definition.|
-|`resources.resource_type`|String|Optional| The resource type of the policy definition.|
-|`resources.resource`|String|Optional|The resource of the policy definition.|
-|`resources.resource_group_id`|String|Optional| The ID of the resource group. To retrieve the value, run `ibmcloud resource groups` or use the `ibm_resource_group` data source. |
-|`resources.attributes`|Map|Optional| A set of resource attributes in the format `name=value,name=value`. If you set this option, do not specify `account_management` at the same time.|
-|`account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not set `resources` at the same time. |
-|`tags` |Array of strings|Optional| A list of tags that are associated with the service policy instance.  Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| --------- |
+|`ibm_id`|String|Required| The IBMid or email address of the user.| Yes |
+|`roles`|List|Required| A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`.| No |
+|`resources`|List of objects|Optional| A nested block describing the resource of this policy.| No |
+|`resources.service` |String|Optional|The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.| No |
+|`resources.resource_instance_id`|String|Optional| The ID of the resource instance of the policy definition.| No |
+|`resources.region` |String|Optional|The region of the policy definition.| No |
+|`resources.resource_type`|String|Optional| The resource type of the policy definition.| No |
+|`resources.resource`|String|Optional|The resource of the policy definition.| No |
+|`resources.resource_group_id`|String|Optional| The ID of the resource group. To retrieve the value, run `ibmcloud resource groups` or use the `ibm_resource_group` data source. | No |
+|`resources.attributes`|Map|Optional| A set of resource attributes in the format `name=value,name=value`. If you set this option, do not specify `account_management` at the same time.| No |
+|`account_management`|Boolean|Optional|Gives access to all account management services if set to `true`. Default value `false`. If you set this option, do not set `resources` at the same time. | No |
+|`tags` |Array of strings|Optional| A list of tags that are associated with the service policy instance.  Tags are managed locally and not stored on the IBM Cloud service endpoint at this moment.| No |
 
 
 ### Output parameters
@@ -981,6 +1065,48 @@ The user policy can be imported by using the IBMid and user policy ID.
 ```
 $ terraform import ibm_iam_user_policy.example <ibm_id>/<user_policy_ID>
 ```
+
+
+
+
+
+
+## `ibm_iam_user_settings`
+{: #iam-user-settings}
+
+Retrieve information about an IAM user settings. The IP addresses configured here are the only details a user can use to log in to the {{site.data.keyword.cloud_notm}}.
+{: shortdesc}
+
+### Sample Terraform code
+{: #iam-users-sample}
+
+```
+  resource "ibm_iam_user_settings" "user_setting" {
+  iam_id = "example@in.ibm.com"
+  allowed_ip_addresses = ["192.168.0.2","192.168.0.3","192.168.0.4"]
+}
+
+```
+
+### Input parameters
+{: #iam-user-settings-input}
+
+The following attributes are supported:
+
+|Name|Data type|Required / Optional|Description|
+|----|-----------|-------------| ------------|
+|`iam_id`|String|Required|The users IAM or email ID.|
+|`allowed_ip_addresses`|List|Optional|Lists the IP addresses in comman separated format.|
+
+### Output parameters
+{: #iam-user-settings-output}
+
+The following attributes are exported:
+
+|Name|Data type|Description|
+|----|-----------|-------------|
+|`id`|String|The unique identifier of the IAM user setting as `account_id`/`iam_id`.|
+
 
 
 
@@ -1040,10 +1166,9 @@ resource "ibm_iam_user_invite" "invite_user" {
 ```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy = [{
+    iam_policy {
       roles  = ["Viewer"]
     }
-    ]
 }
 ```
 
@@ -1052,14 +1177,12 @@ resource "ibm_iam_user_invite" "invite_user" {
 ```
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy = [{
+    iam_policy {
       roles  = ["Viewer"]
-      resources = [{
+      resources {
         service = "kms"
       }
-      ]
     }
-    ]
 }
 ```
 
@@ -1075,15 +1198,13 @@ resource "ibm_resource_instance" "instance" {
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy = [{
+    iam_policy {
       roles  = ["Manager", "Viewer", "Administrator"]
-      resources = [{
+      resources {
         service              = "kms"
         resource_instance_id = element(split(":",ibm_resource_instance.instance.id),7)
       }
-      ]
       }
-      ]
 }
 ```
 
@@ -1096,15 +1217,13 @@ data "ibm_resource_group" "group" {
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy = [{
+    iam_policy {
       roles  = ["Manager", "Viewer", "Administrator"]
-      resources = [{
+      resources {
         service           = "containers-kubernetes"
         resource_group_id = data.ibm_resource_group.group.id
       }
-      ]
     }
-    ]
 }
 ```
 
@@ -1117,15 +1236,13 @@ data "ibm_resource_group" "group" {
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy = [{
+    iam_policy {
       roles  = ["Manager", "Viewer", "Administrator"]
-      resources = [{
+      resources {
         resource_type = "resource-group"
         resource      = data.ibm_resource_group.group.id
       }
-      ]
     }
-    ]
 }
 ```
 
@@ -1138,16 +1255,14 @@ data "ibm_resource_group" "group" {
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    iam_policy = [{
+    iam_policy {
       roles  = ["Manager", "Viewer", "Administrator"]
-      resources = [{
+      resources {
         service = "is"
         attributes {
           "vpcId" = "*"
         }
-        ]
       }
-      ]
     }
 }
 ```
@@ -1168,16 +1283,14 @@ data "ibm_space" "space" {
 
 resource "ibm_iam_user_invite" "invite_user" {
     users = ["test@in.ibm.com"]
-    cloud_foundry_roles = [{
+    cloud_foundry_roles {
       organization_guid = data.ibm_org.org.id
       org_roles = ["Manager", "Auditor"]
-      spaces = [{
+      spaces {
           space_guid = data.ibm_space.space.id
           space_roles = ["Manager", "Developer"]
       }
-      ]
     }
-    ]
 }
 ```
 

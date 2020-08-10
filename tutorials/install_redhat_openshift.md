@@ -1,8 +1,8 @@
 ---
 
 copyright:
-  years: 2017, 2019
-lastupdated: "2019-09-06"
+  years: 2017, 2020
+lastupdated: "2020-07-23"
 
 keywords: Terraform, ansible, red hat, openshift, automate, automation, iaas
 
@@ -10,14 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
+{:deprecated: .deprecated}
 {:download: .download}
+{:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Tutorial: Using Terraform to manage your own Red Hat OpenShift Container Platform on IBM Cloud classic infrastructure
 {: #redhat}
@@ -68,7 +83,7 @@ This tutorial is intended for network administrators who want to deploy Red Hat 
 
 - If you do not have one, create an {{site.data.keyword.cloud_notm}} [Pay-As-You-Go or Subscription {{site.data.keyword.cloud_notm}} account ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://cloud.ibm.com/registration). 
 - Make sure that you have an existing [Red Hat account ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://sso.redhat.com/auth/realms/redhat-external/protocol/saml?SAMLRequest=fZLLTsMwEEV%2FJTuvXCelr1hJpKgVUqWCUAss2CDXnZBIfgSPQwtfj5Oqomy69Ojec%2BfhDIVWLS87X5stfHaAPioRwfnGmqU12GlwO3BfjYSX7SYntfctcsaElIA4cnCohR9Jq5kWRnyABuNZD2VVY4RqfoBEq0ANjx75B0C0124ROmAOhNLIzmUKJw8uMFjrrLfSqoFLovUqJ%2B9JFUuIZ5KmM5B0Mk6BpkkaU0inYjGphNind0GK2MHaoBfG52QcJwuaxDRePCdzPkn5dP5GoldwOHQ2HsUkOmllkPdBOemc4VZgg9wIDci95LvyYcODkIvLkq4t7W3PZQ5SZL2aD925wtWo6RH2GbuuZufLPAbKevVkVSO%2Fo1Ipe1yGLXnIiXdd2O29dVr427l9pTnQapDytp8XfbgTYcU58%2F8HKH4B&RelayState=https%3A%2F%2Faccess.redhat.com%2Fmanagement%2Fsubscriptions&SigAlg=http%3A%2F%2Fwww.w3.org%2F2000%2F09%2Fxmldsig%23rsa-sha1&Signature=t4s738AUmTxKfEMZkNpOI8e1wz72ftoZ92HQIbqfs%2BShcdv3ShuJ4%2FIGIhuMYA%2BoaFZwaPcamWlo7F0VDtSN%2FHXcXj78e5s%2B99vJ3K39V4CYCmWOO3fFbpRIV5T0jxzwsp45YEeFKZd45zeQ0X2UwCxPw41JVOqq6NqIqMAJ0y%2Bb92nmE9fFMKlBCS4A%2BTHN1ub1YCUEvgKUNEOasyGdGYXHf0fh9NSUAHO8UJAPSnR0YmBLr4oWteeRuu5MkmqWxEx0F2FOIXtgncMjTsHhyqUllYKjK5%2Buf8YgbeU4ptZoniLmQEKzzrd1KJTutc3ce4W7X7h0zteTEqSdou7LLQ%3D%3D#active) that has an [active OpenShift subscription ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://access.redhat.com/products/red-hat-openshift-container-platform). 
-- Install [Docker and the {{site.data.keyword.cloud_notm}} CLI ![External link icon](../../icons/launch-glyph.svg "External link icon")](/docs/cli?topic=cloud-cli-getting-started). 
+- Install [Docker and the {{site.data.keyword.cloud_notm}} CLI](/docs/cli?topic=cli-getting-started). 
 
 ## Lesson 1: Configure your environment
 {: #configure environment}
@@ -260,12 +275,12 @@ In this tutorial, you provision {{site.data.keyword.cloud_notm}} classic infrast
    </tr>
    <tr>
    <td><code>rhn_password</code></td>
-   <td>The [Red Hat Network password ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://www.redhat.com/apps/register/connect/) to access the OpenShift project. You can enter this information here or provide it as part of your OpenShift deployment in [Lesson 2](#provision_infrastructure).  </td>
+   <td>The [Red Hat Network password ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://access.redhat.com/solutions/253273) to access the OpenShift project. You can enter this information here or provide it as part of your OpenShift deployment in [Lesson 2](#provision_infrastructure).  </td>
    <td>n/a</td>
    </tr>
    <tr>
    <td><code>rhn_username</code></td>
-   <td>The [Red Hat Network user name with OpenShift subscription ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://www.redhat.com/apps/register/connect/) to access the OpenShift project. You can enter this information here or provide it as part of your OpenShift deployment in [Lesson 2](#provision_infrastructure).  </td>
+   <td>The [Red Hat Network user name with OpenShift subscription ![External link icon](../../icons/launch-glyph.svg "External link icon")](https://access.redhat.com/solutions/253273) to access the OpenShift project. You can enter this information here or provide it as part of your OpenShift deployment in [Lesson 2](#provision_infrastructure).  </td>
    <td>n/a</td>
    </tr>
    <tr>
@@ -329,7 +344,7 @@ Now that you prepared your environment, you can go ahead and provision {{site.da
 
 Before you begin, make sure that you are logged in to the container that you created in the previous lesson. 
 
-1. [Retrieve your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key](/docs/iam?topic=iam-classic_keys).
+1. [Retrieve your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key](/docs/account?topic=account-classic_keys).
   
 2. From the OpenShift installation directory `/go/bin/terraform-ibm-openshift` inside your container, create the {{site.data.keyword.cloud_notm}} classic infrastructure components for your Red Hat OpenShift cluster. When you run the command, Terraform evaluates what components must be provisioned and presents an execution plan. You must confirm that you want to provision the classic infrastructure resources by entering **yes**. During the provisioning, Terraform creates another execution plan that you must approve to continue. When prompted, enter the classic infrastructure user name and API key that you retrieved earlier. The provisioning of your resources takes about 40 minutes.  
    ```

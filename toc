@@ -19,6 +19,7 @@ Terraform
     
     {: .navgroup id="howto"}
     setup_cli.md
+    create-terraform-template.md
     manage_resources.md
     ansible/ansible.md
     {: .navgroup-end}
@@ -33,21 +34,25 @@ Terraform
          provider/api-gateway-resources.md
          provider/api-gateway-data-source.md
          provider/certificate-manager-resources.md
+         provider/certificate-manager-data-sources.md
          provider/classic-infrastructure-resources.md
          provider/classic-infrastructure-data-sources.md
+         provider/cloud-foundry-resources.md
+         provider/cloud-foundry-data-sources.md
          provider/databases-resources.md
          provider/databases-data-sources.md
          provider/dns-resources.md
-         provider/cloud-foundry-resources.md
-         provider/cloud-foundry-data-sources.md
+         provider/dns-datasources.md
+         provider/event-streams-data-sources.md
+         provider/event-streams-resources.md
          provider/function-resources.md
          provider/function-data-sources.md
+         provider/iam-resources.md
+         provider/iam-data-sources.md
          provider/internet-services-resources.md
          provider/internet-service-data-sources.md
          provider/keyprotect-resources.md
          provider/key-protect-data-sources.md
-         provider/iam-resources.md
-         provider/iam-data-sources.md
          provider/container-resources.md
          provider/container-data-sources.md
          provider/object-storage-resources.md
@@ -60,7 +65,7 @@ Terraform
          provider/vpc-infrastructure-resources.md
          provider/vpc-infrastructure-data-sources.md
          provider/vpc-gen2-resources.md
-         provider/vpc-gen2-data-sources.md 
+         provider/vpc-gen2-data-sources.md   
    
     [Sample Terraform templates](https://github.com/IBM-Cloud/terraform-provider-ibm/tree/master/examples)
     [Terraform documentation](https://www.terraform.io/docs/)

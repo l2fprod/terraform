@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-03"
+lastupdated: "2020-08-08"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
@@ -10,22 +10,32 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+}
 
 # Identity & Access (IAM) data sources
-{: #identity-&-access-data-sources}
+{: #iam-data-sources}
 
 Review the data sources that you can use to retrieve information about your Identity and Access Management (IAM) resources. All data sources are imported as read-only information. You can reference the output parameters for each data source by using Terraform interpolation syntax.
 
@@ -112,6 +122,81 @@ Review the output parameters that you can access after you retrieved your data s
 |`iam_refresh_token`|String|The IAM refresh token. |
 |`uaa_access_token`|String| The UAA access token. |
 |`uaa_refresh_token`|String|The UAA refresh token. |
+
+## `ibm_iam_role_actions`
+{: #iam-role-actions}
+
+Retrieve a list of actions for an {{site.data.keyword.cloud_notm}} service that are included in an IAM service access role. 
+
+### Sample Terraform code
+{: #iam-role-actions-sample}
+
+```
+data "ibm_iam_role_actions" "test" {
+  service = "kms"
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #iam-role-actions-input}
+
+Review the input parameters that you can specify for your data source.
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|-------|----------|
+|`service`|String|Required|The name of the {{site.data.keyword.cloud_notm}} service for which you want to list supported actions. For account management services, you can find supported values in the [documentation](/docs/iam?topic=iam-account-services#api-acct-mgmt). For other services, run the `ibmcloud catalog service-marketplace` command and retrieve the value from the **Name** column of your CLI output.|
+
+### Output parameters
+{: #iam-role-actions-output}
+
+Review the output parameters that you can access after you retrieved your data source.
+
+|Name|Data type|Description|
+|----|-----------|----------|
+|`id`|String|The unique identifier of the service.|
+|`manager`|List of strings|A list of supported actions that require the **Manager** service access role.|
+|`reader`|List of strings|A list of supported actions that require the **Reader** service access role.|
+|`reader_plus`|List of strings|A list of supported actions that require the **Reader plus** service access role.|
+|`writer`|List of strings|A list of supported actions that require the **Writer** service access role.|
+
+## `ibm_iam_roles`
+{: #iam-roles}
+
+Retrieve information about supported IAM roles for an {{site.data.keyword.cloud_notm}} service. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #iam-roles-sample}
+
+```
+data "ibm_iam_roles" "test" {
+  service = "kms"
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #iam-roles-input}
+
+Review the input parameters that you can specify for your data source.
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|-------|----------|
+|`service`|String|Required|The name of the {{site.data.keyword.cloud_notm}} service for which you want to list supported IAM roles. For account management services, you can find supported values in the [documentation](/docs/iam?topic=iam-account-services#api-acct-mgmt). For other services, run the `ibmcloud catalog service-marketplace` command and retrieve the value from the **Name** column of your CLI output.|
+
+### Output parameters
+{: #iam-roles-output}
+
+Review the output parameters that you can access after you retrieved your data source.
+
+|Name|Data type|Description|
+|----|-----------|----------|
+|`id`|String|The ID of your {{site.data.keyword.cloud_notm}} account.|
+|`roles`|List of supported IAM roles|A list of supported IAM service access, platform, and custom roles for an {{site.data.keyword.cloud_notm}} service. |
+|`roles.name`|String|The name of the role.|
+|`roles.description`|String|The description of the role.|
+|`roles.type`|String|The type of role. Supported values are `service`, `platform`, and `custom`.|
 
 
 ## `ibm_iam_service_id`
@@ -264,7 +349,7 @@ The following attributes are exported:
 |`policies`|List|A nested block describing IAM Policies assigned to user. |
 |`policies.id`|String|The unique identifier of the IAM user policy. The ID is composed of \<ibm_id\>/\<user_policy_id\>.  |
 |`policies.roles`| String|The roles that are assigned to the policy.	|
-|`policies.resources`| List of objects| A nested block describing the resources in the policy.		|
+|`policies.resources`| List of objects| A nested block describing the resources in the policy.|
 |`policies.resources.service`|String|The service name of the policy definition. 		|
 |`policies.resources.resource_instance_id`|String}The ID of resource instance of the policy definition.		|
 |`policies.resources.region`|String|The region of the policy definition.		|
@@ -272,3 +357,85 @@ The following attributes are exported:
 |`policies.resources.resource`|String|The resource of the policy definition.		|
 |`policies.resources.resource_group_id`|String|The ID of the resource group.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
+
+## `ibm_iam_user_profile`
+{: #iam-user-profile}
+
+Retrieve information about an IAM user profile. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #iam-user-profile-sample}
+
+```
+resource "ibm_iam_user_settings" "user_setting" {
+  iam_id = "example@in.ibm.com"
+  allowed_ip_addresses = ["192.168.0.2","192.168.0.3","192.168.0.4"]
+}
+
+data "ibm_iam_user_profile" "user_profle" {
+  iam_id = ibm_iam_user_settings.user_setting.iam_id
+}
+```
+
+### Input parameters
+{: #iam-user-profile-input}
+
+Review the input parameters that you can specify for your data source.
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|---------------|-------------------|
+|`id`|String|Required| The IBMid or email address of the user.|
+{: caption="Table. Available input parameters" caption-side="top"}
+
+
+### Output parameters
+{: #iam-user-profile-output}
+
+The following attributes are exported:
+
+|Name|Data type|Description|
+|----|-----------|-------------|
+|`allowed_ip_addresses`|List|List of invited users IPs to access the IBM cloud console. |
+|`id`|String|The unique identifier or email address of the IAM user. |
+|`firstname`| String|The first name of the user. |
+|`lastname`| String| The last name of the user.|
+|`state`|String|The state of the user.|
+|`phonenumber`|String}The phonenumber of the user. |
+|`email`|String|The email address of the user. |
+
+
+## `ibm_iam_users`
+{: #iam-users}
+
+Retrieve information about an IAM user profile on IBM Cloud as a read-only data source.
+{: shortdesc}
+
+### Sample Terraform code
+{: #iam-users-sample}
+
+```
+	data "ibm_iam_users" "users_profiles"{
+  
+	}
+```
+
+### Output parameters
+{: #iam-users-output}
+
+The following attributes are exported:
+
+|Name|Data type|Description|
+|----|-----------|-------------|
+|`id`|String|The unique identifier user. |
+|`users`| String|List of all IAM users. Each user profile has following list of arguments. |
+|`users.iam_id`| String|The Id of the IAM user. |
+|`users.realm`| String|The realm of the user.  |
+|`users.user_id`| String|The user ID used for login. |
+|`users.firstname`| String|The first name of the user. |
+|`users.lastname`| String|The last name of the user. |
+|`users.state`| String|The state of the user. |
+|`users.email`| String|The email of the user. |
+|`users.phonenumber`| String|The phone for the user. |
+|`users.altphonenumber`| String|The alternative phone number of the user.|
+|`users.account_id`| String|The account ID of the user. |

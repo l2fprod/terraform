@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-17"
+lastupdated: "2020-08-07"
 
 keywords: terraform provider, terraform resources internet service, terraform resources cis, tf provider plugin
 
@@ -10,24 +10,34 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Internet services resources
 {: #cis-resources}
 
-Review the [{{site.data.keyword.cis_full_notm}}](/docs/infrastructure/cis?topic=cis-about-ibm-cloud-internet-services-cis) resources that you can create, modify, or delete. You can reference the output parameters for each resource in other resources or data sources by using [Terraform interpolation syntax](https://www.terraform.io/docs/configuration-0-11/interpolation.html){: external}. 
+Review the [{{site.data.keyword.cis_full_notm}}](/docs/cis?topic=cis-about-ibm-cloud-internet-services-cis) resources that you can create, modify, or delete. You can reference the output parameters for each resource in other resources or data sources by using [Terraform interpolation syntax](https://www.terraform.io/docs/configuration-0-11/interpolation.html){: external}. 
 {: shortdesc}
 
 Before you start working with your resource, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
@@ -209,12 +219,31 @@ Review the input parameters that you can specify for your resource.
 |----|-----------|-----------|---------------------|
 |`domain_id`|String|Required|The ID of the domain that you want to customize. |
 |`cis_id`|String|Required|The ID of the {{site.data.keyword.cis_full_notm}} instance.|
-|`waf`|String|Optional|Allowed values: `off`, `on`.|
+|`waf`|String|Optional|Enable a web application firewall (WAF). Supported values are `off` and `on`.|
 |`min_tls_version`|String|Optional|The minimum TLS version that you want to allow. Allowed values are `1.1`, `1.2`, or `1.3`. |
 |`ssl`|String|Optional|Allowed values: `off`, `flexible`, `full`, `strict`, `origin_pull`.|
 |`automatic_https_rewrites`|String|Optional|Enable HTTPS rewrites. Allowed values are `off` and `on`. |
-|`opportunistic_encryption`|String|Optional|Allowed values: `off`, and `on`.|
-|`cname_flattening`|String|Optional|Allowed values: `flatten_at_root`, `flatten_all`, and `flatten_none`.|
+|`opportunistic_encryption`|String|Optional|Supported values are `off` and `on`.|
+|`cname_flattening`|String|Optional|Supported values are `flatten_at_root`, `flatten_all`, and `flatten_none`.|
+|`always_use_https`|String|Optional|Supported values are `off` and `on`.|
+|`ipv6`|String|Optional|Supported values are `off` and `on`.|
+|`browser_check`|String|Optional|Enable a client browser check to look for common HTTP headers that are used by malicious users. If HTTP headers are found,  access to your website is blocked. Supported values are `off` and `on`.|
+|`hotlink_protection`|String|Optional|Supported values are `off` and `on`.|
+|`http2`|String|Optional|Supported values are `off` and `on`.|
+|`image_load_optimization`|String|Optional|Supported values are `off` and `on`.| 
+|`image_size_optimization`|String|Optional|Supported values are `lossless`,  `off`, and `lossy`.| 
+|`ip_geolocation`|String|Optional|Supported values are `off` and `on`.| 
+|`origin_error_page_pass_thru`|String|Optional|Supported values are `off` and `on`.| 
+|`brotli`|String|Optional|Supported values are `off` and `on`.| 
+|`pseudo_ipv4`|String|Optional|Supported values are `overwrite_header`, `off`, and `add_header`.|
+|`prefetch_preload`|String|Optional|Supported values are `off` and `on`.| 
+|`response_buffering`|String|Optional|Supported values are `off` and `on`.|
+|`script_load_optimization`|String|Optional|Supported values are `off` and `on`.| 
+|`server_side_exclude`|String|Optional|Supported values are `off` and `on`.| 
+|`tls_client_auth`|String|Optional|Supported values are `off` and `on`.| 
+|`true_client_ip_header`|String|Optional|Supported values are `off` and `on`.| 
+|`websockets`|String|Optional|Supported values are `off` and `on`.| 
+
 
 ### Output parameters
 {: #cis-domain-settings-output}
@@ -433,6 +462,13 @@ Review the input parameters that you can specify for your resource.
 |`enabled`|Boolean|Optional|If set to **true**, the load balancer is enabled and can receive network traffic. If set to **false**, the load balancer is not enabled.|
 |`proxied`|Boolean|Optional|Indicates if the host name receives origin protection by {{site.data.keyword.cis_full_notm}}. The default value is **false**.|
 |`ttl`|Integer|Optional|The time to live (TTL) in seconds for how long the load balancer must cache a resolved IP address for a DNS entry before the load balancer must look up the IP address again. If your global load balancer is proxied, this value is automatically set and cannot be changed. If your global load balancer is unproxied, you can enter a value that is 120 or greater. |
+|`region_pools`| Set of Strings | Optional | A set of containing mappings of region and country codes to the list of pool of IDs. IDs are ordered by their failover priority.|
+|`region_pools.region`| String | Required | Enter a region code. Should not specify the multiple entries with the same region. |
+|`region_pools.pool_ids`| String | Required | A list of pool IDs in failover priority for the provided region.|
+|`pop_pools`| Set of Strings | Optional | A set of mappings of the IBM Point-of-Presence (PoP) identifiers to the list of pool IDs (ordered by their failover priority) for the PoP (datacenter). This feature is only available to the enterprise customers. |
+|`pop_pools.pop`| Strings | Required | Enter a 3-letter code. Should not specify the multiple entries with the same PoP. |
+|`pop_pools.pool_ids`| Strings | Required | A list of pool IDs in failover priority to use for the traffic reaching the provided PoP. |
+
 
 ### Output parameters
 {: #cis-global-lb-output}
@@ -595,7 +631,10 @@ Review the input parameters that you can specify for your resource.
 |----|-----------|-----------|---------------------|
 |`cis_id`|String|Required|The ID of the {{site.data.keyword.cis_full_notm}} instance.|
 |`name`|String|Required|A short name (tag) for the pool. Only alphanumeric characters, hyphens, and underscores are allowed.|
-|`origins`|Array|Required|A list of origins within this pool. Traffic directed to this pool is balanced across all currently healthy origins, provided the pool itself is healthy. It’s a complex value. See description below.|
+|`origins`|List of origins|Required|A list of origin servers within this pool. Traffic directed to this pool is balanced across all currently healthy origins, provided the pool itself is healthy. |
+|`origins.name`|String|Required|The name of the origin server.|
+|`origins.address`|String|Required|The IPv4 or IPv6 address of the origin server. You can also provide a hostname for the origin that is publicly accessible. Make sure that the hostname resolves to the origin server, and is not proxied by {{site.data.keyword.cis_full_notm}}.|
+|`origins.enabled`|Boolean|Optional|If set to **true**, the origin sever is enabled within the origin pool. If set to **false**, the origin server is not enabled. Disabled origin servers cannot receive incoming network traffic and are excluded from {{site.data.keyword.cis_full_notm}} health checks.|
 |`check_regions`|Array|Required| A list of regions (specified by region code) from which to run health checks. If the list is empty, all regions are included, but you must use the Enterprise plan. This is the default setting. Region codes can be found on the [Cloudflare’s website](https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/#geo-steering-enterprise-plans-only){: external}.
 |`description`|String|Optional|A description for your origin pool. | 
 |`enabled`|Boolean|Required|If set to **true**, this pool is enabled and can receive incoming network traffic. Disabled pools do not receive network traffic and are excluded from health checks. Disabling a pool causes any load balancers that use the pool to failover to the next pool (if applicable).|
@@ -615,6 +654,9 @@ Review the output parameters that you can access after your resource is created.
 |`id`|String| The ID of the origin pool. |
 |`created_on`|String|The RFC3339 timestamp of when the origin pool was created. |
 |`modified_on`|String|The RFC3339 timestamp of when the origin pool was last modified. |
+|`health`|String|The status of the origin pool.|
+|`origins`|List|A list of origin servers that belong to the load balancer pool.|
+|`origins.healthy`|Boolean|If set to **true**, the origin server is healthy. If set to **false**, the origin server is not healthy.|
 
 ### Import
 {: #cis-origin-pool-import}
@@ -638,4 +680,110 @@ terraform import ibm_cis_origin_pool.myorg 1aaaa111111aa11111111111a1a11a1:crn:v
 
 
 
+
+
+## `ibm_cis_rate_limit`
+{: #rate-limit}
+
+Create, update, or delete custom rate limits for an IBM Cloud Internet Services domain. For more information about rate limits, see [Rate limiting](/docs/cis?topic=cis-cis-rate-limiting).
+{: shortdesc}
+
+Rate limiting rule can only be created when you have the enterprise plan for IBM Cloud Internet Services.
+{: note}
+
+### Sample Terraform code
+{: #rate-limit-sample}
+
+The following example shows how you can add a rate limit to an IBM Cloud Internet Services domain. 
+
+```
+resource "ibm_cis_rate_limit" "ratelimit" {
+    cis_id = data.ibm_cis.cis.id
+    domain_id = data.ibm_cis_domain.cis_domain.id
+    threshold = 20
+    period = 900
+    match {
+        request {
+            url = "*.example.org/path*"
+            schemes = ["HTTP", "HTTPS"]
+            methods = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"]
+        }
+        response {
+            status = [200, 201, 202, 301, 429]
+            origin_traffic = false
+        }
+    }
+    action {
+        mode = "ban"
+        timeout = 43200
+        response {
+            content_type = "text/plain"
+            body = "custom response body"
+        }
+    }
+    correlate {
+        by = "nat"
+    }
+    disabled = false
+    description = "example rate limit for a zone"
+}
+```
+{: codeblock}
+
+### Input parameter 
+{: #rate-limit-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|-----------|---------------------|
+|`cis_id`|String|Required|The ID of the IBM Cloud Internet Services instance. |
+|`domain_id`|String|Required|The ID of the domain where you want to add a rate limit. |
+|`threshold`|Integer|Required|The number of requests received within a specific time period (`period`) before connections to the domain are refused. The threshold value must be between 2 and 1000000. |
+|`period`|Integer|Required|The period of time in seconds where incoming requests to a domain are counted. If the number of requests exceeds the `threshold`, then connections to the domain are refused. The `period` value must be between 1 and 3600. | 
+|`match`|List of matching rules|Optional|A list of characteristics that incoming network traffic must match to be counted towards the `threshold`. | 
+|`match.request`|List of request characteristics|Optional|A list of characteristics that the incoming request must match to be counted towards the `threshold`. If this list is not provided, all incoming requests are counted towards the `threshold`.|
+|`match.request.url`|String|Optional|The URL that the request uses. Wildcard domains are expanded to match applicable traffic, query strings are not matched. You can use `*` to apply the rule to all URLs. The maximum length of this value can be 1024.|
+|`match.request.schemes`|Set of strings|Optional|The scheme of the request that determines the desired protocol. Supported values are `HTTPS`, `HTTP,HTTPS`, and `ALL`. |
+|`match.request.methods`|Set of strings|Optional|The HTTP methods that the incoming request can use to be counted towards the `threshold`. Supported values are `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, and `ALL`. You can also combine multiple methods and seperate them with a comma. For example `POST,PUT`. |
+|`response`|List of HTTP responses|Optional|A list of HTTP responses that outgoing packets must match before they can be returned to the client. If an incoming request matches the request criteria, but the reponse does not match the response criteria, then the request packet is not counted towards the `threshold`.| 
+|`response.status`|Set of integers|Optional|The HTTP status that the response must have so that the request is counted towards the `threshold`. You can specify one (`403`) or multiple (`401,403`) HTTP response codes. The value that you enter must be between 100 and 999. |
+|`response.header`|List of response headers|Optional|A list of HTTP response headers that the response packet must match so that the original request is counted towards the `threshold`.|
+|`response.header.name`|String|Optional|The name of the HTTP response header.|
+|`response.header.op`|String|Optional|The operator that you want to apply to your HTTP response header. Supported values are `eq` (equals) and `ne` (not equals). |
+|`response.header.value`|String|Optional|The value that the HTTP response header must match. |
+|`action`|List of actions|Required|A list of actions that you want to perform when incoming requests exceed the specified `threshold`.|
+|`action.mode`|String|Required|The type of action that you want to perform. Supported values are `simulate`, `ban`, `challenge`, or `js_challenge`. For more information about each type, see [Configure response](/docs/cis?topic=cis-cis-rate-limiting#rate-limiting-configure-response).|
+|`action.timeout`|Integer|Optional|The time to wait in seconds before the action is performed. The timeout must be equal or greater than the `period` and can be provided only for actions of type `simulate` or `ban`. The value that you enter must be between 10 and 86400.|
+|`action.response`|List of reponse information|Optional|A list of information that you want to return to the client, such as the `content-type` and specific body information. The information provided in this parameter overrides the default HTML error page that is returned to the client. You can use this option only for actions of type `simulate` or `ban`.  |
+|`action.response.content_type`|String|Optional|The `content-type` of the body that you want to return. Supported values are `text/plain`, `text/xml`, and `application/json`.|
+|`action.response.body`|String|Optional|The body of the reponse that you want to return to the client. The information that you provide must match the `action.response.content_type` that you specified. The value that you enter can have a maximum length of 1024.|
+|`disabled`|Boolean|Optional|Set to **true** to disable rate limiting for a domain and **false** to enable rate limiting.|
+|`description`|String|Optional|Enter a description for your rate limiting rule. |
+|`correlate`|List of NAT-based rate limits|Optional|Enable NAT-based rate limiting.|
+|`correlate.by`|String|Optional|Enter `nat` to enable NAT-based rate limiting.|
+|`bypass`|List of bypass criteria|Optional|A list of key-value pairs that, when matched, allow the rate limiting rule to be ignored. For example, use this option if you want to ignore the rate limiting for certain URLs.  |
+|`bypass.name`|String|Optional|The name of the key that you want to apply. Supported values are `url`. |
+|`bypass.value`|String|Optional|The value of the key that you want to match. When `bypass.name` is set to `url`, `bypass.value` must be set to the URL that you want to exclude from the rate limiting rule. |
+
+### Output parameter
+{: #rate-limit-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The ID of the rate limiting rule in the format `<rule_ID>:<domain_ID>:<cis_ID>`. 
+
+### Import
+{: #rate-limit-import}
+
+The resource can be imported by using the ID. 
+
+```
+terraform import ibm_cis_rate_limit.ratelimit <rule_id>:<domain-id>:<crn>
+```
+{: pre}
 

@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-17"
+lastupdated: "2020-08-03"
 
 keywords: terraform identity and access, terraform iam, terraform permissions, terraform iam policy
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Terraform `provider` block configuration
 {: #provider-reference}
@@ -30,10 +40,10 @@ subcollection: terraform
 Review what credentials and information you need to provide to work with {{site.data.keyword.cloud_notm}} resources and data sources with the {{site.data.keyword.cloud_notm}} Provider plug-in for Terraform.
 {: shortdesc}
 
-## Overview of required input parameters for each resource category
+## Required input parameters for each resource category
 {: #required-parameters}
 
-Review what information you must provide in the `provider` block to work with a specific resource category. The values in this table are required values. To retrieve the values or view additional parameters that you can specify, see the [provider reference](#provider-parameter-ov). 
+Review what information you must provide in the `provider` block to work with a specific resource category. The values in this table are required values. To retrieve the values or view additional parameters that you can specify, see the [Supported input parameters](#provider-parameter-ov). 
 {: shortdesc}
 
 |Resource|Required input parameters|
@@ -54,11 +64,11 @@ Review what parameters you can set in the `provider` block of your Terraform con
 
 |Input parameter|Required/ optional|Description|
 |-------------|--------|-----------------------|
-|`iaas_classic_api_key`|Required for classic infrastructure|The API key to access classic {{site.data.keyword.cloud_notm}} infrastructure. For more information about how to retrieve your API key, see [Managing classic infrastructure API keys](/docs/iam?topic=iam-classic_keys). This value is required when you want to work with classic infrastructure resources. You can specify the API key in the `provider` block or retrieve the value from the `IAAS_CLASSIC_API_KEY` environment variable.|
-|`iaas_classic_username`|Required for classic infrastructure|The user name to access classic {{site.data.keyword.cloud_notm}} infrastructure. For more information about how to retrieve your user name, see [Managing classic infrastructure API keys](/docs/iam?topic=iam-classic_keys). This value is required when you want to work with classic infrastructure resources. You can specify the user name in the `provider` block or retrieve the value from the `IAAS_CLASSIC_USERNAME` environment variable.|
+|`iaas_classic_api_key`|Required for classic infrastructure|The API key to access classic {{site.data.keyword.cloud_notm}} infrastructure. For more information about how to retrieve your API key, see [Managing classic infrastructure API keys](/docs/account?topic=account-classic_keys). This value is required when you want to work with classic infrastructure resources. You can specify the API key in the `provider` block or retrieve the value from the `IAAS_CLASSIC_API_KEY` environment variable.|
+|`iaas_classic_username`|Required for classic infrastructure|The user name to access classic {{site.data.keyword.cloud_notm}} infrastructure. For more information about how to retrieve your user name, see [Managing classic infrastructure API keys](/docs/account?topic=account-classic_keys). This value is required when you want to work with classic infrastructure resources. You can specify the user name in the `provider` block or retrieve the value from the `IAAS_CLASSIC_USERNAME` environment variable.|
 |`iaas_classic_endpoint_url`|Optional|The API endpoint that you want to use to access {{site.data.keyword.cloud_notm}} classic infrastructure. If this value is not specified, `https://api.softlayer.com/rest/v3` is used by default. You can specify the URL in the `provider` block or retrieve the value from the `IAAS_CLASSIC_ENDPOINT_URL`. |
 |`iaas_classic_timeout`|Optional|The number of seconds to wait until the classic infrastructure API is considered unavailable. The default values is `60`. You can specify this information in the `provider` block or retrieve it from the `IAAS_CLASSIC_TIMEOUT` environment variable.|
-|`ibmcloud_api_key`|Required|The {{site.data.keyword.cloud_notm}} API key to authenticate with the {{site.data.keyword.cloud_notm}} platform. For more information about how to create an API key, see [Creating an API key](/docs/iam?topic=iam-userapikey#create_user_key). You can specify the API key in the `provider` block or retrieve the value from the `IC_API_KEY` or `IBMCLOUD_API_KEY` environment variables. If both environment variables are defined, `IC_API_KEY` takes precedence.|
+|`ibmcloud_api_key`|Required|The {{site.data.keyword.cloud_notm}} API key to authenticate with the {{site.data.keyword.cloud_notm}} platform. For more information about how to create an API key, see [Creating an API key](/docs/account?topic=account-userapikey#create_user_key). You can specify the API key in the `provider` block or retrieve the value from the `IC_API_KEY` or `IBMCLOUD_API_KEY` environment variables. If both environment variables are defined, `IC_API_KEY` takes precedence.|
 |`ibmcloud_timeout`|Optional|The number of seconds that you want to wait until the {{site.data.keyword.cloud_notm}} API is considered unavailable. The default value is `60`. You can specify the timeout in the `provider` block or retrieve the value from the `IC_TIMEOUT` or `IBMCLOUD_TIMEOUT` environment variables. If both variables are specified, `IC_TIMEOUT` takes precedence.|
 |`function_namespace`|Required for Functions|The {{site.data.keyword.openwhisk}} namespace that you want to use. The namespace is composed from your Cloud Foundry organization and space in the format `<org>_<space>`. You can specify the namespace in your `provider` block or retrieve the value from the `FUNCTION_NAMESPACE` environment variable. 
 |`generation`|Required for VPC infrastructure|The generation of Virtual Private Cloud infrastructure that you want to use. Supported values are `1` for VPC generation 1, and `2` for VPC generation 2 infrastructure. If this value is not specified, `2` is used by default. You can specify the generation in your `provider` block or retrieve the value from the `IC_GENERATION` or `IBMCLOUD_GENERATION` environment variables. If both environment variables are defined, `IC_GENERATION` takes precedence.|
@@ -136,4 +146,38 @@ You can retrieve the values for the provider input parameters from environment v
    terraform plan
    ```
    {: pre} 
+   
+
+## Creating multiple `provider` configurations
+{: #multiple-providers}
+
+You can add multiple `provider` configurations within the same Terraform configuration file to create your {{site.data.keyword.cloud_notm}} resources with different provider parameters. 
+{: shortdesc}
+
+Creating multiple `provider` configurations is useful when you want to use different input parameters, such as different regions, zones, infrastructure generations, or accounts to create the {{site.data.keyword.cloud_notm}} resources in your Terraform configuration file. For more information, see [Multiple Provider Instances](https://www.terraform.io/docs/configuration/providers.html#alias-multiple-provider-instances){: external}. 
+
+1. In your Terraform configuration or `provider.tf` file, create multiple provider blocks with the same provider name. The provider configuration without an alias is considered the default provider configuration and is used for every resource where you do not specify a specific provider configuration. Any additional provider configurations must include an alias so that you can reference this provider from your resource definition.
+   ```
+   provider "ibm" {
+     ibmcloud_api_key    = var.ibmcloud_api_key
+     region = "us-south"
+   }
+   
+   provider "ibm" {
+     alias = "east"
+     ibmcloud_api_key    = var.ibmcloud_api_key
+     region = "us-east"
+   }
+   ```
+   {: codeblock}
+   
+2. In your resource definition, specify the provider configuration that you want to use. If you do not specify a provider, the default provider configuration is used.
+   ```
+   resource "ibm_container_cluster" "cluster" {
+     provider = ibm.east
+   ...
+   }
+   ```
+   {: codeblock}
+   
    

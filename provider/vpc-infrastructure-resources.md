@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-17"
+lastupdated: "2020-08-10"
 
 keywords: terraform provider plugin, terraform vpc gen 1, terraform vpc, terraform generation 1 compute, terraform vpc resources
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
-{:deprecated: .deprecated} 
+{:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # VPC infrastructure resources (Gen 1 compute)
 {: #vpc-gen1-resources}
@@ -30,6 +40,120 @@ subcollection: terraform
 Before you start working with your resource, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
 {: important}
 
+
+## `ibm_dl_connection`
+{: #dl-connection}
+
+Create, update and delete for the transit gateway connection resource. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #dl-connection-sample}
+
+The following example shows how to create, update and delete a transit gateway connection by using a transit gateway resource.
+
+```
+resource "ibm_tg_connection" "test_ibm_tg_connection"{
+  gateway = ibm_tg_gateway.test_tg_gateway.id
+  network_type = "vpc"
+  name= "myconnection"
+  network_id = ibm_is_vpc.test_tg_vpc.resource_crn
+}
+
+```
+{: codeblock}
+
+### Input parameters
+{: #dl-connection-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------- |
+| `gateway` | String | Required | Enter the transit gateway identifier. | Yes |
+| `name` | String| Optional | Enter a name. If unentered, the default name is provided based on the network type, such as `vpc` for network type VPC and `classic` for network type classic. | No|
+| `network_type` | String | Required | Enter the network type. Allowed values are `classic` and `vpc`. | Yes |
+| `network_id` |  String | Optional | Enter the ID of the network being connected through this connection. This parameter is required for network type 'vpc', it is CRN of the VPC to be connected. This field is required to be unspecified for network type 'classic'. For example: crn:v1:bluemix:public:is:us-south:a/123456::vpc:4727d842-f94f-4a2d-824a-9bc9b02c523b | Yes |
+
+### Output parameters
+{: #dl-connection-output}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+| `id` | String | The unique identifier of the gateway ID or connection ID resource.|
+| `connection_id` | String | The unique identifier for transit gateway connection to network. |
+| `created_at` | String |The date and time the connection was created. | 
+| `updated_at` | String | Last updated date and time of the connection. |
+| `status` | String | The configuration status of the connection, such as **attached**, **failed**, **pending**, **deleting**. |
+
+### Import
+{: #connection-import}
+
+`ibm_tg_connection` can be imported by using transit gateway id and connection id.
+
+**Example**
+```
+terraform import ibm_tg_connection.example 5ffda12064634723b079acdb018ef308/cea6651a-bd0a-4438-9f8a-a0770bbf3ebb
+```
+{: pre}
+
+## `ibm_dl_gateway`
+{: #dl-gateway}
+
+Create, update and delete for the transit gateway connection resource. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #dl-gatewy-sample}
+
+The following example shows how to create, update and delete a transit gateway connection by using a transit gateway resource.
+
+```
+resource "ibm_tg_gateway" "new_tg_gw"{
+  name="transit-gateway-1"
+  location="us-south"
+  global=true
+  resource_group="30951d2dff914dafb26455a88c0c0092"
+}
+
+```
+{: codeblock}
+
+### Input parameters
+{: #dl-gateway-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------- |
+| `name` | String | Required | The unique user-defined name for the gateway. For example: `myGateway` | No |
+| `location` | Integer| Optional | The location of the transit gateway. For example, `us-south` | Yes |
+| `global` | Boolean | Required | The gateways with global routing (true) to connect to the networks outside their associated region. | No |
+| `resource_group` |  String | Optional | The resource group ID where the transit gateway to be created. | Yes |
+
+### Output parameters
+{: #dl-gateway-output}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+| `id` | String | The unique identifier of the gateway ID or connection ID resource.|
+| `crn` | String | The CRN of the gateway.|
+| `created_at` | String | The date and time the connection is created. | 
+| `updated_at` | String | The date and time the connection is last updated. |
+| `status` | String | The configuration status of the connection, such as **Available**, **pending**. |
+
+### Import
+{: #gateway-import}
+
+`ibm_tg_gateway` can be imported by using transit gateway id and connection id.
+
+**Example**
+```
+terraform import ibm_tg_gateway.example 5ffda12064634723b079acdb018ef308
+```
+{: pre}
 
 ## `ibm_is_floating_ip`
 {: #provider-floating-ip}
@@ -91,7 +215,6 @@ Review the output parameters that you can access after your resource is created.
 | ------------- |-------------| -------------- |
 | `address` | String | The floating IP address that was created. | 
 | `id` | String | The unique identifier of the floating IP address. | 
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the floating IP address. | 
 | `status` | String | The provisioning status of the floating IP address. |
 
 ### Timeouts
@@ -118,7 +241,7 @@ IKE is an IPsec (Internet Protocol Security) standard protocol that is used to e
 resource "ibm_is_ike_policy" "example" {
     name = "test"
     authentication_algorithm = "md5"
-    encryption_algorithm = "3des"
+    encryption_algorithm = "triple_des"
     dh_group = 2
     ike_version = 1
 }
@@ -131,15 +254,15 @@ resource "ibm_is_ike_policy" "example" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPsec peers. Available options are `md5`, `sha1`, or `sha256`. |
-| `dh_group` | Integer | Required | Enter the Diffie-Hellman group that you want to use for the encryption key. Available options are `2`, `5`, or `14`. |
-| `encryption_algorithm` | String | Required | Enter the algorithm that you want to use to encrypt data. Available options are: `3des`, `aes128`, or `aes256`. | 
-| `ike_version` | Integer | Optional | Enter the IKE protocol version that you want to use. Available options are `1`, or `2`. |
-| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encyrption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 28800 seconds is used. | 
-| `name` | String | Required | Enter a name for your IKE policy. | 
-| `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the IKE policy. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the IKE policy is created in the `default` resource group. | 
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------- |
+| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPsec peers. Available options are `md5`, `sha1`, or `sha256`. | No |
+| `dh_group` | Integer | Required | Enter the Diffie-Hellman group that you want to use for the encryption key. Available options are `2`, `5`, or `14`. | No |
+| `encryption_algorithm` | String | Required | Enter the algorithm that you want to use to encrypt data. Available options are: `triple_des`, `aes128`, or `aes256`. | No |
+| `ike_version` | Integer | Optional | Enter the IKE protocol version that you want to use. Available options are `1`, or `2`. | No |
+| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encryption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 28800 seconds is used. | No | 
+| `name` | String | Required | Enter a name for your IKE policy. |  No |
+| `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the IKE policy. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the IKE policy is created in the `default` resource group. | Yes |
 
 ### Output parameters
 {: #ike-output}
@@ -152,7 +275,6 @@ Review the output parameters that you can access after your resource is created.
 | `href`| String| The canonical URL that was assigned to your IKE policy. | 
 | `id` | String | The unique identifier of the IKE policy that you created. |
 | `negotiation_mode` | String | The negotiation mode that was set for your IKE policy. Only `main` is supported. | 
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the IKE policy. | 
 | `vpn_connections`| List | A collection of VPN connections that use the IKE policy. Every connection is listed with a VPC connection `name`, `id`, and `canonical URL`. | 
 
 ## `ibm_is_image`
@@ -178,13 +300,13 @@ resource "ibm_is_image" "test_is_images" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required|The descriptive name used to identify an image.|
-|`href`|String|Required| The path of an image to be uploaded.|
-|`operating_system`|String|Required|Description of underlying OS of an image.|
-|`resource_group`|String|Optional|The resource group ID for this image.|
-|`tags`|Array of strings|Optional|A list of tags that you want to your image. Tags can help you find the image more easily later.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ----- |
+|`name`|String|Required|The descriptive name used to identify an image.| No |
+|`href`|String|Required| The path of an image to be uploaded.| No |
+|`operating_system`|String|Required|Description of underlying OS of an image.| No |
+|`resource_group`|String|Optional|The resource group ID for this image.| Yes |
+|`tags`|Array of strings|Optional|A list of tags that you want to your image. Tags can help you find the image more easily later.| No |
 
 ### Output parameters
 {: #image-output}
@@ -214,6 +336,8 @@ Create, update, or delete a {{site.data.keyword.vsi_is_short}} instance.
 ### Sample Terraform code
 {: #instance-sample}
 
+#### Example for creating an instance in a VPC
+
 ```
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "testvpc"
@@ -228,7 +352,7 @@ resource "ibm_is_subnet" "testacc_subnet" {
 
 resource "ibm_is_ssh_key" "testacc_sshkey" {
   name       = "testssh"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCKVmnMOlHKcZK8tpt3MP1lqOLAcqcJzhsvJcjscgVERRN7/9484SOBJ3HSKxxNG5JN8owAjy5f9yYwcUg+JaUVuytn5Pv3aeYROHGGg+5G346xaq3DAwX6Y5ykr2fvjObgncQBnuU5KHWCECO/4h8uWuwh/kfniXPVjFToc+gnkqA+3RKpAecZhFXwfalQ9mMuYGFxn+fwn8cYEApsJbsEmb0iJwPiZ5hjFC8wREuiTlhPHDgkBLOiycd20op2nXzDbHfCHInquEe/gYxEitALONxm0swBOwJZwlTDOB7C6y2dzlrtxr1L59m7pCkWI4EtTRLvleehBoj3u7jB4usR"
+  public_key = "<public_key>"
 }
 
 resource "ibm_is_instance" "testacc_instance" {
@@ -256,6 +380,87 @@ resource "ibm_is_instance" "testacc_instance" {
   }
 }
 ```
+{: codeblock}
+
+#### Example for creating an instance with custom security group rules
+{: #custom-sec-group-rules}
+
+The following example shows how you can create a virtual server instance with custom security group rules. Note that the security group, security group rules, and the virtual server instance must be created in a specific order to meet the dependencies of the individual resources. To force the creation in a specific order, you use the [`depends_on` parameter](https://www.terraform.io/docs/configuration/resources.html){: external}. If you do not provide this parameter, all resources are created at the same time which might lead to resource dependency errors during the provisioning of your virtual server, such as `The security group to attach to is not available`.
+
+```
+resource "ibm_is_vpc" "testacc_vpc" {
+    name = "test"
+}
+
+resource "ibm_is_security_group" "testacc_security_group" {
+    name = "test"
+    vpc = ibm_is_vpc.testacc_vpc.id
+}
+
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
+    group = ibm_is_security_group.testacc_security_group.id
+    direction = "inbound"
+    remote = "127.0.0.1"
+    depends_on = [ibm_is_security_group.testacc_security_group]
+ }
+
+ resource "ibm_is_security_group_rule" "testacc_security_group_rule_icmp" {
+    group = ibm_is_security_group.testacc_security_group.id
+    direction = "inbound"
+    remote = "127.0.0.1"
+    icmp {
+        code = 20
+        type = 30
+    }
+    depends_on = [ibm_is_security_group_rule.testacc_security_group_rule_all]
+
+ }
+
+ resource "ibm_is_security_group_rule" "testacc_security_group_rule_udp" {
+    group = ibm_is_security_group.testacc_security_group.id
+    direction = "inbound"
+    remote = "127.0.0.1"
+    udp {
+        port_min = 805
+        port_max = 807
+    }
+    depends_on = [ibm_is_security_group_rule.testacc_security_group_rule_icmp]
+ }
+
+ resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
+    group = ibm_is_security_group.testacc_security_group.id
+    direction = "outbound"
+    remote = "127.0.0.1"
+    tcp {
+        port_min = 8080
+        port_max = 8080
+    }
+    depends_on = [ibm_is_security_group_rule.testacc_security_group_rule_udp]
+ }
+
+resource "ibm_is_instance" "testacc_instance" {
+  name    = "testinstance"
+  image   = "7eb4e35b-4257-56f8-d7da-326d85452591"
+  profile = "b-2x8"
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.testacc_subnet.id
+    security_groups = [ibm_is_security_group.testacc_security_group.id]
+  }
+
+  vpc  = ibm_is_vpc.testacc_vpc.id
+  zone = "us-south-1"
+  keys = [ibm_is_ssh_key.testacc_sshkey.id]
+  depends_on = [ibm_is_security_group_rule.testacc_security_group_rule_tcp]
+
+  //User can configure timeouts
+  timeouts {
+    create = "90m"
+    delete = "30m"
+  }
+}
+```
+{: codeblock}
 
 ### Input parameters
 {: #instance-input}
@@ -263,29 +468,29 @@ resource "ibm_is_instance" "testacc_instance" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-|`name`|String|Optional|The instance name.|
-|`vpc`|String|Required|The ID of the VPC where you want to create the instance.|
-|`zone`|String|Required|The name of the VPC zone where you want to create the instance.|
-|`profile`|String|Required|The name of the profile that you want to use for your instance. To list supported profiles, run `ibmcloud is instance-profiles`.|
-|`image`|String|Required|The ID of the virtual server image that you want to use. To list supported images, run `ibmcloud is images`.|
-|`boot_volume`|List|Optional|A list of boot volumes for an instance.|
-|`boot_volume.name`|String|Optional|The name of the boot volume.|
-|`boot_volume.encryption`|String|Optional|The type of encryption to use for the boot volume.|
-|`keys`|List|Required|A comma separated list of SSH keys that you want to add to your instance.|
-|`primary_network_interface`|List|Required|A nested block describing the primary network interface of this instance. Only one primary network interface can be specified for an instance.|
-|`primary_network_interface.name`|String|Optional|The name of the network interface.|
-|`primary_network_interface.subnet`|String|Required|The ID of the subnet.|
-|`primary_network_interface.security_groups`|List of strings|Optional|A comma separated list of security groups to add to the primary network interface.|
-|`network_interfaces`|List|Optional|A list of additional network interfaces that are set up for the instance.|
-|`network_interfaces.name`|String|Optional|The name of the network interface.|
-|`network_interfaces.subnet`|String|Required|The ID of the subnet.|
-|`network_interfaces.security_groups`|List of strings|Optional|A comma separated list of security groups to add to the primary network interface.|
-|`volumes`|List|Optional|A comma separated list of volume IDs to attach to the instance.|
-|`user_data`|String|Optional|User data to transfer to the instance.|
-|`resource_group`|String|Optional|The ID of the resource gorup where you want to create the instance.|
-|`tags`|Array of strings|Optional|A list of tags that you want to add to your instance. Tags can help you find your instance more easily later.|
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------- |
+|`name`|String|Optional|The instance name.| No |
+|`vpc`|String|Required|The ID of the VPC where you want to create the instance.| Yes |
+|`zone`|String|Required|The name of the VPC zone where you want to create the instance.| Yes |
+|`profile`|String|Required|The name of the profile that you want to use for your instance. To list supported profiles, run `ibmcloud is instance-profiles`.| Yes |
+|`image`|String|Required|The ID of the virtual server image that you want to use. To list supported images, run `ibmcloud is images`.| No |
+|`boot_volume`|List|Optional|A list of boot volumes for an instance.| No |
+|`boot_volume.name`|String|Optional|The name of the boot volume.| No |
+|`boot_volume.encryption`|String|Optional|The type of encryption to use for the boot volume.| No |
+|`keys`|List|Required|A comma separated list of SSH keys that you want to add to your instance.| No |
+|`primary_network_interface`|List|Required|A nested block describing the primary network interface of this instance. Only one primary network interface can be specified for an instance.| No |
+|`primary_network_interface.name`|String|Optional|The name of the network interface.| No |
+|`primary_network_interface.subnet`|String|Required|The ID of the subnet.| No |
+|`primary_network_interface.security_groups`|List of strings|Optional|A comma separated list of security groups to add to the primary network interface.| No |
+|`network_interfaces`|List|Optional|A list of additional network interfaces that are set up for the instance.| Yes |
+|`network_interfaces.name`|String|Optional|The name of the network interface.| No |
+|`network_interfaces.subnet`|String|Required|The ID of the subnet.| No |
+|`network_interfaces.security_groups`|List of strings|Optional|A comma separated list of security groups to add to the primary network interface.| No |
+|`volumes`|List|Optional|A comma separated list of volume IDs to attach to the instance.| No |
+|`user_data`|String|Optional|User data to transfer to the instance.| No |
+|`resource_group`|String|Optional|The ID of the resource gorup where you want to create the instance.| Yes |
+|`tags`|Array of strings|Optional|A list of tags that you want to add to your instance. Tags can help you find your instance more easily later.| No |
 
 ### Output parameters
 {: #instance-output}
@@ -331,15 +536,15 @@ Review the output parameters that you can access after your resource is created.
 |`volume_attachments.volume_id`|String|The ID of the volume that is used in the volume attachment.|
 |`volume_attachments.volume_name`|String|The name of the volume that is used in the volume attachment.|
 |`volume_attachments.volume_crn`|String|The CRN of the volume that is used in the volume attachment.|
-|`resource_controller_url`|String|The URL of the {{site.data.keyword.cloud_notm}} dashboard that can be used to explore and view details about this instance.|
 
 ### Timeout
 {: #instance-timeout}
 
 The following timeouts are defined for the instance: 
 
-- **create**: The creation of the instance is considered failed when no response is received for 60 minutes. 
-- **delete**: The deletion of the instance is considered failed when no response is received for 60 minutes. 
+- **create**: The creation of the instance is considered failed when no response is received for 30 minutes. 
+- **update**: The update of the instance or the attachment of a volume to an instance is considered failed when no response is received for 30 minutes.
+- **delete**: The deletion of the instance is considered failed when no response is received for 30 minutes. 
 
 ### Import
 {: #instance-import}
@@ -365,7 +570,7 @@ Create, update, or cancel an IPSec policy.
 resource "ibm_is_ipsec_policy" "example" {
     name = "test"
     authentication_algorithm = "md5"
-    encryption_algorithm = "3des"
+    encryption_algorithm = "triple_des"
     pfs = "disabled"
 }
 ```
@@ -377,14 +582,14 @@ resource "ibm_is_ipsec_policy" "example" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPsec peers. Available options are `md5`, `sha1`, or `sha256`. |
-| `encryption_algorithm` | String | Required | Enter the algorithm that you want to use to encrypt data. Available options are: `3des`, `aes128`, or `aes256`. | 
-| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encyrption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 3600 seconds is used. | 
-| `name` | String | Required | Enter the name for your IPSec policy. |
-| `pfs` | String | Required | Enter the Perfect Forward Secrecy (PFS) protocol that you want to use during a session. Available options are `disabled`, `group_2`, `group_5`, and `group_14`. | 
-| `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the IPSec policy. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the IPSec policy is created in the `default` resource group. | 
+| Input parameter | Data type | Required/ optional | Description | Foces new resource |
+| ------------- |-------------| ----- | -------------- | ---------- |
+| `authentication_algorithm` | String | Required | Enter the algorithm that you want to use to authenticate IPsec peers. Available options are `md5`, `sha1`, or `sha256`. | No |
+| `encryption_algorithm` | String | Required | Enter the algorithm that you want to use to encrypt data. Available options are: `triple_des`, `aes128`, or `aes256`. |  No |
+| `key_lifetime` | Integer | Optional | Enter the time in seconds that your encryption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 3600 seconds is used. | No |
+| `name` | String | Required | Enter the name for your IPSec policy. | No |
+| `pfs` | String | Required | Enter the Perfect Forward Secrecy (PFS) protocol that you want to use during a session. Available options are `disabled`, `group_2`, `group_5`, and `group_14`. | No |
+| `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the IPSec policy. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the IPSec policy is created in the `default` resource group. |  Yes |
 
 ### Output parameters
 {: #ipsec-policy-output}
@@ -396,7 +601,6 @@ Review the output parameters that you can access after your resource is created.
 | ------------- |-------------| -------------- |
 | `encapsulation_mode` | String | The encapsulation mode that was set for your IPSec policy. Only `tunnel` is supported. |
 | `id` | String | The unique identifier of the IPSec policy that you created. |
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the IPSec policy. | 
 | `transform_protocol` | String | The transform protocol that is used in your IPSec policy. Only the `esp` protocol is supported that uses the triple DES (3DES) encryption algorithm to encrypt your data. |
 | `vpn_connections`| List | A collection of VPN connections that use the IPSec policy. Every connection is listed with a VPC connection `name`, `id`, and `canonical URL`. | 
 
@@ -422,13 +626,13 @@ resource "ibm_is_lb" "lb" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required|The name of the VPC load balancer.|
-|`subnets`|Array|Required|List of the subnets IDs to connect to the load balancer.
-|`type`|String|Optional|The type of the load balancer. Default value `public`. Supported values `public` and `private`.|
-|`resource_group`|String|Optional| The resource group where the load balancer to be created.|
-|`tags`|List of strings|Optional|A list of tags that you want to add to your load balancer. Tags can help you find the load balanacer more easily later. |
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------- |
+|`name`|String|Required|The name of the VPC load balancer.| No |
+|`subnets`|Array|Required|List of the subnets IDs to connect to the load balancer.| No |
+|`type`|String|Optional|The type of the load balancer. Default value `public`. Supported values `public` and `private`.| Yes |
+|`resource_group`|String|Optional| The resource group where the load balancer to be created.| Yes |
+|`tags`|Array of strings|Optional|A list of tags that you want to add to your load balancer. Tags can help you find the load balancer more easily later. | No |
 
 ### Output parameters
 {: #lb-output}
@@ -444,7 +648,6 @@ Review the output parameters that you can access after your resource is created.
 |`status`|String|The status of the load balancer.|
 |`operating_status`|String|The operating status of this load balancer.|
 |`hostname`|String|The fully qualified domain name assigned to this load balancer.|
-|`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
 
 ### Import
 {: #lb-import}
@@ -461,8 +664,8 @@ terraform import ibm_is_lb.example <lb_ID>
 
 `ibm_is_lb` provides the following Timeouts. 
 
-- **create** - (Default 60 minutes) Used for creating Instance.
-- **delete** - (Default 60 minutes) Used for deleting Instance.
+- **create** - (Default 10 minutes) Used for creating Instance.
+- **delete** - (Default 10 minutes) Used for deleting Instance.
 
 ## `ibm_is_lb_listener`
 {: #lb-listener}
@@ -480,6 +683,7 @@ resource "ibm_is_lb_listener" "testacc_lb_listener" {
   lb       = "8898e627-f61f-4ac8-be85-9db9d8bfd345"
   port     = "9080"
   protocol = "http"
+  default_pool = "ibmcloud is load-balancer-pools <load_balancer_ID>"
 }
 
 resource "ibm_is_lb_pool" "webapptier-lb-pool" {
@@ -511,14 +715,14 @@ resource "ibm_is_lb_pool_member" "webapptier-lb-pool-member-zone1" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`lb`|String|Required|The load balancer unique identifier.|
-|`port`|Integer|Required|The listener port number. Valid range 1 to 65535.|
-|`protocol`|String|Required|The listener protocol. Supported values are `http`, `tcp`, and `https`.|
-|`default_pool`|String|Optional| The load balancer pool unique identifier.|
-|`certificate_instance`|String|Optional|The CRN of the certificate instance.|
-|`connection_limit`|Integer|Optional|The connection limit of the listener. Valid range 1 to 15000.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------- |
+|`lb`|String|Required|The load balancer unique identifier.| Yes |
+|`port`|Integer|Required|The listener port number. Valid range 1 to 65535.| No |
+|`protocol`|String|Required|The listener protocol. Supported values are `http`, `tcp`, and `https`.| No |
+|`default_pool`|String|Required| The load balancer pool unique identifier.| No |
+|`certificate_instance`|String|Optional|The CRN of the certificate instance.| No |
+|`connection_limit`|Integer|Optional|The connection limit of the listener. Valid range 1 to 15000.| No |
 
 ### Output parameters
 {: #lb-listener-output}
@@ -539,16 +743,16 @@ Review the output parameters that you can access after your resource is created.
 ```
 terraform import ibm_is_lb_listener.example <loadbalancer_ID>/<listener_ID>
 ```
-{: pre]
+{: pre}
 
 ### Timeouts
 {: #lb-listener-timeout}
 
 `ibm_is_lb_listener` provides the following timeouts:
 
-- **create** - (Default 60 minutes) Used for creating Instance.
-- **pdate** - (Default 60 minutes) Used for updating Instance.
-- **delete** - (Default 60 minutes) Used for deleting Instance.
+- **create** - (Default 10 minutes) Used for creating Instance.
+- **update** - (Default 10 minutes) Used for updating Instance.
+- **delete** - (Default 10 minutes) Used for deleting Instance.
 
 ## `ibm_is_lb_listener_policy`
 {: #lb-listener-policy}
@@ -629,21 +833,21 @@ resource "ibm_is_lb_listener_policy" "lb_listener_policy" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-|`lb`|String|Required|The ID of the load balancer for which you want to create a load balancer listener policy.| 
-|`listener`|String|Required|The ID of the load balancer listener.|
-|`action`|String|Required|The action that you want to specify for your policy. Supported values are `forward`, `redirect`, and `reject`.|
-|`priority`|Integer|Required|The priority of the load balancer policy. Low values indicate a high priority. The value must be between 1 and 10.|
-|`name`|String|Optional|The name for the load balancer policy. Names must be unique within a load balancer listener.|
-|`rules`|List of policy rules|Required|A list of rules that you want to apply to your load balancer policy. Note that rules can be created only. You cannot update the rules for a load balancer policy.|
-|`rules.condition`|String|Required|The condition that you want to apply to your rule. Supported values are `contains`, `equals`, and `matches_regex`.|
-|`rules.type`|String|Required|The data type where you want to apply the rule condition. Supported values are `header`, `hostname`,  and `path`|
-|`rules.value`|Integer|Required|The value that must be found in the HTTP header, hostname or path to apply the load balancer listener rule. The value that you define can be between 1 and 128 characters long.|
-|`rules.field`|Integer|Required|If you selected `header` as the data type where you want to apply the rule condition, enter the name of the HTTP header that you want to check. The name of the header can be between 1 and 128 characters long. |
-|`target_id`|Integer|Optional|When `action` is set to **forward**, specify the ID of the load balancer pool that the load balancer forwards network traffic to. |
-|`target_http_status_code`|Integer|Optional|When `action` is set to **redirect**, specify the HTTP response code that must be returned in the redirect response. Supported values are `301`, `302`, `303`, `307`, and `308`.  
-|`target_url`|Integer|Optional|When `action` is set to **redirect**, specify the URL that is used in the redirect response.| 
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ----- |
+|`lb`|String|Required|The ID of the load balancer for which you want to create a load balancer listener policy.|  Yes |
+|`listener`|String|Required|The ID of the load balancer listener.| Yes |
+|`action`|String|Required|The action that you want to specify for your policy. Supported values are `forward`, `redirect`, and `reject`.| Yes |
+|`priority`|Integer|Required|The priority of the load balancer policy. Low values indicate a high priority. The value must be between 1 and 10.| Yes |
+|`name`|String|Optional|The name for the load balancer policy. Names must be unique within a load balancer listener.| No |
+|`rules`|List of policy rules|Required|A list of rules that you want to apply to your load balancer policy. Note that rules can be created only. You cannot update the rules for a load balancer policy.| No |
+|`rules.condition`|String|Required|The condition that you want to apply to your rule. Supported values are `contains`, `equals`, and `matches_regex`.| No |
+|`rules.type`|String|Required|The data type where you want to apply the rule condition. Supported values are `header`, `hostname`,  and `path`| No |
+|`rules.value`|Integer|Required|The value that must be found in the HTTP header, hostname or path to apply the load balancer listener rule. The value that you define can be between 1 and 128 characters long.| No |
+|`rules.field`|Integer|Required|If you selected `header` as the data type where you want to apply the rule condition, enter the name of the HTTP header that you want to check. The name of the header can be between 1 and 128 characters long. | No |
+|`target_id`|Integer|Optional|When `action` is set to **forward**, specify the ID of the load balancer pool that the load balancer forwards network traffic to. | No |
+|`target_http_status_code`|Integer|Optional|When `action` is set to **redirect**, specify the HTTP response code that must be returned in the redirect response. Supported values are `301`, `302`, `303`, `307`, and `308`. | No | 
+|`target_url`|Integer|Optional|When `action` is set to **redirect**, specify the URL that is used in the redirect response.|  No |
 
 ### Output parameters
 {: #lb-listener-policy-output}
@@ -667,6 +871,100 @@ terraform import ibm_is_lb_listener_policy.example <lb_ID>/<listener_ID>/<policy
 ```
 {: pre}
 
+## `ibm_is_lb_listener_policy_rule`
+{: #lb-listener-policy-rule}
+
+Create, update, or delete a VPC load balancer listener policy rule.
+{: shortdesc}
+
+### Sample Terraform code
+{: #lb-listener-policy-rule-sample}
+
+```
+resource "ibm_is_lb" "lb2"{
+  name    = "mylb"
+  subnets = ["35860fed-c911-4936-8c94-f0d8577dbe5b"]
+}
+
+resource "ibm_is_lb_listener" "lb_listener2"{
+  lb       = ibm_is_lb.lb2.id
+  port     = "9086"
+  protocol = "http"
+}
+resource "ibm_is_lb_listener_policy" "lb_listener_policy" {
+  lb = ibm_is_lb.lb2.id
+  listener = ibm_is_lb_listener.lb_listener2.listener_id
+  action = "redirect"
+  priority = 2
+  name = "mylistener8"
+  target_http_status_code = 302
+  target_url = "https://www.redirect.com"
+  rules{
+      condition = "contains"
+      type = "header"
+      field = "1"
+      value = "2"
+  }
+}
+
+resource "ibm_is_lb_listener_policy_rule" "lb_listener_policy_rule" {
+  lb        = ibm_is_lb.lb2.id
+  listener  = ibm_is_lb_listener.lb_listener2.listener_id
+  policy    = ibm_is_lb_listener_policy.lb_listener_policy.policy_id
+  condition = "equals"
+  type      = "header"
+  field     = "MY-APP-HEADER"
+  value     = "New-value"
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #lb-listener-policy-rule-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description| Forces new resource | 
+|----|-----------|-----------|---------------------| ------ |
+|`lb`|String|Required|The ID of the load balancer for which you want to create a listener policy rule.| Yes |
+|`listener`|String|Required|The ID of the load balancer listener for which you want to create a policy rule.|  Yes |
+|`policy`|String|Required|The ID of the load balancer listener policy for which you want to create a policy rule.|  Yes |
+|`condition`|String|Required|The condition that you want to apply to your rule. Supported values are `contains`, `equals`, and `matches_regex`.| No |
+|`type`|String|Required|The object where you want to apply the rule. Supported values are `header`, `hostname`, and `path`.| No |
+|`value`|String|Required|The value that must match the rule condition. The value can be between 1 and 128 characters long. |  No |
+|`field`|String|Optional|If you set `type` to `header`, enter the HTTP header field where you want to apply the rule condition. | No |
+
+### Output parameters
+{: #lb-listener-policy-rule-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The ID of the load balancer listener policy rule. The ID is composed of ` <loadbalancer_ID>/<listener_ID>/<policy>ID>`. |
+|`status`|String|The status of the load balancer listener.|
+|`rule`|String|The ID of the rule|
+
+### Import
+{: #lb-listener-policy-rule-import}
+
+You can import the rule by using the ID.
+
+```
+terraform import ibm_is_lb_listener_policy.example <loadbalancer_ID>/<listener_ID>/<policy>ID>
+```
+{: pre}
+
+### Timeout
+{: #lb-listener-policy-rule-timeout}
+
+The following timeouts are configured for the resource: 
+
+- **Create**: The creation of the resource is considered failed if no response is received for 10 minutes. 
+- **Update**: The updaet of the resource is considered failed if no response is received for 10 minutes. 
+- **Delete**: The deletion of the resource is considered failed if no response is received for 10 minutes. 
 
 ## `ibm_is_lb_pool`
 {: #lb-pool}
@@ -696,20 +994,19 @@ resource "ibm_is_lb_pool" "testacc_pool" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required| The name of the pool.|
-|`lb` |String|Required|The load balancer unique identifier.|
-|`algorithm`|String|Required|The load balancing algorithm. Supported values are `round_robin`, `weighted_round_robin`, or `least_connections`.|
-|`protocol`|String|Required|The pool protocol. Supported values are `http`, and `tcp`.|
-|`health_delay`|Integer|Required|The health check interval in seconds. Interval must be greater than `timeout` value.|
-|`health_retries`|Integer|Required|The health check max retries.|
-|`health_timeout`|Integer|Required|The health check timeout in seconds.|
-|`health_type`|String|Required|The pool protocol. Supported values are `http`, and `tcp`.|
-|`health_monitor_url`|String|Optional|The health check url. This option is applicable only to the HTTP `health-type`.|
-|`health_monitor_port`|Integer|Optional|The health check port number.|
-|`session_persistence_type`|String|Optional|The session persistence type. Supported values are `source_ip`, `http_cookie`, and `app_cookie`.|
-|`session_persistence_cookie_name`|String|Optional|Session persistence cookie name. This option is applicable when `sessio_persistence_type` is set.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------ |
+|`name`|String|Required| The name of the pool.| No |
+|`lb` |String|Required|The load balancer unique identifier.| Yes |
+|`algorithm`|String|Required|The load balancing algorithm. Supported values are `round_robin`, `weighted_round_robin`, or `least_connections`.| No |
+|`protocol`|String|Required|The pool protocol. Supported values are `http`, and `tcp`.| No |
+|`health_delay`|Integer|Required|The health check interval in seconds. Interval must be greater than `timeout` value.| No |
+|`health_retries`|Integer|Required|The health check max retries.| No |
+|`health_timeout`|Integer|Required|The health check timeout in seconds.| No |
+|`health_type`|String|Required|The pool protocol. Supported values are `http`, and `tcp`.| No |
+|`health_monitor_url`|String|Optional|The health check url. This option is applicable only to the HTTP `health-type`.| No |
+|`health_monitor_port`|Integer|Optional|The health check port number.|  No |
+|`session_persistence_type`|String|Optional|The session persistence type. Only `source_ip` is supported.| No |
 
 ### Output parameters
 {: #lb-pool-output}
@@ -737,9 +1034,9 @@ terraform import ibm_is_lb_pool.example <loadbalancer_ID>/<pool_ID>
 
 `ibm_is_lb_pool` provides the following timeouts:
 
-- **create** - (Default 60 minutes) Used for creating Instance.
-- **update** - (Default 60 minutes) Used for updating Instance.
-- **delete** - (Default 60 minutes) Used for deleting Instance.
+- **create** - (Default 10 minutes) Used for creating Instance.
+- **update** - (Default 10 minutes) Used for updating Instance.
+- **delete** - (Default 10 minutes) Used for deleting Instance.
 
 ## `ibm_is_lb_pool_member`
 {: #lb-pool-member}
@@ -766,13 +1063,13 @@ resource "ibm_is_lb_pool_member" "testacc_lb_mem" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`pool`|String|Required| The load balancer pool unique identifier.|
-|`lb`|String|Required| The load balancer unique identifier.|
-|`port`|Integer|Required| The port number of the application running in the server member.|
-|`target_address`|String|Required|The IP address of the pool member.|
-|`weight`|Integer|Optional| Weight of the server member. This option takes effect only when the load balancing algorithm of its belonging pool is `weighted_round_robin`.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| --------- |
+|`pool`|String|Required| The load balancer pool unique identifier.| Yes |
+|`lb`|String|Required| The load balancer unique identifier.| Yes |
+|`port`|Integer|Required| The port number of the application running in the server member.| No |
+|`target_address`|String|Required|The IP address of the pool member.| No |
+|`weight`|Integer|Optional| Weight of the server member. This option takes effect only when the load balancing algorithm of its belonging pool is `weighted_round_robin`.| No |
 
 ### Output parameters
 {: #lb-pool-member-output}
@@ -801,9 +1098,9 @@ terraform import ibm_is_lb_pool_member.example <loadbalancer_ID>/<pool_ID>/<pool
 
 `ibm_is_lb_pool_member` provides the following timeouts.
 
-- **create** - (Default 60 minutes) Used for creating Instance.
-- **update** - (Default 60 minutes) Used for updating Instance.
-- **delete** - (Default 60 minutes) Used for deleting Instance.
+- **create** - (Default 10 minutes) Used for creating Instance.
+- **update** - (Default 10 minutes) Used for updating Instance.
+- **delete** - (Default 10 minutes) Used for deleting Instance.
 
 
 ## `ibm_is_network_acl`
@@ -889,30 +1186,30 @@ resource "ibm_is_network_acl" "isExampleACL" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-|`name`|String|Required|The name of the network ACL.|
-|`vpc`|String|Optional|The VPC ID. This parameter is required if you want to create a network ACL for a Gen 2 VPC.|
-|`resource_group`|String|Optional|The ID of the resource group where you want to create the network ACL. |
-|`rules`|List of rules|Optional|A list of rules for a network ACL. The order in which the rules are added to the list determines the priority of the rules. For example, the first rule that you want to enforce must be specified as the first rule in this list. |
-|`rules.name`|String|Required|The user-defined name for this rule.|
-|`rules.action`|String|Required|`Allow` or `deny` matching network traffic. |
-|`rules.source`|String|Required|The source IP address or CIDR block.|
-|`rules.destination`|String|Required|The destination IP address or CIDR block.|
-|`rules.direction`|String|Required|Indicates whether the traffic to be matched is `inbound` or `outbound`.|
-|`rules.icmp`|List of protocol information|Optional|The protocol ICMP.|
-|`rules.icmp.code`|Integer|Optional|The ICMP traffic code to allow. Valid values from 0 to 255. If unspecified, all codes are allowed. This can only be specified if type is also specified.|
-|`rules.icmp.type`|Integer|Optional|The ICMP traffic type to allow. Valid values from 0 to 254. If unspecified, all types are allowed by this rule.|
-|`rules.tcp`|List of protocol information|Optional|The TCP protocol.|
-|`rules.tcp.port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.|
-|`rules.tcp.port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.|
-|`rules.tcp.source_port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.|
-|`rules.tcp.source_port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.|
-|`rules.udp`|List of protocol information|Optional|The UDP protocol.|
-|`rules.udp.port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.|
-|`rules.udp.port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.|
-|`rules.udp.source_port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.|
-|`rules.udp.source_port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.|
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------------ |
+|`name`|String|Required|The name of the network ACL.| No |
+|`vpc`|String|Optional|The VPC ID. This parameter is required if you want to create a network ACL for a Gen 2 VPC.| Yes |
+|`resource_group`|String|Optional|The ID of the resource group where you want to create the network ACL. | Yes |
+|`rules`|List of rules|Optional|A list of rules for a network ACL. The order in which the rules are added to the list determines the priority of the rules. For example, the first rule that you want to enforce must be specified as the first rule in this list. | No |
+|`rules.name`|String|Required|The user-defined name for this rule.| No |
+|`rules.action`|String|Required|`Allow` or `deny` matching network traffic. | No |
+|`rules.source`|String|Required|The source IP address or CIDR block.| No |
+|`rules.destination`|String|Required|The destination IP address or CIDR block.| No |
+|`rules.direction`|String|Required|Indicates whether the traffic to be matched is `inbound` or `outbound`.| No |
+|`rules.icmp`|List of protocol information|Optional|The protocol ICMP.| No |
+|`rules.icmp.code`|Integer|Optional|The ICMP traffic code to allow. Valid values from 0 to 255. If unspecified, all codes are allowed. This can only be specified if type is also specified.| No |
+|`rules.icmp.type`|Integer|Optional|The ICMP traffic type to allow. Valid values from 0 to 254. If unspecified, all types are allowed by this rule.| No |
+|`rules.tcp`|List of protocol information|Optional|The TCP protocol.| No |
+|`rules.tcp.port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.| No |
+|`rules.tcp.port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.| No |
+|`rules.tcp.source_port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.| No |
+|`rules.tcp.source_port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.| No |
+|`rules.udp`|List of protocol information|Optional|The UDP protocol.| No |
+|`rules.udp.port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.| No |
+|`rules.udp.port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.| No |
+|`rules.udp.source_port_max`|Integer|Optional|The highest port in the range of ports to be matched; if unspecified, 65535 is used.| No |
+|`rules.udp.source_port_min`|Integer|Optional|The lowest port in the range of ports to be matched; if unspecified, 1 is used.| No |
 
 ### Output parameters
 {: #network-acl-output}
@@ -927,7 +1224,6 @@ Review the output parameters that you can access after your resource is created.
 |`rules.id`|String|The rule ID.|
 |`rules.ip_version`|String|The IP version of the rule.|
 |`rules.subnets`|String|The subnets for the ACL rule.|
-|`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
 
 ### Import
 {: #network-acl-import}
@@ -979,13 +1275,15 @@ resource "ibm_is_public_gateway" "testacc_gateway" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-| `name` | String| Required | Enter a name for your public gateway. |
-| `vpc` | String | Required | Enter the ID of the VPC, for which you want to create a public gateway. To list available VPCs, run `ibmcloud is vpcs`.  | 
-| `zone` | String | Required | Enter the zone where you want to create the public gateway. To list available zones, run `ibmcloud is zones`. |
-| `tags`|Array of strings|Optional|Enter any tags that you want to associate with your VPC. Tags might help you find your VPC more easily after it is created. Separate multiple tags with a comma (`,`). |
-| `resource_group`|String|Optional|Enter the ID of the resource group where you want to create the public gatewat. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the public gateway is created in the `default` resource group. |
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------ |
+| `name` | String| Required | Enter a name for your public gateway. | No |
+| `vpc` | String | Required | Enter the ID of the VPC, for which you want to create a public gateway. To list available VPCs, run `ibmcloud is vpcs`.  | Yes |
+| `zone` | String | Required | Enter the zone where you want to create the public gateway. To list available zones, run `ibmcloud is zones`. | Yes |
+| `tags`|Array of strings|Optional|Enter any tags that you want to associate with your VPC. Tags might help you find your VPC more easily after it is created. Separate multiple tags with a comma (`,`). | No |
+| `floating_ip` | List | Optional | A list of floating IP addresses that you want to assign to the public gateway. | No |
+| `floating_ip.id`|String| Optional | The unique identifier of the floating IP address. If you specify this parameter, do not specify `floating_ip.address` at the same time. | No | 
+| `floating_ip.address`|String| Optional | The floating IP address. If you specify this parameter, do not specify `floating_ip.id` at the same time.| No |
 
 ### Output parameters
 {: #public-gateway-output}
@@ -995,9 +1293,10 @@ Review the output parameters that you can access after your resource is created.
 
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
-| `floating_ip` | List | A collection of floating IP addresses that are bound to the public gateway. Every floating IP address is listed with the floating IP `id` and `address`. |
+| `floating_ip` | List | A list of floating IP addresses that are assigned to the public gateway. |
+| `floating_ip.id`|String| The unique identifier that was assigned to the floating IP address.|
+| `floating_ip.address`|String|The IP address that was assigned to the public gateway.|
 | `id` | String | The unique identifier that was assigned to your public gateway. |
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the public gateway. | 
 | `status` | String | The provisioning status of your public gateway. |
 
 ### Timeouts
@@ -1006,66 +1305,8 @@ Review the output parameters that you can access after your resource is created.
 The following timeouts are defined for this resource. 
 {: shortdesc}
 
-- **create**: The creation of the public gatway is considered `failed` when no response is received for 60 minutes. 
-- **delete**: The deletion of the public gatway is considered `failed` when no response is received for 60 minutes.
-
-## `ibm_is_route`
-{: #provider-route}
-
-Create, update, or delete a route for your VPC. 
-{: shortdesc}
-
-### Sample Terraform code
-{: #route-sample}
-
-```
-resource "ibm_is_vpc" "testacc_vpc" {
-  name = "testvpc"
-}
-
-resource "ibm_is_vpc_route" "testacc_vpc_route" {
-  name        = "routetest"
-  vpc         = ibm_is_vpc.testacc_vpc.id
-  zone        = "us-south-1"
-  destination = "192.168.4.0/24"
-  next_hop    = "10.0.0.4"
-}
-```
-
-### Input parameters 
-{: #route-input}
-
-Review the input parameters that you can specify for your resource. 
-{: shortdesc}
-
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-|`name`|String|Required|The name of the route.|
-|`vpc`|String|Required|The ID of the VPC.|
-|`zone`|String|Required|The name of the VPC zone where you want to create the route.| 
-|`destination`|String|Required|The destionation IP address of the route.|
-|`next_hop`|String|Required|The next hop of the route.|
-
-### Output parametesr
-{: #route-output}
-
-Review the output parameters that you can access after your resource is created. 
-{: shortdesc}
-
-| Output parameter | Data type | Description |
-| ------------- |-------------| -------------- |
-|`id`|String|The ID of the route. The id is composed of `<vpc_id>/<vpc_route_id>`.|
-|`status`|String|The status of the VPC route.|
-
-### Import
-{: #route-import}
-
-`ibm_is_vpc_route` can be imported by using the VPC ID and VPC route ID. 
-
-```
-terraform import ibm_is_vpc_route.example <vpc_id>/<vpc_route_id>
-```
-{: pre}
+- **create**: The creation of the public gateway is considered `failed` when no response is received for 10 minutes. 
+- **delete**: The deletion of the public gateway is considered `failed` when no response is received for 10 minutes.
 
 
 ## `ibm_is_security_group`
@@ -1073,6 +1314,9 @@ terraform import ibm_is_vpc_route.example <vpc_id>/<vpc_route_id>
 
 Create, update, or delete a security group for your VPC. 
 {: shortdesc}
+
+When you want to create a security group and security group rule for a virtual server instance in your VPC, you must create these resources in a specific order to avoid errors during the creation of your virtual server instance. For an example, see [Example for creating an instance with custom security group rules](#custom-sec-group-rules). 
+{: note}
 
 
 ### Sample Terraform code
@@ -1095,11 +1339,11 @@ resource "ibm_is_security_group" "testacc_security_group" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Optional|The security group name.|
-|`vpc`|String|Required|The VPC ID. |
-|`resource_group`|String|Optional|The resource group ID where the security group to be created.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------- |
+|`name`|String|Optional|The security group name.| No |
+|`vpc`|String|Required|The VPC ID. | Yes |
+|`resource_group`|String|Optional|The resource group ID where the security group to be created.| No |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -1120,7 +1364,6 @@ Review the output parameters that you can access after your resource is created.
 |`rules.code`|String|The ICMP traffic code to allow.  |
 |`rules.port_max`|Integer|The inclusive upper bound of TCP/UDP port range.  |
 |`rules.port_min`|Integer|The inclusive lower bound of TCP/UDP port range. |
-|`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.   |
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 
@@ -1140,6 +1383,9 @@ terraform import ibm_is_security_group.example a1aaa111-1111-111a-1a11-a11a1a11a
 
 Create, update, or delete a security group rule. 
 {: shortdesc}
+
+When you want to create a security group and security group rule for a virtual server instance in your VPC, you must create these resources in a specific order to avoid errors during the creation of your virtual server instance. For an example, see [Example for creating an instance with custom security group rules](#custom-sec-group-rules). 
+{: note}
 
 ### Sample Terraform code
 {: #sec-group-rule-sample}
@@ -1201,21 +1447,21 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`group`|String|Required|The security group ID.|
-|`direction`|String|Requried|The direction of the traffic either `inbound` or `outbound`.|
-|`remote`|String|Optional|Security group id, an IP address, a CIDR block, or a single security group identifier.|
-|`ip_version`|String|Optional|The IP version either `IPv4` or `IPv6`. Default `IPv4`.|
-|`icmp`|List of objects|Optional|A nested block describing the `icmp` protocol of this security group rule.  |
-|`icmp.type`|Integer|Required|The ICMP traffic type to allow. Valid values from 0 to 254.  |
-|`icmp.code`|Integer|Optional|The ICMP traffic code to allow. Valid values from 0 to 255.|
-|`tcp`|List of objects|Optional|A nested block describing the `tcp` protocol of this security group rule.  |
-|`tcp.port_min`|Integer|Required| The inclusive lower bound of TCP port range. Valid values are from 1 to 65535.  |
-|`tcp.port_max`|Integer|Required| The inclusive upper bound of TCP port range. Valid values are from 1 to 65535.|
-|`udp`|List of objects| Optional| A nested block describing the `udp` protocol of this security group rule.  |
-|`udp.port_min`|Integer|Required|The inclusive lower bound of UDP port range. Valid values are from 1 to 65535.  |
-|`udp.port_max`|Integer|Required|The inclusive upper bound of UDP port range. Valid values are from 1 to 65535. **NOTE**: If any of the `icmp` , `tcp` or `udp` is not specified it creates a rule with protocol `ALL`. |
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| -------- |
+|`group`|String|Required|The security group ID.| Yes |
+|`direction`|String|Required|The direction of the traffic either `inbound` or `outbound`.| No |
+|`remote`|String|Optional|Security group id, an IP address, a CIDR block, or a single security group identifier.| No |
+|`ip_version`|String|Optional|The IP version either `IPv4` or `IPv6`. Default `IPv4`.| No |
+|`icmp`|List of objects|Optional|A nested block describing the `icmp` protocol of this security group rule.  | No |
+|`icmp.type`|Integer|Required|The ICMP traffic type to allow. Valid values from 0 to 254.  | No |
+|`icmp.code`|Integer|Optional|The ICMP traffic code to allow. Valid values from 0 to 255.| No |
+|`tcp`|List of objects|Optional|A nested block describing the `tcp` protocol of this security group rule.  | No |
+|`tcp.port_min`|Integer|Required| The inclusive lower bound of TCP port range. Valid values are from 1 to 65535.  | No |
+|`tcp.port_max`|Integer|Required| The inclusive upper bound of TCP port range. Valid values are from 1 to 65535.| No |
+|`udp`|List of objects| Optional| A nested block describing the `udp` protocol of this security group rule.  | No |
+|`udp.port_min`|Integer|Required|The inclusive lower bound of UDP port range. Valid values are from 1 to 65535.  | No |
+|`udp.port_max`|Integer|Required|The inclusive upper bound of UDP port range. Valid values are from 1 to 65535. **NOTE**: If any of the `icmp` , `tcp` or `udp` is not specified it creates a rule with protocol `ALL`. | No |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -1264,10 +1510,10 @@ resource "ibm_is_security_group_network_interface_attachment" "sgnic" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`security_group`|String|Required|The security group ID.|
-|`network_interface`|String|Required|The network interface ID. |
+|Name|Data type|Required/ optional|Description| Forced new resource |
+|----|-----------|-----------|---------------------| -------- |
+|`security_group`|String|Required|The security group ID.| Yes |
+|`network_interface`|String|Required|The network interface ID. | Yes |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -1281,7 +1527,7 @@ Review the output parameters that you can access after your resource is created.
 |`id`|String|The ID of the security group network interface. The ID is composed of `<security_group_id>/<network_interface_id>`.|
 |`instance_network_interface`|String|The instance network interface ID.|
 |`name`|String|The user-defined name for this network interface.|
-|`port_speed`|Integer|The network interface port speed in Mbp.|
+|`port_speed`|Integer|The network interface port speed in Mbps.|
 |`primary_ipv4_address`|String|The primvary IPv4 address.|
 |`primary_ipv6_address`|String|The primary IPv6 address in compressed notation as specified by RFC 5952.|
 |`secondary_address`|Array|Collection seconary IP addresses.|
@@ -1343,17 +1589,16 @@ resource "ibm_is_subnet" "testacc_subnet" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`ipv4_cidr_block`|String|Optional|The IPv4 range of the subnet.|
-|`total_ipv4_address_count`|String|Optional|The total number of IPv4 addresses.|
-|`ip_version`|String|Optional|The IP Version. The default is `ipv4`.|
-|`name`|String|Required| The name of the subnet.|
-|`network_acl`|String|Optional|The ID of the network ACL for the subnet.|
-|`public_gateway`|String|Optional|The ID of the public gateway for the subnet that you want to attach. You create the public gateway by using the [`ibm_is_public_gateway` resource](#provider-public-gateway).|
-|`resource_group`|String|Optional|The ID of the resource group where you want to create the subnet.|
-|`vpc`|String|Required|The VPC ID.|
-|`zone`|String|Required|The subnet zone name.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| -------- |
+|`ipv4_cidr_block`|String|Optional|The IPv4 range of the subnet.| Yes |
+|`total_ipv4_address_count`|String|Required|The total number of IPv4 addresses.| Yes |
+|`ip_version`|String|Optional|The IP Version. The default is `ipv4`.| Yes |
+|`name`|String|Required| The name of the subnet.| No |
+|`network_acl`|String|Optional|The ID of the network ACL for the subnet.| No |
+|`public_gateway`|String|Optional|The ID of the public gateway for the subnet that you want to attach. You create the public gateway by using the [`ibm_is_public_gateway` resource](#provider-public-gateway).| No |
+|`vpc`|String|Required|The VPC ID.| Yes |
+|`zone`|String|Required|The subnet zone name.| Yes |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -1368,7 +1613,6 @@ Review the output parameters that you can access after your resource is created.
 |`ipv6_cidr_block`|String|The IPv6 range of the subnet.|
 |`status`|String|The status of the subnet.|
 |`available_ipv4_address_count`|String|The total number of available IPv4 addresses.|
-|`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ### Import
@@ -1418,12 +1662,12 @@ resource "ibm_is_ssh_key" "isExampleKey" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required| The user-defined name for this key.|
-|`public_key`|String|Required|The public SSH key.|
-|`resource_group`|String|Optional|The resource group ID where the SSH is created.|
-|`tags`|List of strings|A list of tags that you want to add to your SSH key. Tags can help you find the SSH key more easily later. |
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| -------- |
+|`name`|String|Required| The user-defined name for this key.| No |
+|`public_key`|String|Required|The public SSH key.| Yes |
+|`resource_group`|String|Optional|The resource group ID where the SSH is created.| Yes |
+|`tags`|List of strings|A list of tags that you want to add to your SSH key. Tags can help you find the SSH key more easily later. | No |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -1438,7 +1682,6 @@ Review the output parameters that you can access after your resource is created.
 |`fingerprint`| String|The SHA256 fingerprint of the public key.|
 |`length`|String|The length of this key.|
 |`type`|String|The cryptosystem used by this key.|
-|`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ### Import
@@ -1450,248 +1693,10 @@ terraform import ibm_is_ssh_key.example <ssh_key_ID>
 ```
 {: pre}
 
-
-## `ibm_is_vpc` 
-{: #provider-vps}
-
-Create, update, or delete a Virtual Private Cloud (VPC). VPCs allow you to create your own space in {{site.data.keyword.cloud_notm}} to run an isolated environment within the public cloud. VPC gives you the security of a private cloud, with the agility and ease of a public cloud.
-{: shortdesc}
-
-For more information, see [About Virtual Private Cloud](/docs/vpc-on-classic?topic=vpc-on-classic-about). 
-
-### Sample Terraform code
-{: #vpc-sample}
-
-```
-resource "ibm_is_vpc" "testacc_vpc" {
-    name = "test"
-}
-```
-{: codeblock}
-
-### Input parameters
-{: #vpc-input}
-
-Review the input parameters that you can specify for your resource. 
-{: shortdesc}
-
-| Input parameter | Data type | Required/ optional | Description |
-| ------------- |-------------| ----- | -------------- |
-| `classic_access` | Boolean | Optional | Specify if you want to create a VPC that can connect to classic infrastructure resources. Enter **true** to set up private network connectivity from your VPC to classic infrastructure resources that are created in the same {{site.data.keyword.cloud_notm}} account, and **false** to disable this access. If you choose to not set up this access, you cannot enable it after the VPC is created. Make sure to review the [prerequisites](/docs/vpc-on-classic-network?topic=vpc-on-classic-setting-up-access-to-your-classic-infrastructure-from-vpc#vpc-prerequisites) before you create a VPC with classic infrastructure access. Note that you can enable one VPC for classic infrastructure access per {{site.data.keyword.cloud_notm}} account only. |
-|`address_prefix_management`|String|Optional|Indicates whether a default address prefix should be created automatically (`auto`) or manually (`manual`) for each zone in this VPC. Default value `auto`.|
-| `name` | String | Required | Enter a name for your VPC. | 
-| `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the VPC. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the VPC is created in the `default` resource group. | 
-| `tags` | Array of Strings | Optional | Enter any tags that you want to associate with your VPC. Tags might help you find your VPC more easily after it is created. Separate multiple tags with a comma (`,`). | 
-
-### Output parameters
-{: #vpc-arguments}
-
-Review the output parameters that you can access after your resource is created. 
-{: shortdesc}
-
-| Output parameter | Data type | Description |
-| ------------- |-------------| -------------- |
-|`crn`|String|The CRN of the VPC.|
-| `default_security_group` | String | The unique identifier of the default security group that was created for your VPC. | 
-| `id` | String | The unique identifier of the VPC that you created. |
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to explore and view details about the VPC. |
-|`subnets`|List of subnets|A list of subnets that are attached to a VPC.|
-|`subnets.name`|String|The name of the subnet.|
-|`subnets.id`|String|The ID of the subnet.|
-|`subnets.status`|String|The status of the subnet.|
-|`subnets.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
-|`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses in the subnet that are available for you to be used.|
-| `status` | String | The provisioning status of your VPC. | 
-| `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
-|`cse_source_addresses.address`|String|The IP address of the cloud service endpoint.|
-|`cse_source_addresses.zone_name`|String|The zone where the cloud service endpoint is located.|
-
-## `ibm_is_vpc_address_prefix`
-{: #address-prefix}
-
-Create, update, or delete an IP address prefix. 
-{: shortdesc}
-
-### Sample Terraform code
-{: #address-prefix-sample}
-
-```
-resource "ibm_is_vpc" "testacc_vpc" {
-  name = "testvpc"
-}
-
-resource "ibm_is_vpc_address_prefix" "testacc_vpc_address_prefix" {
-  name = "test"
-  zone   = "us-south-1"
-  vpc         = ibm_is_vpc.testacc_vpc.id
-  cidr        = "10.240.0.0/24"
-}
-
-```
-
-### Input parameters
-{: #address-prefix-input}
-
-Review the input parameters that you can specify for your resource. 
-{: shortdesc}
-
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required| The address prefix name.|
-|`vpc`|String|Required|The VPC ID. |
-|`zone`|String|Required|The name of the zone. |
-|`cidr`|String|Required|The CIDR block for the address prefix. |
-{: caption="Table. Available input parameters" caption-side="top"}
-
-### Output parameters
-{: #address-prefix-output}
-
-Review the output parameters that you can access after your resource is created. 
-{: shortdesc}
-
-|Name|Data type|Description|
-|----|-----------|--------|
-|`id`|String|The ID of the address prefix.|
-|`has_subnets`|Boolean|Indicates whether subnets exist with addresses from this prefix.|
-{: caption="Table 1. Available output parameters" caption-side="top"}
-
-
-### Import
-{: #address-prefix-import}
-
-`ibm_is_vpc_address_prefix` can be imported using the ID.
-
-```
-terraform import ibm_is_vpc_address_prefix.example a1aaa111-1111-111a-1a11-a11a1a11a11a
-```
-
-
-## `ibm_is_vpn_gateway`
-{: #vpn-gateway}
-
-Create, update, or delete a VPC gateway. 
-{: shortdesc}
-
-### Sample Terraform code
-{: #vpn-gateway-sample}
-
-```
-resource "ibm_is_vpn_gateway" "testacc_vpn_gateway" {
-  name   = "test"
-  subnet = "a1aa111a-a11a-1111-11aa-111a1aa1aaa1"
-}
-```
-
-### Input parameters
-{: #vpn-gateway-input}
-
-Review the input parameters that you can specify for your resource. 
-{: shortdesc}
-
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required|The name of the VPN gateway.|
-|`subnet`|String|Required|The unique identifier for this subnet.|
-|`resource_group`|String|Optional| The resource group where the VPN gateway to be created.|
-|`tags`|List of strings|Optional|A list of tags that you want to add to your VPN gatway. Tags can help you find your VPN gateway more easily later.|
-
-### Output parameters
-{: #vpn-gateway-output}
-
-Review the output parameters that you can access after your resource is created. 
-{: shortdesc}
-
-|Name|Data type|Description|
-|----|-----------|--------|
-|`id`|String|The unique identifier of the VPN gateway.|
-|`status`|String|The status of VPN gateway.|
-|`public_ip_address`|String|The IP address assigned to this VPN gateway.|
-|`resource_controller_url`|String|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
-
-### Import
-{: #vpn-gateway-import}
-
-`ibm_is_vpn_gateway` can be imported using the VPN gateway ID. 
-
-```
-terraform import ibm_is_vpn_gateway.example <vpn_gateway_ID>
-```
-{: pre}
-
-## `ibm_is_vpn_gateway_connection`
-{: #vpn-gateway-connection}
-
-Create, update, or delete a VPN gateway connection. 
-{: shortdesc}
-
-### Sample Terraform code
-{: #vpn-gateway-connection-sample}
-
-```
-resource "ibm_is_vpn_gateway_connection" "VPNGatewayConnection" {
-  name          = "test2"
-  vpn_gateway   = ibm_is_vpn_gateway.testacc_VPNGateway2.id
-  peer_address  = ibm_is_vpn_gateway.testacc_VPNGateway2.public_ip_address
-  preshared_key = "VPNDemoPassword"
-  local_cidrs = [ibm_is_subnet.testacc_subnet2.ipv4_cidr_block]
-  peer_cidrs = [ibm_is_subnet.testacc_subnet1.ipv4_cidr_block]
-}
-```
-
-### Input parameters
-{: #vpn-gateway-connection-input}
-
-Review the input parameters that you can specify for your resource. 
-{: shortdesc}
-
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`name`|String|Required|The name of the VPN gateway connection.|
-|`vpn_gateway`|String|Required| The unique identifier of the VPN gateway.|
-|`peer_address`|String|Required|The IP address of the peer VPN gateway.|
-|`preshared_key`|String|Optional| The preshared key.|
-|`local_cidrs`|Array|Optional|List of local CIDRs for this resource.|
-|`peer_cidrs`|Array|Optional|List of peer CIDRs for this resource.|
-|`admin_state_up`|Boolean|Optional|The VPN gateway connection status. Default false. If set to false, the VPN gateway connection is shut down.|
-|`action`|String|Optional| Dead peer detection actions. Supported values are `restart`, `clear`, `hold`, `none`. Default: `none`.|
-|`interval`|Integer|Optional| Dead peer detection interval in seconds. Default 30.|
-|`timeout`|Integer|Optional| Dead peer detection timeout in seconds. Default 120.|
-|`ike_policy`|String|Optional|The ID of the IKE policy.|
-|`ipsec_policy`|String|Optional| The ID of the IPSec policy.|
-
-### Output parameters
-{: #vpn-gateway-connection-output}
-
-Review the output parameters that you can access after your resource is created. 
-{: shortdesc}
-
-|Name|Data type|Description|
-|----|-----------|--------|
-|`id`|String|The unique identifier of the VPN gateway connection. The ID is composed of `<vpn_gateway_id>/<vpn_gateway_connection_id>`.|
-|`status`|String|The status of the VPN gateway connection.|
-
-### Import
-{: #vpn-gateway-connection-import}
-
-`ibm_is_vpn_gateway_connection` can be imported using the VPN gateway ID and the VPN gateway connection ID. 
-
-```
-terraform import ibm_is_vpn_gateway_connection.example <vpn_gateway_ID>/<vpn_gateway_connection_ID>
-```
-{: pre}
-
-### Timeouts
-{: #vpn-gateway-connection-timeout}
-
-`ibm_is_vpn_gateway_connection` provides the following Timeouts:
-
-- **delete** - (Default 60 minutes) Used for deleting Instance.
-
-
 ## `ibm_is_volume`
 {: #volume}
 
-Create, update, or delete a VPC block storage volume. 
+Create, update, or delete a VPC block storage volume. For more information about the VPC block storage volume, see [Getting started with VPC](/docs/vpc).
 {: shortdesc}
 
 ### Sample Terraform code
@@ -1728,17 +1733,18 @@ resource "ibm_is_volume" "testacc_volume" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
+|Name|Data type|Required/ optional|Description| Force new resource |
 |----|-----------|-----------|---------------------|
-|`name`|String|Required|The user-defined name for this volume.|
-|`profile`|String|Required|The profile to use for this volume.|
-|`zone`|String|Required|The location of the volume.|
-|`iops`|Integer|Optional| The bandwidth for the volume.|
-|`capacity`|Integer|Optional|(The capacity of the volume in gigabytes. This defaults to `100`.|
-|`encryption_key`|String|Optional|The key to use for encrypting this volume.|
-|`resource_group`|String|Optional|The resource group ID for this volume.|
-|`resource_controller_url`|String|Optional|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.|
-|`tags`|List of strings|A list of tags that you want to add to your volume. Tags can help you find your volume more easily later.|
+
+|`name`|String|Required|The user-defined name for this volume.| No |
+|`profile`|String|Required|The profile to use for this volume.| Yes |
+|`zone`|String|Required|The location of the volume.| Yes |
+|`iops`|Integer|Required for `custom` storage profiles only| The total input/ output operations per second (IOPS) for your storage. This value is required for `custom` storage profiles only. | Yes |
+|`capacity`|Integer|Optional|(The capacity of the volume in gigabytes. This defaults to `100`.| Yes |
+|`encryption_key`|String|Optional|The key to use for encrypting this volume.| Yes |
+|`resource_group`|String|Optional|The resource group ID for this volume.| Yes |
+|`resource_controller_url`|String|Optional|The URL of the IBM Cloud dashboard that can be used to explore and view details about this instance.| Yes |
+|`tags`|List of strings|A list of tags that you want to add to your volume. Tags can help you find your volume more easily later.| No |
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -1762,6 +1768,327 @@ Review the output parameters that you can access after your resource is created.
 
 |Name|Description|
 |----|-----------|
-|`create`|(Default 60 minutes) Used for Creating Instance.|
-|`delete`|(Default 60 minutes) Used for Deleting Instance.|
+|`create`|(Default 10 minutes) Used for Creating Instance.|
+|`delete`|(Default 10 minutes) Used for Deleting Instance.|
 {: caption="Table. Available timeout configuration options" caption-side="top"}
+
+
+## `ibm_is_vpc` 
+{: #provider-vps}
+
+Create, update, or delete a Virtual Private Cloud (VPC). VPCs allow you to create your own space in {{site.data.keyword.cloud_notm}} to run an isolated environment within the public cloud. VPC gives you the security of a private cloud, with the agility and ease of a public cloud.
+{: shortdesc}
+
+For more information, see [About Virtual Private Cloud](/docs/vpc-on-classic?topic=vpc-on-classic-about). 
+
+### Sample Terraform code
+{: #vpc-sample}
+
+```
+resource "ibm_is_vpc" "testacc_vpc" {
+    name = "test"
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #vpc-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description | Forces new resource |
+| ------------- |-------------| ----- | -------------- | ------- |
+| `classic_access` | Boolean | Optional | Specify if you want to create a VPC that can connect to classic infrastructure resources. Enter **true** to set up private network connectivity from your VPC to classic infrastructure resources that are created in the same {{site.data.keyword.cloud_notm}} account, and **false** to disable this access. If you choose to not set up this access, you cannot enable it after the VPC is created. Make sure to review the [prerequisites](/docs/vpc-on-classic-network?topic=vpc-on-classic-setting-up-access-to-your-classic-infrastructure-from-vpc#vpc-prerequisites) before you create a VPC with classic infrastructure access. Note that you can enable one VPC for classic infrastructure access per {{site.data.keyword.cloud_notm}} account only. | No |
+|`address_prefix_management`|String|Optional|Indicates whether a default address prefix should be created automatically (`auto`) or manually (`manual`) for each zone in this VPC. Default value `auto`.| No |
+| `name` | String | Required | Enter a name for your VPC. |  No |
+| `resource_group` | String | Optional | Enter the ID of the resource group where you want to create the VPC. To list available resource groups, run `ibmcloud resource groups`. If you do not specify a resource group, the VPC is created in the `default` resource group. |  Yes |
+| `tags` | Array of Strings | Optional | Enter any tags that you want to associate with your VPC. Tags might help you find your VPC more easily after it is created. Separate multiple tags with a comma (`,`). |  No |
+
+### Output parameters
+{: #vpc-arguments}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+|`crn`|String|The CRN of the VPC.|
+| `default_security_group` | String | The unique identifier of the default security group that was created for your VPC. | 
+| `id` | String | The unique identifier of the VPC that you created. |
+|`subnets`|List of subnets|A list of subnets that are attached to a VPC.|
+|`subnets.name`|String|The name of the subnet.|
+|`subnets.id`|String|The ID of the subnet.|
+|`subnets.status`|String|The status of the subnet.|
+|`subnets.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
+|`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses in the subnet that are available for you to be used.|
+| `status` | String | The provisioning status of your VPC. | 
+| `cse_source_addresses`|List of Cloud Service Endpoints|A list of the cloud service endpoints that are associated with your VPC, including their source IP address and zone.|
+|`cse_source_addresses.address`|String|The IP address of the cloud service endpoint.|
+|`cse_source_addresses.zone_name`|String|The zone where the cloud service endpoint is located.|
+
+### Timeouts
+{: #vpc-timeout}
+
+The following timeouts are defined for the resource: 
+
+- **create**: The creation of the VPC is considered `failed` when no response is received for 10 minutes. 
+- **delete**: The deletion of the VPC is considered `failed` when no response is received for 10 minutes. 
+
+## `ibm_is_vpc_address_prefix`
+{: #address-prefix}
+
+Create, update, or delete an IP address prefix. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #address-prefix-sample}
+
+```
+resource "ibm_is_vpc" "testacc_vpc" {
+  name = "testvpc"
+}
+
+resource "ibm_is_vpc_address_prefix" "testacc_vpc_address_prefix" {
+  name = "test"
+  zone   = "us-south-1"
+  vpc         = ibm_is_vpc.testacc_vpc.id
+  cidr        = "10.240.0.0/24"
+}
+
+```
+
+### Input parameters
+{: #address-prefix-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------ |
+|`name`|String|Required| The address prefix name.| No |
+|`vpc`|String|Required|The VPC ID. | Yes |
+|`zone`|String|Required|The name of the zone. | Yes |
+|`cidr`|String|Required|The CIDR block for the address prefix. | Yes |
+{: caption="Table. Available input parameters" caption-side="top"}
+
+### Output parameters
+{: #address-prefix-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The ID of the address prefix.|
+|`has_subnets`|Boolean|Indicates whether subnets exist with addresses from this prefix.|
+{: caption="Table 1. Available output parameters" caption-side="top"}
+
+
+### Import
+{: #address-prefix-import}
+
+The resource can be imported using using the VPC ID and VPC address prefix ID.
+
+```
+terraform import ibm_is_vpc_address_prefix.example <vpc_ID>/<address_prefix_ID>
+```
+{: pre}
+
+## `ibm_is_vpc_route`
+{: #vpc-route}
+
+Create, update, or delete a VPC route. For more information about VPC routes, see [Setting up advanced routing in VPC](/docs/vpc?topic=vpc-advanced-routing).
+{: shortdesc}
+
+### Sample Terraform code
+{: #vpc-route-sample}
+
+```
+resource "ibm_is_vpc" "myvpc" {
+  name = "myvpc"
+}
+
+resource "ibm_is_vpc_route" "myroute" {
+  name        = "routetest"
+  vpc         = ibm_is_vpc.myvpc.id
+  zone        = "us-south-1"
+  destination = "192.168.4.0/24"
+  next_hop    = "10.0.0.4"
+}
+```
+
+### Input parameters
+{: #vpc-route-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------ |
+|`name`|String|Required|The name of the route that you want to create.| No |
+|`vpc`|String|Requied|The ID of the VPC where you want to create the route. |  Yes |
+|`zone`|String|Required|The name of the VPC zone where you want to create the route. | Yes |
+|`destination`|String|Required|The destination IP address or CIDR that network traffic from your VPC must match to be routed to the `next_hop`.| Yes |
+|`next_hop`|String|Required|The IP address where network traffic is sent next.| No |
+
+### Output parameters
+{: #vpc-route-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The ID of the VPC route. The ID is composed of `<vpc_id>/<vpc_route_id>`.|
+|`status`|Strign|The status of the VPC route.|
+
+### Import
+{: #vpc-route-import}
+
+The resource can be imported by using the VPC and route IDs. 
+
+```
+terraform import ibm_is_vpc_route.example <vpc_ID>/<vpc_route_ID>
+```
+{: pre}
+
+### Timeouts
+{: #vpc-route-timeout}
+
+The resource is set up with the following timeouts: 
+
+- **create**: The creation of the route is considered `failed` when no response is received for 10 minutes. 
+- **delete**: The deletion of the route is considered `failed` when no response is received for 10 minutes. 
+
+
+## `ibm_is_vpn_gateway`
+{: #vpn-gateway}
+
+Create, update, or delete a VPC gateway. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #vpn-gateway-sample}
+
+```
+resource "ibm_is_vpn_gateway" "testacc_vpn_gateway" {
+  name   = "test"
+  subnet = "a1aa111a-a11a-1111-11aa-111a1aa1aaa1"
+}
+```
+
+### Input parameters
+{: #vpn-gateway-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------- |
+|`name`|String|Required|The name of the VPN gateway.| No |
+|`subnet`|String|Required|The unique identifier for this subnet.| Yes |
+|`resource_group`|String|Optional| The resource group where the VPN gateway to be created.| Yes |
+|`tags`|List of strings|Optional|A list of tags that you want to add to your VPN gateway. Tags can help you find your VPN gateway more easily later.| No |
+
+### Output parameters
+{: #vpn-gateway-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The unique identifier of the VPN gateway.|
+|`status`|String|The status of VPN gateway.|
+|`public_ip_address`|String|The IP address assigned to this VPN gateway.|
+
+### Import
+{: #vpn-gateway-import}
+
+`ibm_is_vpn_gateway` can be imported using the VPN gateway ID. 
+
+```
+terraform import ibm_is_vpn_gateway.example <vpn_gateway_ID>
+```
+{: pre}
+
+### Timeouts
+{: #vpn-gateway-timeout}
+
+The following timeouts are specified for this resource: 
+
+- **create**: The creation of the VPN gateway is considered `failed` when no response is received for 10 minutes. 
+- **delete**: The deletion of the VPN gateway is considered `failed` when no response is received for 10 minutes. 
+
+## `ibm_is_vpn_gateway_connection`
+{: #vpn-gateway-connection}
+
+Create, update, or delete a VPN gateway connection. 
+{: shortdesc}
+
+### Sample Terraform code
+{: #vpn-gateway-connection-sample}
+
+```
+resource "ibm_is_vpn_gateway_connection" "VPNGatewayConnection" {
+  name          = "test2"
+  vpn_gateway   = ibm_is_vpn_gateway.testacc_VPNGateway2.id
+  peer_address  = ibm_is_vpn_gateway.testacc_VPNGateway2.public_ip_address
+  preshared_key = "VPNDemoPassword"
+  local_cidrs = [ibm_is_subnet.testacc_subnet2.ipv4_cidr_block]
+  peer_cidrs = [ibm_is_subnet.testacc_subnet1.ipv4_cidr_block]
+}
+```
+
+### Input parameters
+{: #vpn-gateway-connection-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------- |
+|`name`|String|Required|The name of the VPN gateway connection.| No |
+|`vpn_gateway`|String|Required| The unique identifier of the VPN gateway.| Yes |
+|`peer_address`|String|Required|The IP address of the peer VPN gateway.| No |
+|`preshared_key`|String|Required| The preshared key.| No |
+|`local_cidrs`|Array|Optional|List of local CIDRs for this resource.| Yes |
+|`peer_cidrs`|Array|Optional|List of peer CIDRs for this resource.| Yes |
+|`admin_state_up`|Boolean|Optional|The VPN gateway connection status. Default false. If set to false, the VPN gateway connection is shut down.| No |
+|`action`|String|Optional| Dead peer detection actions. Supported values are `restart`, `clear`, `hold`, `none`. Default: `none`.| No |
+|`interval`|Integer|Optional| Dead peer detection interval in seconds. Default 30.| No |
+|`timeout`|Integer|Optional| Dead peer detection timeout in seconds. Default 120.| No |
+|`ike_policy`|String|Optional|The ID of the IKE policy.| No |
+|`ipsec_policy`|String|Optional| The ID of the IPSec policy.| No |
+
+### Output parameters
+{: #vpn-gateway-connection-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The unique identifier of the VPN gateway connection. The ID is composed of `<vpn_gateway_id>/<vpn_gateway_connection_id>`.|
+|`status`|String|The status of the VPN gateway connection.|
+
+### Import
+{: #vpn-gateway-connection-import}
+
+`ibm_is_vpn_gateway_connection` can be imported using the VPN gateway ID and the VPN gateway connection ID. 
+
+```
+terraform import ibm_is_vpn_gateway_connection.example <vpn_gateway_ID>/<vpn_gateway_connection_ID>
+```
+{: pre}
+
+### Timeouts
+{: #vpn-gateway-connection-timeout}
+
+`ibm_is_vpn_gateway_connection` provides the following Timeouts:
+
+- **delete** - (Default 10 minutes) Used for deleting Instance.
+
+
+

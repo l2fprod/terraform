@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-26"
+lastupdated: "2020-07-23"
 
 keywords: terraform quickstart, terraform getting started, terraform tutorial
 
@@ -10,18 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
+{:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
 {:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 
 # Getting started with Terraform
@@ -42,7 +53,8 @@ The Terraform configuration files describe the resources that you need and how y
 To provision {{site.data.keyword.cloud_notm}} infrastructure and platform resources, you must have a [Pay-As-You-Go or Subscription {{site.data.keyword.cloud_notm}} account ![External link icon](../icons/launch-glyph.svg "External link icon")](https://cloud.ibm.com/registration).  
 
 **What do I provision as part of this tutorial?** </br>
-In this getting started tutorial, you provision a [classic infrastructure virtual server](/docs/vsi?topic=virtual-servers-about-public-virtual-servers) and a [VPC virtual server instance](/docs/vpc-on-classic-vsi?topic=vpc-on-classic-vsi-getting-started). Both virtual server instances incur costs. Be sure to review the available plans for [classic infrastructure virtual servers ![External link icon](../icons/launch-glyph.svg "External link icon")](https://cloud.ibm.com/catalog/infrastructure/virtual-server-group) and [VPC virtual server instances](https://cloud.ibm.com/vpc/provision/vs) before you proceed.
+
+In this getting started tutorial, you provision a [classic infrastructure virtual server](/docs/virtual-servers?topic=virtual-servers-about-public-virtual-servers) and a [VPC virtual server instance](/docs/vpc-on-classic-vsi?topic=vpc-on-classic-vsi-getting-started). Both virtual server instances incur costs. Be sure to review the available plans for [classic infrastructure virtual servers ![External link icon](../icons/launch-glyph.svg "External link icon")](https://cloud.ibm.com/catalog/infrastructure/virtual-server-group) and [VPC virtual server instances](https://cloud.ibm.com/vpc/provision/vs) before you proceed.
 
 Sounds great? Get started by installing the Terraform CLI and the {{site.data.keyword.cloud_notm}} Provider plug-in. Then, configure the {{site.data.keyword.cloud_notm}} resources that you want and watch Terraform spin them up. 
 
@@ -112,20 +124,21 @@ To support a multi-cloud approach, Terraform works with multiple cloud providers
       {: screen}  
 
 2. Install the {{site.data.keyword.cloud_notm}} Provider plug-in. 
-   1. [Download the latest version of the {{site.data.keyword.cloud_notm}} Provider binary file ![External link icon](../icons/launch-glyph.svg "External link icon")](https://github.com/IBM-Cloud/terraform-provider-ibm/releases). 
-   2. Create a hidden folder for your plug-in. 
+   1. [Download the latest version of the {{site.data.keyword.cloud_notm}} Provider binary package](https://github.com/IBM-Cloud/terraform-provider-ibm/releases){: external}. 
+   2. Extract the {{site.data.keyword.cloud_notm}} Provider package to retrieve the binary file.
+   3. Create a hidden folder for your plug-in. 
       ```
       mkdir $HOME/.terraform.d/plugins
       ```
       {: pre}
       
-   3. Move the {{site.data.keyword.cloud_notm}} Provider plug-in into your hidden folder. 
+   4. Move the {{site.data.keyword.cloud_notm}} Provider plug-in into your hidden folder. 
       ```
       mv $HOME/Downloads/terraform-provider-ibm* $HOME/.terraform.d/plugins/
       ```
       {: pre}
       
-   4. Navigate into your hidden directory and verify that the installation is complete. 
+   5. Navigate into your hidden directory and verify that the installation is complete. 
       ```
       cd $HOME/.terraform.d/plugins && ./terraform-provider-ibm_*
       ```
@@ -147,10 +160,10 @@ Terraform uses the {{site.data.keyword.cloud_notm}} Provider plug-in to securely
 {: shortdesc}
 
 **What credentials do I need?**</br>
-The credentials that you need depend on the type of resource that you want to provision. For example, to provision classic infrastructure resources, you must provide your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key. To provision VPC infrastructure, you need an {{site.data.keyword.cloud_notm}} API key. For more information about what credentials you need for a specific {{site.data.keyword.cloud_notm}} resource, see [Retrieving required credentials for your resources](/docs/terraform?topic=terraform-setup_cli#retrieve_credentials).
+The credentials that you need depend on the type of resource that you want to provision. For example, to provision classic infrastructure resources, you must provide your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key. To provision VPC infrastructure, you need an {{site.data.keyword.cloud_notm}} API key. For more information about what credentials you need for a specific {{site.data.keyword.cloud_notm}} resource, see [Required input parameters for each resource category](/docs/terraform?topic=terraform-provider-reference#required-parameters).
 
 **Where can I find an overview of available resources?**</br>
-To find a full list of {{site.data.keyword.cloud_notm}} resources that you can provision with the {{site.data.keyword.cloud_notm}} Provider plug-in, see the [{{site.data.keyword.cloud_notm}} Provider reference](/docs/terraform?topic=terraform-tf-provider).
+To find a full list of {{site.data.keyword.cloud_notm}} resources that you can provision with the {{site.data.keyword.cloud_notm}} Provider plug-in, see the [Index of Terraform resources and data sources](/docs/terraform?topic=terraform-index-of-terraform-resources-and-data-sources).
 
 1. Create a folder on your local machine for your first Terraform project and navigate into the folder. This folder is used to store all configuration files and variable definitions. 
    ```
@@ -162,9 +175,9 @@ To find a full list of {{site.data.keyword.cloud_notm}} resources that you can p
 
 3. [Generate an SSH key](/docs/vpc-on-classic-vsi?topic=vpc-on-classic-vsi-ssh-keys). The SSH key is required to provision the VPC virtual server instance and you can use the SSH key to access your instance via SSH. After you created your SSH key, make sure to [upload this SSH key to your {{site.data.keyword.cloud_notm}} account](/docs/vpc-on-classic-vsi?topic=vpc-on-classic-vsi-managing-ssh-keys#managing-ssh-keys-with-ibm-cloud-console). 
 
-4. [Retrieve your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key](/docs/iam?topic=iam-classic_keys). You use this user name and API key to provision the classic infrastructure virtual server in your {{site.data.keyword.cloud_notm}} account. 
+4. [Retrieve your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key](/docs/account?topic=account-classic_keys). You use this user name and API key to provision the classic infrastructure virtual server in your {{site.data.keyword.cloud_notm}} account. 
         
-6. Create a Terraform configuration file that is named `terraform.tfvars` to store your {{site.data.keyword.cloud_notm}} classic infrastructure credentials and the {{site.data.keyword.cloud_notm}} API key. Make sure to save this file in the folder that you created for your first Terraform project. Variables that are defined in the `terraform.tfvars` file are automatically loaded by Terraform when the Terraform CLI is initialized and you can reference them in every Terraform configuration file that you use. 
+6. Create a local Terraform variables file that is named `terraform.tfvars` to store your {{site.data.keyword.cloud_notm}} classic infrastructure credentials and the {{site.data.keyword.cloud_notm}} API key. Make sure to save this file in the folder that you created for your first Terraform project. Variables that are defined in the `terraform.tfvars` file are automatically loaded by Terraform when the Terraform CLI is initialized and you can reference them in every Terraform configuration file that you use. 
 
    Because the `terraform.tfvars` file contains confidential information, do not push this file to your version control system where you store the Terraform configuration files of the resources that you want to provision. This file is meant to be on your local system only. 
    {: important}
@@ -172,15 +185,18 @@ To find a full list of {{site.data.keyword.cloud_notm}} resources that you can p
    ```
    ibmcloud_api_key = "<ibmcloud_api_key>"
    ssh_key = "<ssh_key_name>"
-   softlayer_username = "<classic_infrastructure_username>"
-   softlayer_api_key = "<classic_infrastructure_apikey>"
+   iaas_classic_username = "<classic_infrastructure_username>"
+   iaas_classic_api_key = "<classic_infrastructure_apikey>"
    ```
    {: codeblock}
    
    <table>
    <caption>Understanding the configuration file components</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="images/idea.png" alt="Idea icon"/> Understanding the configuration file components</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>
@@ -192,36 +208,39 @@ To find a full list of {{site.data.keyword.cloud_notm}} resources that you can p
    <td>Enter the name of the SSH key that you chose when you uploaded the SSH key to your {{site.data.keyword.cloud_notm}} account.</td>
    </tr>
    <tr>
-   <td><code>softlayer_username</code></td>
+   <td><code>iaas_classic_username</code></td>
    <td>Enter the classic infrastructure user name that you retrieved earlier.  </td>
    </tr>
    <tr>
-   <td><code>softlayer_api_key</code></td>
+   <td><code>iaas_classic_api_key</code></td>
    <td>Enter the classic infrastructure API key that you retrieved earlier. </td>
    </tr>
    </tbody>
    </table>
    
-7. Create a Terraform provider configuration file that is named `provider.tf`. Use this file to configure the {{site.data.keyword.cloud_notm}} Provider plug-in with the credentials from your `terraform.tfvars` file so that the plug-in can access and provision {{site.data.keyword.cloud_notm}} resources. To reference a variable from the `terraform.tfvars` file, use the syntax `${var.<variable_name>}`. 
+7. Create a Terraform provider configuration file that is named `provider.tf`. Use this file to configure the {{site.data.keyword.cloud_notm}} Provider plug-in with the credentials from your `terraform.tfvars` file so that the plug-in can access and provision {{site.data.keyword.cloud_notm}} resources. To reference a variable from the `terraform.tfvars` file, use the syntax `var.<variable_name>`. 
    ```
    variable "ibmcloud_api_key" {}
-   variable "softlayer_username" {}
-   variable "softlayer_api_key" {}
+   variable "iaas_classic_username" {}
+   variable "iaas_classic_api_key" {}
 
    provider "ibm" {
      ibmcloud_api_key   = var.ibmcloud_api_key
      generation         = 1
      region             = "us-south"
-     softlayer_username = var.softlayer_username
-     softlayer_api_key  = var.softlayer_api_key
+     iaas_classic_username = var.iaas_classic_username
+     iaas_classic_api_key  = var.iaas_classic_api_key
    }
    ```
    {: codeblock}
    
    <table>
    <caption>Understanding the configuration file components</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="images/idea.png" alt="Idea icon"/> Understanding the configuration file components</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>
@@ -237,11 +256,11 @@ To find a full list of {{site.data.keyword.cloud_notm}} resources that you can p
    <td>Specify the {{site.data.keyword.cloud_notm}} region where you want to provision your infrastructure resources. Run <code>ibmcloud is regions</code> to find supported regions.  </td>
    </tr>
    <tr>
-   <td><code>softlayer_username</code></td>
+   <td><code>iaas_classic_username</code></td>
    <td>Reference the classic infrastructure user name that you stored in your <code>terraform.tfvars</code> file. This user name is required to provision classic infrastructure resources. You can remove this credential if you want to provision {{site.data.keyword.cloud_notm}} platform or VPC infrastructure resources only. </td>
    </tr>
    <tr>
-   <td><code>softlayer_api_key</code></td>
+   <td><code>iaas_classic_api_key</code></td>
    <td>Reference the classic infrastructure API key that you stored in your <code>terraform.tfvars</code> file. This API key is required to provision classic infrastructure resources. You can remove this credential if you want to provision {{site.data.keyword.cloud_notm}} platform or VPC infrastructure resources only.   </td>
    </tr>
    </tbody>
@@ -352,8 +371,11 @@ To create a VPC and a virtual server instance:
     
    <table>
    <caption>Understanding the configuration file components</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="images/idea.png" alt="Idea icon"/> Understanding the configuration file components</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>
@@ -754,8 +776,11 @@ Keep in mind that a virtual server is an {{site.data.keyword.cloud_notm}} classi
    
    <table>
    <caption>Understanding the configuration file components</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="images/idea.png" alt="Idea icon"/> Understanding the configuration file components</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>

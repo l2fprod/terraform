@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-31"
+lastupdated: "2020-08-10"
 
 keywords: terraform provider plugin, terraform functions, terraform openwhisk, terraform function action
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Functions data sources
 {: #function-data-sources}
@@ -61,6 +71,7 @@ Review the input parameters that you can specify for your data source.
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
 |`name`|String|Required|The name of the action.|
+|`namespace`|String|Required|The name of the function namespace.|
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -72,6 +83,7 @@ Review the output parameters that you can access after you retrieved your data s
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
 |`id`| String| The ID of the action.|
+|`namespace`|String| The name of the function namespace.|
 |`version`|String|The version of the action. |
 |`annotations`|List|Annotations to describe the action, including those set by you or by IBM Cloud Functions.|
 |`parameters`|List| Parameters passed to the action when the action is invoked, including those set by you or by IBM Cloud Functions.|
@@ -87,7 +99,49 @@ Review the output parameters that you can access after you retrieved your data s
 |`exec.main`|String|The name of the action entry point (function or fully-qualified method name, when applicable).    |
 |`exec.components`|List|The list of fully qualified actions.|
 |`publish`|Boolean|Action visibility.|
+|`action_id`|String|Action ID.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
+
+## `ibm_function_namespace`
+{: #fn-namespace_ds}
+
+Import the details of an existing IBM Cloud Functions namespace. For more information about managing namespace, see [Managing namespace](/docs/openwhisk?topic=openwhisk-namespaces). 
+
+### Sample Terraform code
+{: #fn-namespace-ds-sample}
+
+The following example creates the namespace and package at a specific location.
+
+```
+data "ibm_function_namespace" "test_namespace" {
+	name = var.namespace
+}
+```
+
+### Input parameters
+{: #fn-namespace-ds-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description | 
+| ------------- |-------------| ----- | -------------- | 
+|`name`|String|Required|The name of the namespace. |
+{: caption="Table. Available input parameters" caption-side="top"}
+
+### Output parameters
+{: #fn-namespace-ds-output}
+
+Review the output parameters that you can access after your resource is created. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+|`id`|String|The ID of the namespace.|
+|`resource_group_id`|String| The ID of the resource group.|
+|`location`|String| The target location of the namespace.|
+{: caption="Table 1. Available output parameters" caption-side="top"}
+
 
 ## `ibm_function_package`
 {: #fn-package}
@@ -116,6 +170,7 @@ Review the input parameters that you can specify for your data source.
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
 |`name`|String|Required|The name of the package.|
+|`namespace`|String|Required|The name of the function namespace.|
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -127,10 +182,12 @@ Review the output parameters that you can access after you retrieved your data s
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
 |`id`|String|The ID of the package.|
+|`namespace`|String| The name of the function namespace.|
 |`version`|String|Semantic version of the package.|
 |`publish`|Boolean|Package visibility.|
 |`annotations`|List|All annotations to describe the package, including those set by you or by IBM Cloud Functions.|
 |`parameters`|List|All parameters passed to the package, including those set by you or by IBM Cloud Functions.|
+|`package_id`|String|The package ID.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 
@@ -160,6 +217,7 @@ Review the input parameters that you can specify for your data source.
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
 |`name`|String|Required|The name of the rule.|
+|`namespace`|String|Required|The name of the function namespace.|
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -171,11 +229,13 @@ Review the output parameters that you can access after you retrieved your data s
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
 |`id`|String|The ID of the rule.|
+|`namespace`|String| The name of the function namespace.|
 |`publish`|Boolean|Rule visibility.|
 |`version`|String|Semantic version of the rule.|
 |`status`|String|The status of the rule.|
 |`trigger_name`|String|The name of the trigger that the rule belongs to.|
 |`action_name`|String|The name of the action that the rule belongs to.|
+|`rule_id`|String|The rule ID.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 
@@ -205,6 +265,7 @@ Review the input parameters that you can specify for your data source.
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
 |`name`|String|Required|The name of the trigger.|
+|`namespace`|String|Required|The name of the function namespace.|
 {: caption="Table. Available input parameters" caption-side="top"}
 
 ### Output parameters
@@ -216,8 +277,10 @@ Review the output parameters that you can access after you retrieved your data s
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
 |`id`|String|The ID of the trigger.|
+|`namespace`|String| The name of the function namespace.|
 |`publish`|Boolean|Trigger visibility.|
 |`version`|String|Semantic version of the trigger.|
 |`annotations`|List|All annotations to describe the trigger, including those set by you or by IBM Cloud Functions.|
 |`parameters`|List|All parameters passed to the trigger, including those set by you or by IBM Cloud Functions.|
+|`trigger_id`|String|The trigger ID.|
 {: caption="Table 1. Available output parameters" caption-side="top"}

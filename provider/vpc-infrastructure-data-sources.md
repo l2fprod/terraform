@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-17"
+lastupdated: "2020-08-10"
 
 keywords: terraform provider plugin, terraform vpc gen 1 compute, terraform vpc, terraform gen 1 resources, terraform vpc subnet, generation 1 compute terraform
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # VPC infrastructure data sources (Gen 1 compute)
 {: #vpc-gen1-data-sources}
@@ -123,6 +133,200 @@ Review the output parameters that you can access after you retrieved your data s
 
 
 
+## `ibm_is_instance`
+{: #instance}
+
+Retrieve the details for a Gen 1 {{site.data.keyword.vsi_is_short}} instance.
+{: shortdesc}
+
+### Sample Terraform code
+{: #instance-sample}
+
+```
+resource "ibm_is_vpc" "testacc_vpc" {
+  name = "testvpc"
+}
+
+resource "ibm_is_subnet" "testacc_subnet" {
+  name            = "testsubnet"
+  vpc             = ibm_is_vpc.testacc_vpc.id
+  zone            = "us-south-1"
+  ipv4_cidr_block = "10.240.0.0/24"
+}
+
+resource "ibm_is_ssh_key" "testacc_sshkey" {
+  name       = "testssh"
+  public_key = file("~/.ssh/id_rsa.pub")
+}
+
+resource "ibm_is_instance" "testacc_instance" {
+  name    = "testinstance"
+  image   = "a7a0626c-f97e-4180-afbe-0331ec62f32a"
+  profile = "bc1-2x8"
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.testacc_subnet.id
+  }
+
+  network_interfaces {
+    name   = "eth1"
+    subnet = ibm_is_subnet.testacc_subnet.id
+  }
+
+  vpc  = ibm_is_vpc.testacc_vpc.id
+  zone = "us-south-1"
+  keys = [ibm_is_ssh_key.testacc_sshkey.id]
+}
+
+data "ibm_is_instance" "ds_instance" {
+  name        = "${ibm_is_instance.testacc_instance.name}"
+  private_key = file("~/.ssh/id_rsa")
+  passphrase  = ""
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #instance-input}
+
+Review the input parameters that you can specify for your data source. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description |
+| ------------- |-------------| ----- | -------------- |
+|`name`|String|Required|The name of the {{site.data.keyword.vsi_is_short}} instance that you want to retrieve. |
+|`private_key`|String|Optional|The private key of an SSH key that you want to add to your {{site.data.keyword.vsi_is_short}} instance during creation in PEM format. SSH keys are used by virtual servers to identify a user or device through public-key cryptography. For more information about how to create SSH keys and upload them to {{site.data.keyword.cloud_notm}}, see [Locating or generating your SSH key](/docs/vpc?topic=vpc-ssh-keys#locating-ssh-keys). The SSH key is used to decrypt the default administrator password in Windows if Windows is installed as the operating system on your {{site.data.keyword.vsi_is_short}} instance.|
+|`passphrase`|String|Optional|The passphrase that you used when you created your SSH key. If you did not enter a passphrase when you created the SSH key, do not provide this input parameter.|
+
+### Output parameters
+{: #instance-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+|`id`|String|The ID that was assigned to the {{site.data.keyword.vsi_is_short}} instance.|
+|`memory`|Integer|The amount of memory that was allocated to the instance.|
+|`status`|String|The status of the instance.|
+|`image`|String|The ID of the virtual server image that is used in the instance.|
+|`zone`|String|The zone where the instance was created.|
+|`vpc`|String|The ID of the VPC that the instance belongs to.|
+|`resource_group`|String|The name of the resource group where the instance was created.|
+|`vcpu`|Object|A list of virtual CPUs that were allocated to the instance.|
+|`vcpu.architecture`|String|The architecture of the virtual CPU. |
+|`vcpu.count`|Integer|The number of virtual CPUs that are allocated to the instance.|
+|`gpu`|Object|A list of graphics processing units that are allocated to the instance.|
+|`gpu.cores`|Integer|The number of cores that are assigned to the GPU.|
+|`gpu.count`|Integer|The number of GPUs that are allocated to the instance.|
+|`gpu.manufacture`|String|The manufacturer of the GPU.|
+|`gpu.memory`|Integer|The amount of memory that was allocated to the GPU.|
+|`gpu.model`|String|The model of the GPU.| 
+|`primary_network_interface`|Object|A list of primary network interfaces that were created for the instance.| 
+|`primary_network_interface.id`|String|The ID of the primary network interface.|
+|`primary_network_interface.name`|String|The name of the primary network interface.|
+|`primary_network_interface.subnet`|String|The ID of the subnet that is used in the primary network interface.|
+|`primary_network_interface.security_groups`|List|A list of security groups that were created for the interface.|
+|`primary_network_interface.primary_ipv4_address`|String|The IPv4 address range that the subnet uses.|
+|`network_interfaces`|Object|A list of additional network interfaces that the instance uses.|
+|`network_interfaces.id`|String|The ID of the additional network interface.|
+|`network_interfaces.name`|String|The name of the additional network interface.|
+|`network_interfaces.subnet`|String|The ID of the subnet that is used in the additional network interface.|
+|`network_interfaces.security_groups`|List|A list of security groups that were created for the interface.|
+|`network_interfaces.primary_ipv4_address`|String|The IPv4 address range that the subnet uses.|
+|`boot_volume`|Object|A list of boot volumes that were created for the instance.|
+|`boot_volume.id`|String|The ID of the boot volume attachment.|
+|`boot_volume.name`|String|The name of the boot volume.|
+|`boot_volume.device`|String|The name of the device that is associated with the boot volume.|
+|`boot_volume.volume_id`|String|The ID of the volume that is associated with the boot volume attachment.|
+|`boot_volume.volume_crn`|String|The CRN of the volume that is associated with the boot volume attachment.|
+|`volume_attachments`|Object|A list of volume attachments that were created for the instance.| 
+|`volume_attachments.id`|String|The ID of the volume attachment.|
+|`volume_attachments.name`|String|The name of the volume attachment.|
+|`volume_attachments.volume_id`|String|The ID of the volume that is associated with the volume attachment.|
+|`volume_attachments.volume_name`|String|The name of the volume that is associated with the volume attachment.|
+|`volume_attachments.crn`|String|The CRN of the volume that is associated with the volume attachment.|
+|`resource_controller_url`|String|The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to see details for your instance.| 
+|`password`|String|The password that you can use to access your instance.|
+|`keys`|Object|A list of SSH keys that were added to the instance during creation.|
+|`keys.id`|String|The ID of the SSH key.|
+|`keys.name`|String|The name of the SSH key that you entered when you uploaded the key to {{site.data.keyword.cloud_notm}}.|
+
+
+
+
+
+
+## `ibm_is_instances`
+{: #instances}
+
+Retrieve the details for all Gen 1 {{site.data.keyword.vsi_is_short}} instances in your account.
+{: shortdesc}
+
+### Sample Terraform code
+{: #instances-sample}
+
+```
+data "ibm_is_instances" "ds_instances" {
+}
+```
+{: codeblock}
+
+### Input parameters
+{: #instances-input}
+
+This data source does not support any input parameters.
+{: shortdesc}
+
+### Output parameters
+{: #instances-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+|`instances`|Object|A list of {{site.data.keyword.vsi_is_short}} instances that exist in your account.|
+|`instances.id`|String|The ID that was assigned to the {{site.data.keyword.vsi_is_short}} instance.|
+|`instances.memory`|Integer|The amount of memory that was allocated to the instance.|
+|`instances.status`|String|The status of the instance.|
+|`instances.image`|String|The ID of the virtual server image that is used in the instance.|
+|`instances.zone`|String|The zone where the instance was created.|
+|`instances.vpc`|String|The ID of the VPC that the instance belongs to.|
+|`instances.resource_group`|String|The name of the resource group where the instance was created.|
+|`instances.vcpu`|Object|A list of virtual CPUs that were allocated to the instance.|
+|`instances.vcpu.architecture`|String|The architecture of the virtual CPU. |
+|`instances.vcpu.count`|Integer|The number of virtual CPUs that are allocated to the instance.|
+|`instances.primary_network_interface`|Object|A list of primary network interfaces that were created for the instance.| 
+|`instances.primary_network_interface.id`|String|The ID of the primary network interface.|
+|`instances.primary_network_interface.name`|String|The name of the primary network interface.|
+|`instances.primary_network_interface.subnet`|String|The ID of the subnet that is used in the primary network interface.|
+|`instances.primary_network_interface.security_groups`|List|A list of security groups that were created for the interface.|
+|`instances.primary_network_interface.primary_ipv4_address`|String|The IPv4 address range that the subnet uses.|
+|`instances.network_interfaces`|Object|A list of additional network interfaces that the instance uses.|
+|`instances.network_interfaces.id`|String|The ID of the additional network interface.|
+|`instances.network_interfaces.name`|String|The name of the additional network interface.|
+|`instances.network_interfaces.subnet`|String|The ID of the subnet that is used in the additional network interface.|
+|`instances.network_interfaces.security_groups`|List|A list of security groups that were created for the interface.|
+|`instances.network_interfaces.primary_ipv4_address`|String|The IPv4 address range that the subnet uses.|
+|`instances.boot_volume`|Object|A list of boot volumes that were created for the instance.|
+|`instances.boot_volume.id`|String|The ID of the boot volume attachment.|
+|`instances.boot_volume.name`|String|The name of the boot volume.|
+|`instances.boot_volume.device`|String|The name of the device that is associated with the boot volume.|
+|`instances.boot_volume.volume_id`|String|The ID of the volume that is associated with the boot volume attachment.|
+|`instances.boot_volume.volume_crn`|String|The CRN of the volume that is associated with the boot volume attachment.|
+|`instances.volume_attachments`|Object|A list of volume attachments that were created for the instance.| 
+|`instances.volume_attachments.id`|String|The ID of the volume attachment.|
+|`instances.volume_attachments.name`|String|The name of the volume attachment.|
+|`instances.volume_attachments.volume_id`|String|The ID of the volume that is associated with the volume attachment.|
+|`instances.volume_attachments.volume_name`|String|The name of the volume that is associated with the volume attachment.|
+|`instances.volume_attachments.crn`|String|The CRN of the volume that is associated with the volume attachment.|
+
+
+
+
+
+
 ## `ibm_is_instance_profile` 
 {: #instance-profile}
 
@@ -210,7 +414,7 @@ Review the output parameters that you can access after you retrieved your data s
 ## `ibm_is_region`
 {: #region}
 
-Retrieve the details for a {{site.data.keyword.vpc_full}} regions. 
+Retrieve the details for an {{site.data.keyword.vpc_full}} regions. 
 {: shortdesc}
 
 ### Sample Terraform code
@@ -246,6 +450,107 @@ Review the output parameters that you can access after you retrieved your data s
 | `status` | String | The status of the region. | 
 | `endpoint` | String | The API endpoint of the region. |
 
+
+
+
+
+
+
+## `ibm_is_security_group`
+{: #sec-group-datasource}
+
+Import the details of a security group as a read-only data source. You can reference the output parameters for each data source by using [Terraform interpolation syntax](https://www.terraform.io/docs/configuration-0-11/interpolation.html){: external}. 
+{: shortdesc}
+
+
+### Sample Terraform code
+{: #sec-group-sample}
+
+The following example allows to create a different types of protocol rules `ALL`, `ICMP`, `UDP`, `TCP` and read the security group.
+{: shortdesc}
+
+```
+resource "ibm_is_vpc" "testacc_vpc" {
+  name = "test"
+}
+
+resource "ibm_is_security_group" "testacc_security_group" {
+  name = "test"
+  vpc  = ibm_is_vpc.testacc_vpc.id
+}
+
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_all" {
+  group     = ibm_is_security_group.testacc_security_group.id
+  direction = "inbound"
+  remote    = "127.0.0.1"
+}
+
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_icmp" {
+  group     = ibm_is_security_group.testacc_security_group.id
+  direction = "inbound"
+  remote    = "127.0.0.1"
+  icmp {
+    code = 20
+    type = 30
+  }
+}
+
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_udp" {
+  group     = ibm_is_security_group.testacc_security_group.id
+  direction = "inbound"
+  remote    = "127.0.0.1"
+  udp {
+    port_min = 805
+    port_max = 807
+  }
+}
+
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
+  group     = ibm_is_security_group.testacc_security_group.id
+  direction = "egress"
+  remote    = "127.0.0.1"
+  tcp {
+    port_min = 8080
+    port_max = 8080
+  }
+}
+
+data "ibm_is_security_group" "sg1_rule" {
+  name = ibm_is_security_group.testacc_security_group.name
+}
+```
+
+### Input parameters
+{: #sec-group-ds-input}
+
+Review the input parameters that you can specify for your resource. 
+{: shortdesc}
+
+|Name|Data type|Required/ optional|Description|
+|----|-----------|-----------|---------------------| 
+|`name`|String|Required|The name of the security group.|
+{: caption="Table. Available input parameters" caption-side="top"}
+
+### Output parameters
+{: #sec-group-ds-output}
+
+Review the output parameters that are exported. 
+{: shortdesc}
+
+|Name|Data type|Description|
+|----|-----------|--------|
+|`id`|String|The ID of the security group.|
+|`rules`|List of objects|A nested block describing the rules of the attributes. |
+|`rules.rule_id`| String|ID of the rule.  |
+|`rules.direction`|String|Direction of traffic to enforce, either inbound or outbound. |
+|`rules.ip_version`|String|IP version: IPv4 or IPv6.  |
+|`rules.protocol`|String|The type of the protocol `all`, `icmp`, `tcp`, `udp`.   |
+|`rules.type`|String|The ICMP traffic type to allow.  |
+|`rules.code`|String|The ICMP traffic code to allow.  |
+|`rules.port_max`|Integer|The inclusive upper bound of TCP/UDP port range.  |
+|`rules.port_min`|Integer|The inclusive lower bound of TCP/UDP port range. |
+|`protocol`|Integer| The type of the protocol rules `ALL`, `ICMP`, `UDP`, `TCP` |
+{: caption="Table 1. Available output parameters" caption-side="top"}
 
 
 
@@ -293,7 +598,6 @@ Review the output parameters that you can access after you retrieved your data s
 | `id` | String | The ID of the SSH key. | 
 | `length` | String | The length of the SSH key. | 
 | `type` | String | The cryptosystem that is used by the SSH key. | 
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to view details about the SSH key. |
 
 
 
@@ -303,7 +607,7 @@ Review the output parameters that you can access after you retrieved your data s
 ## `ibm_is_subnet`
 {: #subnet}
 
-Retrieve details for a {{site.data.keyword.vpc_full}} subnet. 
+Retrieve details for an {{site.data.keyword.vpc_full}} subnet. 
 {: shortdesc}
 
 ### Sample Terraform code
@@ -352,7 +656,6 @@ Review the output parameters that you can access after you retrieved your data s
 | `name` | String | The name of the subnet. |
 | `network_acl` | String | The ID of the network access control list (ACL) that is set up for the subnet. |
 | `public_gateway` | String | The ID of the public gateway that is attached to the subnet. |
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to view details about the subnet. |
 | `status` | String | The status of the subnet. |
 | `total_ipv4_address_count` | Integer | The total number of IPv4 addresses. |
 | `vpc` | String | The ID of the VPC that the subnet is attached to. |
@@ -415,7 +718,7 @@ Review the output parameters that you can access after you retrieved your data s
 ## `ibm_is_vpc`
 {: #vpc}
 
-Retrieve information about a {{site.data.keyword.vpc_full}}. 
+Retrieve information about an {{site.data.keyword.vpc_full}}. 
 {: shortdesc}
 
 ### Sample Terraform code
@@ -459,11 +762,11 @@ Review the output parameters that you can access after you retrieved your data s
 |`cse_source_addresses.address`|String|The IP address of the cloud service endpoint.|
 |`cse_source_addresses.zone_name`|String|The zone where the cloud service endpoint is located.|
 | `default_network_acl` | String | The ID of the default network access control list (ACL) that was set up for the VPC. | 
-| `resource_controller_url` | String | The URL of the {{site.data.keyword.cloud_notm}} dashboard that you can use to view details about the VPC. |
 | `resource_group` | String | The resource group ID where the VPC was created. |
 |`subnets`|List of subnets|A list of subnets that are attached to a VPC.|
 |`subnets.name`|String|The name of the subnet.|
 |`subnets.id`|String|The ID of the subnet.|
+|`subnets.zone`|String|The zone that the subnet belongs to.|
 |`subnets.status`|String|The status of the subnet.|
 |`subnets.total_ipv4_address_count`|Integer|The total number of IPv4 addresses in the subnet.|
 |`subnets.available_ipv4_address_count`|Integer|The number of IPv4 addresses in the subnet that are available for you to be used.|
@@ -565,8 +868,214 @@ Review the output parameters that you can access after you retrieved your data s
 
 | Output parameter | Data type | Description |
 | ------------- |-------------| -------------- |
-| `zones` | Array | The list of zones in an {{site.data.keyword.cloud_notm}} region. |
+| `zones` | Array | The list of zones in an {{site.data.keyword.cloud_notm}} region.  For example, `us-south-1`,`us-south-2`.|
 
+
+
+
+
+
+
+## `ibm_tg_gateway`
+{: #tg-gateway-ds}
+ 
+Imports the information of an existing {{site.data.keyword.cloud_notm}} infrastructure transit gateway as a read only data source.
+{: shortdesc}
+
+### Sample Terraform code
+{: #tg-gateway-sample}
+
+The following example shows the details of transit gateway data source. 
+{: shortdesc}
+
+```
+resource "ibm_tg_gateway" "new_tg_gw"{
+name="transit-gateway-1"
+location="us-south"
+global=true
+resource_group="30951d2dff914dafb26455a88c0c0092"
+} 
+
+data "ibm_tg_gateway" "ds_tggateway" {
+    id=ibm_tg_gateway.new_tg_gw.id
+}
+```
+
+### Input parameters
+{: #tg-gateway-input}
+
+Review the input parameters that you can specify for your data source. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description |
+| ------------- |-------------| ----- | -------------- |
+| `name` | String | Required | The name of the gateway. |
+
+### Output parameters
+{: #tg-gateway-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+| `created_at` | String | The date and time resource is created.|
+| `updated_at` | String | The date and time resource is last updated.|
+| `crn` | String | The CRN of the gateway.|
+| `global` | String | The gateways with global routing true to connect to the networks outside the associated region.|
+| `location` | String | The gateway location.|
+| `id` | String | The unique identifier of this gateway.|
+| `status` | String | The gateway status.|
+| `resource_group` | String | The resource group identifier.|
+| `connections.name` | String | The user-defined name for the transit gateway connection.|
+| `connections.network_type` | String | The type of network connected with the connection. Possible values are `classic` or `vpc`. |
+| `connections.network_id` | String | The ID of the network being connected with the connection. |
+| `connections.id` | String | The unique identifier for the transit gateway connection to network either `vpc` or `classic`).|
+| `connections.created_at` | String | The date and time the connection is created.|
+| `connections.updated_at` | String | The date and time the connection is last updated.|
+| `connections.status` | String | The current configuration state of the connection. Possible values are `attached`, `failed,` `pending`, `deleting`.|
+
+
+
+
+
+
+## `ibm_tg_gateways`
+{: #tg-gateways-ds}
+ 
+Imports the information of an existing {{site.data.keyword.cloud_notm}} infrastructure transit gatewasy as a read only data source.
+{: shortdesc}
+
+### Sample Terraform code
+{: #tg-gateway-sample}
+
+The following example shows the details of transit gateways data source. 
+{: shortdesc}
+
+```
+data "ibm_tg_gateways" "ds_tggateways" {
+}
+```
+
+### Input parameters
+{: #tg-gateways-input}
+
+Review the input parameters that you can specify for your data source. 
+{: shortdesc}
+
+There is no input parameters for `ibm_tg_gateways`.
+
+### Output parameters
+{: #tg-gateways-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+| `transit_gateways` | String | List of all transit gateways.|
+| `transit_gateways.created_at` | String | The date and time resource is created.|
+| `transit_gateways.updated_at` | String | The date and time resource is last updated.|
+| `transit_gateways.crn` | String | The CRN of the gateway.|
+| `transit_gateways.global` | String | The gateways with global routing true to connect to the networks outside the associated region.|
+| `transit_gateways.id` | String | The unique identifier of this gateway.|
+| `transit_gateways.location` | String | The gateway location.|
+| `transit_gateways.name` | String | The user-defined name for the transit gateway connection.|
+| `transit_gateways.status` | String | The gateway status.|
+| `transit_gateways.resource_group` | String | Resource group identifier.|
+
+
+
+
+
+
+
+## `ibm_tg_location`
+{: #tg-location-ds}
+ 
+Imports the information of an existing {{site.data.keyword.cloud_notm}} infrastructure transit location as a read only data source.
+{: shortdesc}
+
+### Sample Terraform code
+{: #tg-location-sample}
+
+The following example shows the details of transit location data source. 
+{: shortdesc}
+
+```
+data "ibm_tg_location" "ds_tg_location" {
+  name = "us-south"
+}
+```
+
+### Input parameters
+{: #tg-location-input}
+
+Review the input parameters that you can specify for your data source. 
+{: shortdesc}
+
+| Input parameter | Data type | Required/ optional | Description |
+| ------------- |-------------| ----- | -------------- |
+| `name` | String | Required | The name of the transit gateway location. |
+
+### Output parameters
+{: #tg-location-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+| `billing_location` | String | The geographical location of the location, used for billing purposes.|
+| `name` | String | The name of the location.|
+| `type` | String | The type of the location, determining a `multi-zone region`, a `single data center`, or a `point of presence`.|
+| `local_connection_locations` | String | The set of network locations that are considered local for the transit gateway location.|
+| `local_connection_locations.display_name` | String |The descriptive display name for the location.|
+| `local_connection_locations.name` | String | The name of the location.|
+| `local_connection_locations.type` | String | The type of the location, determining a `multi-zone region`, a `single data center`, or a `point of presence`.|
+
+
+
+
+
+
+## `ibm_tg_locations`
+{: #tg-locations-ds}
+ 
+Imports the information of an existing {{site.data.keyword.cloud_notm}} infrastructure transit location as a read only data source.
+{: shortdesc}
+
+### Sample Terraform code
+{: #tg-locations-sample}
+
+The following example shows the details of transit locations data source. 
+{: shortdesc}
+
+```
+data "ibm_tg_locations" "ds_tg_locations" {
+}
+```
+
+### Input parameters
+{: #tg-locations-input}
+
+Review the input parameters that you can specify for your data source. 
+{: shortdesc}
+
+There is no input parameters for `ibm_tg_locations`.
+
+### Output parameters
+{: #tg-locations-output}
+
+Review the output parameters that you can access after you retrieved your data source. 
+{: shortdesc}
+
+| Output parameter | Data type | Description |
+| ------------- |-------------| -------------- |
+| `locations` | String | List of all locations that supports transit gateways.|
+| `locations.billing_location` | String | The geographical location of the location, used for billing purposes.|
+| `locations.name` | String | The name of the location.|
+| `locations.type` | String | The type of the location, determining a `multi-zone region`, a `single data center`, or a `point of presence`.|
 
 
 

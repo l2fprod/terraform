@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-02"
+lastupdated: "2020-07-08"
 
 keywords: terraform provider plugin, terraform certificate manager, terraform cert manager, terraform certificate
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 #  API Gateway resources
 {: #api-gateway-resources}
@@ -157,10 +167,11 @@ Review the input parameters that you can specify for your resource.
 | Input parameter | Data type | Required/ optional | Description |
 | ------------- |-------------| ----- | -------------- |
 |`artifact_id`|String|Required|The ID of an API endpoint.| 
-|`client_id`|String|Required|The API key to generate an API key for the subscription. The generated API key represents the ID of a subscription.| 
+|`client_id`|String|Optional|The API key to generate an API key for the subscription. The generated API key represents the ID of a subscription.| 
 |`name`|String|Required|The name for an API key.|
 |`type`|String|Required|The type of API key sharing. Supported values are `External`, and `Bluemix`.
 |`client_secret`|String|Optional|The secret of the API key.|
+|`generate_secret`|Boolean|Optional|If set to **true**, the secret key is auto-generated. If set to **false**, the secret key is not auto-generated. |
 
 
 ### Output parameters

@@ -1,8 +1,8 @@
 ---
 
 copyright:
-  years: 2017, 2019
-lastupdated: "2019-09-26"
+  years: 2017, 2020
+lastupdated: "2020-07-24"
 
 keywords: Terraform, ansible, wordpress, automate, automation, iaas, single site, single zone
 
@@ -10,16 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
+{:deprecated: .deprecated}
 {:download: .download}
+{:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Tutorial: Deploying WordPress on IBM Cloud classic infrastructure with Terraform and Ansible
 {: #deploy_wordpress}
@@ -214,7 +227,7 @@ To use Terraform to provision {{site.data.keyword.Bluemix_notm}} classic infrast
    
    Your API key is displayed in the **API Key** section of your CLI output. 
       
-5. [Retrieve your {{site.data.keyword.Bluemix_notm}} classic infrastructure user name and API key](/docs/iam?topic=iam-classic_keys).
+5. [Retrieve your {{site.data.keyword.cloud_notm}} classic infrastructure user name and API key](/docs/account?topic=account-classic_keys).
 
 6. Copy the Terraform configuration files to create your WordPress infrastructure from the {{site.data.keyword.Bluemix_notm}} Terraform Provider package to your Terraform project directory. 
    ```
@@ -231,8 +244,8 @@ To use Terraform to provision {{site.data.keyword.Bluemix_notm}} classic infrast
       
    2. Add your classic infrastructure credentials and the {{site.data.keyword.Bluemix_notm}} API key to the `terraform.tfvars` file. 
       ```
-      softlayer_username = "<classic_infrastructure_username>"
-      softlayer_api_key = "<classic_infrastructure_api_key>"
+      iaas_classic_username = "<classic_infrastructure_username>"
+      iaas_classic_api_key = "<classic_infrastructure_api_key>"
       ibmcloud_api_key = "<ibmcloud_api_key>"
       ```
       {: codeblock}
@@ -253,7 +266,7 @@ Set up your Ansible project directory and install Ansible on your local machine 
    
 2. Copy the Ansible playbooks and configuration files to create your WordPress app from the `examples` folder of the {{site.data.keyword.Bluemix_notm}} Terraform Provider package to your Ansible project directory. 
    ```
-   mv terraform-provider-ibm/examples/ansible/ibm_ansible_wordpress/* <ansible_project_path>
+   mv terraform-provider-ibm/examples/ibm-ansible-samples/ibm_ansible_wordpress/* <ansible_project_path>
    ```
    {: pre}
    

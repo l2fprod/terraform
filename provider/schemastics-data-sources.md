@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-07"
+lastupdated: "2020-07-27"
 
 keywords: terraform provider plugin, terraform schematics data source, terraform schematics workspace 
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Schematics data sources
 {: #schematics-data-sources}
@@ -76,7 +86,6 @@ Review the output parameters that you can access after you retrieved your data s
 |`template_id` |Array|The ID of the templates that are present in the workspace.|
 |`tags`|Array|The tags that were added to the workspace.|
 |`resource_group`|String|The resource group associated with the workspace.|
-|`resource_controller_url`|String| The URL of the IBM Cloud dashboard that can be used to explore and view details about the workspace.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 
@@ -125,7 +134,7 @@ Review the output parameters that you can access after you retrieved your data s
 |Name|Data type|Description|
 |----|-----------|-------------|
 |`output_values`|Map|A list of Terraform output values that were exported for the workspace. All map entries are listed as key-value pairs.|
-|`resource_controller_url`|String| The URL of the IBM Cloud dashboard that can be used to explore and view details about the workspace.|
+|`output_json`|String|The output values of a Schematics workspace in JSON format. |
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ## `ibm_schematics_state`
@@ -169,5 +178,5 @@ Review the output parameters that you can access after you retrieved your data s
 |Name|Data type|Description|
 |----|-----------|-------------|
 |`state_store`|String|The URL to the location where the Terraform state file is stored. |
-|`resource_controller_url`|String| The URL of the IBM Cloud dashboard that can be used to explore and view details about the workspace.|
+|`state_store_json`|String|The JSON representation of the Terraform state file.
 {: caption="Table 1. Available output parameters" caption-side="top"}

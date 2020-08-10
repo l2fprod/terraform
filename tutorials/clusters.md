@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-04-06"
+lastupdated: "2020-07-08"
 
 keywords: terraform create kubernetes cluster, terraform create openshift cluster, terraform kubernetes cluster, terraform openshift cluster, schematics create kubernetes cluster, schematics create openshift cluster, schematics kubernetes cluster, schematics openshift cluster, terraform iks cluster, terraform roks cluster, schematics iks cluster, schematics roks cluster, terraform multizone cluster, schematics multizone cluster, terraform remove default worker pool, schematics remove default worker pool 
 
@@ -10,25 +10,35 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 
 # Creating single and multizone Kubernetes and OpenShift clusters
 {: #tutorial-tf-clusters}
 
-Use this tutorial to create single and multizone clusters with [{{site.data.keyword.containerlong_notm}}](/docs/containers?topic=containers-overview) or [{{site.data.keyword.openshiftlong_notm}}](/docs/openshift?topic=openshift-overview), and deploy your own set of compute hosts in the public cloud where you can run and manage highly available containerized apps.
+Use this tutorial to create single and multizone clusters with [{{site.data.keyword.containerlong_notm}}](/docs/containers?topic=containers-overview) or [{{site.data.keyword.openshiftlong_notm}}](/docs/openshift?topic=openshift-roks-overview), and deploy your own set of compute hosts in the public cloud where you can run and manage highly available containerized apps.
 
 In this tutorial, you create a standard classic {{site.data.keyword.containerlong_notm}} or {{site.data.keyword.openshiftlong_notm}} cluster with the following configuration: 
 - The cluster is created in the `us-south` region. 
@@ -62,7 +72,7 @@ This tutorial is intended for system administrators that want to learn how to cr
 ## Prerequisites
 
 - If you do not have one, create an [IBM Cloud Pay-As-You-Go or Subscription {{site.data.keyword.cloud_notm}} account](https://cloud.ibm.com/registration){: external}. 
-- Install the [{{site.data.keyword.cloud_notm}} CLI and the {{site.data.keyword.containerlong_notm}} CLI plug-in](/docs/cli?topic=cloud-cli-getting-started).
+- Install the [{{site.data.keyword.cloud_notm}} CLI and the {{site.data.keyword.containerlong_notm}} CLI plug-in](/docs/cli?topic=cli-getting-started).
 - Follow the [instructions](/docs/containers?topic=containers-clusters#cluster_prepare) to make sure that you are assigned the required permissions in Identity and Access Management (IAM) to create clusters and that your account is enabled for Virtual Routing and Forwarding (VRF). 
 
 ## Lesson 1: Prepare your Terraform environment
@@ -159,8 +169,11 @@ Create a classic {{site.data.keyword.containerlong_notm}} or {{site.data.keyword
    
    <table>
    <caption>Understanding the configuration file</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="../images/idea.png" alt="Idea icon"/> Understanding the configuration file</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>
@@ -320,8 +333,11 @@ Add zones to the default worker pool in your cluster that you created in lessson
    
    <table>
    <caption>Understanding the configuration file</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="../images/idea.png" alt="Idea icon"/> Understanding the configuration file</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>
@@ -471,8 +487,11 @@ Adding a worker pool only does not create any worker nodes. To create worker nod
    
    <table>
    <caption>Understanding the configuration file</caption>
+   <col style="width:30%">
+	 <col style="width:70%">
    <thead>
-   <th colspan=2><img src="../images/idea.png" alt="Idea icon"/> Understanding the configuration file</th>
+     <th>Parameter</th>
+     <th>Description</th>
    </thead>
    <tbody>
    <tr>

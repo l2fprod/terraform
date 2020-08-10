@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-31"
+lastupdated: "2020-07-27"
 
 keywords: terraform provider plugin, terraform resource group, terraform resource management, terraform iam services
 
@@ -10,19 +10,29 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Resource management data sources
 {: #resource-management-data-sources}
@@ -124,6 +134,8 @@ Review the output parameters that you can access after you retrieved your data s
 |`id`|String|The unique identifier of the service instance.|
 |`status`|String|The status of the service instance.|
 |`plan`|String| The service plan that is used for the service instance.|
+|`guid`|String|The GUID of the resource instance.|
+|`extensions`|String|The extended metadata as a map associated with the resource instance.|
 {: caption="Table 1. Available output parameters" caption-side="top"}
 
 ## `ibm_resource_key`

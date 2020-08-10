@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-03-31"
+lastupdated: "2020-08-07"
 
 keywords: terraform provider plugin, terraform certificate manager, terraform cert manager, terraform certificate
 
@@ -10,24 +10,34 @@ subcollection: terraform
 
 ---
 
-{:new_window: target="_blank"}
-{:shortdesc: .shortdesc}
-{:screen: .screen}
-{:pre: .pre}
-{:table: .aria-labeledby="caption"}
+{:beta: .beta}
 {:codeblock: .codeblock}
-{:tip: .tip}
-{:note: .note}
-{:important: .important}
 {:deprecated: .deprecated}
 {:download: .download}
-{:preview: .preview}
 {:external: target="_blank" .external}
+{:faq: data-hd-content-type='faq'}
+{:gif: data-image-type='gif'}
+{:help: data-hd-content-type='help'}
+{:important: .important}
+{:new_window: target="_blank"}
+{:note: .note}
+{:pre: .pre}
+{:preview: .preview}
+{:screen: .screen}
+{:shortdesc: .shortdesc}
+{:support: data-reuse='support'}
+{:table: .aria-labeledby="caption"}
+{:tip: .tip}
+{:troubleshoot: data-hd-content-type='troubleshoot'}
+{:tsCauses: .tsCauses}
+{:tsResolve: .tsResolve}
+{:tsSymptoms: .tsSymptoms}
+
 
 # Certificate Manager resources
 {: #cert-manager-resources}
 
-Review the [Certificate Manager](/docs/services/certificate-manager?topic=certificate-manager-about-certificate-manager) resources that you can create, modify, or delete. You can reference the output parameters for each resource in other resources or data sources by using [Terraform interpolation syntax](https://www.terraform.io/docs/configuration-0-11/interpolation.html){: external}. 
+Review the [Certificate Manager](/docs/certificate-manager?topic=certificate-manager-about-certificate-manager) resources that you can create, modify, or delete. You can reference the output parameters for each resource in other resources or data sources by using [Terraform interpolation syntax](https://www.terraform.io/docs/configuration-0-11/interpolation.html){: external}. 
 {: shortdesc}
 
 Before you start working with your resource, make sure to review the [required parameters](/docs/terraform?topic=terraform-provider-reference#required-parameters) that you need to specify in the `provider` block of your Terraform configuration file. 
@@ -122,15 +132,17 @@ resource "ibm_certificate_manager_order" "cert" {
 Review the input parameters that you can specify for your resource. 
 {: shortdesc}
 
-|Name|Data type|Required/ optional|Description|
-|----|-----------|-----------|---------------------|
-|`certificate_manager_instance_id`|String|Required|The CRN of your Certificate Manager instance.|
-|`name`|String|Required|The name for the certificate that you want to order.|
-|`description`|String|Optional|The description that you want to add to the certificate that you order.|
-|`domains`|List of strings|Required|An list of valid domains for the issued certificate. The first domain is the primary domain. Additional domains are secondary domains.|
-|`rotate_keys`|Boolean|Optional|Default value: False|
-|`domain_validation_method`|String|Optional|The domain validation method that you want to use for your domain. The validation method is applied to analyze DNS parameters for your domain and determine the domain health and quality standards that your domain meets. Supported parameters are `dns-01`. |
-|`dns_provider_instance_crn`|String|Optional|The CRN-based instance ID of the IBM Cloud Internet Services instance that manages the domains. If not present, Certificate Manager assumes that a `v4` or above Callback URL notifications channel with domain validation exists.|
+|Name|Data type|Required/ optional|Description| Forces new resource |
+|----|-----------|-----------|---------------------| ------ |
+|`certificate_manager_instance_id`|String|Required|The CRN of your Certificate Manager instance.| Yes |
+|`name`|String|Required|The name for the certificate that you want to order.| No |
+|`description`|String|Optional|The description that you want to add to the certificate that you order.| No |
+|`domains`|List of strings|Required|An list of valid domains for the issued certificate. The first domain is the primary domain. Additional domains are secondary domains.| Yes |
+|`rotate_keys`|Boolean|Optional|Default value: False| No |
+|`domain_validation_method`|String|Optional|The domain validation method that you want to use for your domain. The validation method is applied to analyze DNS parameters for your domain and determine the domain health and quality standards that your domain meets. Supported parameters are `dns-01`. | No |
+|`key_algorithm`|String|Optional|The encryption algorithm key that you want to use for your certificate. Supported values are `rsaEncryption 2048 bit`, and `rsaEncryption 4096 bit`. If you do not provide an algorithm, `rsaEncryption 2048 bit` is used by default.| No |
+|`dns_provider_instance_crn`|String|Optional|The CRN-based instance ID of the IBM Cloud Internet Services instance that manages the domains. If not present, Certificate Manager assumes that a `v4` or above Callback URL notifications channel with domain validation exists.| No |
+|`auto_renew_enabled`|Boolean|Optional|Determines the certificate is auto renewed. Default is **false**. <br> With `auto_renew_enabled` as true, certificates are automatically renewed for 31 days. If the certificate expires before 31 days. You can renew by updating `rotate_keys` to renewed the certificates automatically.{: note} | No |
 
 ### Output parameters
 {: #certmanager-order-output}
@@ -150,6 +162,22 @@ Review the output parameters that you can access after your resource is created.
 |`key_algorithm`|String|The key algorithm. Valid values are `rsaEncryption 2048 bit` or `rsaEncryption 4096 bit`. Default value: `rsaEncryption 2048 bit`.|
 |`algorithm`|String|The encryption algorithm. Valid values are `sha256WithRSAEncryption`. |
 {: caption="Table 1. Available output parameters" caption-side="top"}
+
+### Import
+{: #certmanager-import}
+
+This resource can be imported by using Crn ID of the certificate. The ID is available in the UI as `Certificate CRN` in the certificate details section.
+{: shortdesc}
+
+**Syntax**: 
+```
+terraform import ibm_certificate_manager_order.cert <id>
+
+```
+**Example**:
+```
+terraform import ibm_certificate_manager_order.cert crn:v1:bluemix:public:cloudcerts:us-south:a/4448261269a14562b839e0a3019ed980:8e80c112-5e48-43f8-8ab9-e198520f62e4:certificate:f543e1907a0020cfe0e883936916b336
+```
 
 ### Timeouts
 {: #certmanager-order-timeout}
