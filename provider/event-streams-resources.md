@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2020
-lastupdated: "2020-08-11"
+lastupdated: "2020-08-13"
 
 keywords: terraform provider plugin, terraform event streams, terraform event stream service, terraform event
 
@@ -51,10 +51,10 @@ Before you start working with your resource, make sure to review the [required p
 Create and update the event streams.
 {: shortdesc}
 
-### Example 1: create event streams service instance and topic
+### Example 1: Create an event streams service instance and topic
 {: #event-stream-sample}
 
-Create event streams service instance and topic.
+Create an event streams service instance and topic.
 {: shortdesc}
 
 ```
@@ -64,6 +64,17 @@ resource "ibm_resource_instance" "es_instance_1" {
   plan              = "standard" # "lite", "enterprise-3nodes-2tb"
   location          = "us-south" # "us-east", "eu-gb", "eu-de", "jp-tok", "au-syd"
   resource_group_id = data.ibm_resource_group.group.id
+
+  # parameters = {
+  #   service-endpoint     = "private"                    # for enterprise instance
+  #   private_ip_allowlist = ["1.0.0.0/32", "1.0.0.1/32"] # for enterprise instance
+  # }
+
+  # timeouts {
+  #   create = "15m" # use 3h when creating enterprise instance
+  #   update = "15m" # use 1h when updating enterprise instance
+  #   delete = "15m"
+  # }
 }
 
 resource "ibm_event_streams_topic" "es_topic_1" {
@@ -80,7 +91,7 @@ resource "ibm_event_streams_topic" "es_topic_1" {
 
 ```
 
-### Example 2: create topic on an existing event streams instance
+### Example 2: Create a topic on an existing event streams instance
 {: #event-stream-sample2}
 
 Create topic on an existing event streams instance.
@@ -106,7 +117,7 @@ resource "ibm_event_streams_topic" "es_topic_2" {
 
 ```
 
-### Example 3: create a Kafka consumer application connecting event streams instance and its topics
+### Example 3: Create a Kafka consumer application connecting to an event streams instance and its topics
 {: #event-stream-sample3}
 
 Create a kafka consumer application connecting to an existing event streams instance and its topics.
